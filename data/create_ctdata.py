@@ -532,7 +532,7 @@ if __name__ == '__main__':
 		
 		if not os.path.exists(lmdb_path):
 			os.makedirs(lmdb_path)
-			
+
 		imgdb_path = os.path.join(lmdb_path,"img")
 		segdb_path = os.path.join(lmdb_path,"seg")
 		assert not os.path.exists(imgdb_path), "Image Database path exists :"+ imgdb_path
@@ -544,6 +544,7 @@ if __name__ == '__main__':
 		os.chmod(copied_path, 292) #chmod 444
 		
 		p = None
+		print dataset
 		for uid, volume_file, seg_file, voxelspacing in tqdm(dataset):
 			imgvols, segvols, keys_img, keys_seg = process_volume(uid, volume_file, seg_file)
 			# Wait for previous persist_volumes process
