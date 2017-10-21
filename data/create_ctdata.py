@@ -11,7 +11,7 @@ import plyvel
 from itertools import izip
 import logging
 from contextlib import closing
-sys.path.append('/data/ID39-UNET-allslices-bilateral-filter/saratan')
+sys.path.append('../')
 
 from saratan_utils import norm_hounsfield_dyn, norm_hounsfield_stat
 

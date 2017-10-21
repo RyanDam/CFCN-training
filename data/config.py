@@ -1,4 +1,7 @@
 import logging
+import sys
+sys.path.append('../saratan/')
+
 # Logging level
 log_level = logging.WARNING
 # Number of CPUs used for parallel processing

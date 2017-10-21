@@ -83,7 +83,7 @@ for i, volume_dirname in enumerate(natsort.natsorted(os.listdir(DATA_PATH))):
     # Save the volume id
     volume_ids.append(int(volume_id))
     image_filename = os.path.join(volume_fulldirname,"image"+volume_id+".nii")
-    flip_volume(image_filename, os.path.join(OUTPUT_PATH, "image%.2d"%int(volume_id)+".nii"))
+    # flip_volume(image_filename, os.path.join(OUTPUT_PATH, "image%.2d"%int(volume_id)+".nii"))
     
     tumor_volume = None
     liver_volume = None
@@ -134,11 +134,6 @@ for i, volume_dirname in enumerate(natsort.natsorted(os.listdir(DATA_PATH))):
     tumor_volumes.append(tumor_volume)
     if relevant_masks < 2:
         print "For %s Only %i relevant mask(s) were found" % (volume_dirname,relevant_masks)
-
-
-
-
-
 
 
 
