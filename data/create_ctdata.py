@@ -30,7 +30,6 @@ SEG_DTYPE = np.uint8
 DEFORMATION_FAC=0.1
 
 
-
 def to_scale(img, shape=None):
 	if shape is None:
 		shape = config.slice_shape
@@ -533,6 +532,7 @@ if __name__ == '__main__':
 		
 		if not os.path.exists(lmdb_path):
 			os.makedirs(lmdb_path)
+			
 		imgdb_path = os.path.join(lmdb_path,"img")
 		segdb_path = os.path.join(lmdb_path,"seg")
 		assert not os.path.exists(imgdb_path), "Image Database path exists :"+ imgdb_path

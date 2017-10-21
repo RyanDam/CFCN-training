@@ -10,7 +10,7 @@ N_PROC = 14
 
 # Path of created database
 # This can be a list with multiple paths, but also dataset should be a list of same size
-lmdb_path = ["/mnt/ID40-UNET-LiverOnlyLabel-572-liverlesion-AugSmallLiver/train", "/mnt/ID40-UNET-LiverOnlyLabel-572-liverlesion-AugSmallLiver/validation"]
+lmdb_path = ["../ID40-UNET-LiverOnlyLabel-572-liverlesion-AugSmallLiver/train", "../ID40-UNET-LiverOnlyLabel-572-liverlesion-AugSmallLiver/validation"]
 # Database type : lmdb or leveldb
 backend = "lmdb" 
 # Takes only the first n volumes. Useful to create small datasets fast
@@ -82,7 +82,7 @@ augment_small_liver = True
 select_slices = "liver-lesion"
 
 # Base path of niftis and segmentation niftis
-BASE_PATH = "/media/nas/niftis_segmented"
+BASE_PATH = "../niftis_segmented"
 
 test_set = [\
 (2,BASE_PATH+"/CRF_035/2008-05-20/Brilliance_64/segmented/02770001.nii",BASE_PATH+"/CRF_035/2008-05-20/Brilliance_64/segmented/02770001_liv_1_clipped.nii"),
@@ -194,7 +194,7 @@ train_set = [\
 ###########################
 ##### 3DIRCA DATASET ######
 ###########################
-IRCA_BASE_PATH = '/media/nas/01_Datasets/CT/Abdomen/3Dircadb1/niftis_segmented_lesions/'
+IRCA_BASE_PATH = '../3Dircadb1/niftis_segmented_lesions/'
 irca_all= [\
 (301,IRCA_BASE_PATH+"image01.nii",IRCA_BASE_PATH+"label01.nii",[0.57,0.57,1.6]),
 (302,IRCA_BASE_PATH+"image02.nii",IRCA_BASE_PATH+"label02.nii",[0.78,0.78,1.6]),
@@ -216,7 +216,6 @@ irca_all= [\
 (318,IRCA_BASE_PATH+"image18.nii",IRCA_BASE_PATH+"label18.nii",[0.74,0.74,2.5]),
 (319,IRCA_BASE_PATH+"image19.nii",IRCA_BASE_PATH+"label19.nii",[0.7,0.7,4.])]
 #(320,IRCA_BASE_PATH+"image20.nii",IRCA_BASE_PATH+"label20.nii",[0.81,0.81,2.])]
-
 
 
 ### 3 Fold
