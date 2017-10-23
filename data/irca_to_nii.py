@@ -61,6 +61,7 @@ OUTPUT_PATH = './niftis_segmented_all/'
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
     
+image_volumes = []
 liver_volumes = []
 tumor_volumes = []
 volume_ids = []
@@ -79,12 +80,14 @@ for i, volume_dirname in enumerate(natsort.natsorted(os.listdir(DATA_PATH))):
     print 'Volume',volume_dirname
     relevant_masks = 0 # number of relevant masks files found for this volume (liver or tumor)
     mask_dirname = os.path.join(volume_fulldirname,"MASKS_DICOM")
+    patient_dirname = os.path.join(volume_fulldirname,"PATIENT_DICOM")
     volume_id = volume_dirname.replace("3Dircadb1.","") #id of volume ("1" to "20")
     # Save the volume id
     volume_ids.append(int(volume_id))
     image_filename = os.path.join(volume_fulldirname,"image"+volume_id+".nii")
     # flip_volume(image_filename, os.path.join(OUTPUT_PATH, "image%.2d"%int(volume_id)+".nii"))
     
+    image_volume = None
     tumor_volume = None
     liver_volume = None
     
@@ -130,6 +133,9 @@ for i, volume_dirname in enumerate(natsort.natsorted(os.listdir(DATA_PATH))):
     #
     #########################
         
+    image_volume = read_dicom_series(patient_dirname)
+
+    image_volumes.append(image_volume)
     liver_volumes.append(liver_volume)
     tumor_volumes.append(tumor_volume)
     if relevant_masks < 2:
@@ -144,7 +150,7 @@ print ' WRITING NIFTIS TO DISK'
 
 #final_volume = []
 for i in range(len(liver_volumes)):
-    liver, tumor, volume_id = liver_volumes[i], tumor_volumes[i], volume_ids[i]
+    liver, tumor, image, volume_id = liver_volumes[i], tumor_volumes[i], image_volumes[i], volume_ids[i]
     # Map label values to 0 and 1 and merge all into liver volume
     liver_value = np.max(np.unique(liver))
     liver[liver==liver_value] = 1
@@ -160,7 +166,12 @@ for i in range(len(liver_volumes)):
     # Write to disk
     nii=nibabel.Nifti1Image(np.rot90(liver, -1), affine=np.eye(4))
     filename = os.path.join(OUTPUT_PATH, "label%.2d.nii" % (volume_id))
-    print 'Writing to file ',filename
+    print 'Writing to file ', filename
+    nii.to_filename(filename)
+
+    nii=nibabel.Nifti1Image(np.rot90(image, -1), affine=np.eye(4))
+    filename = os.path.join(OUTPUT_PATH, "image%.2d.nii" % (volume_id))
+    print 'Writing to file ', filename
     nii.to_filename(filename)
     
     
