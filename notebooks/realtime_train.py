@@ -23,6 +23,8 @@ import pandas
 from PIL import Image,ImageFilter
 
 
+
+
 def hist(arr):
     """Print number of pixels for each label in the given image (arr)"""
     return "%.3f , %.3f , %.3f, %.3f" % (np.sum(arr==0),np.sum(arr==1),np.sum(arr==2),np.sum(arr==4))
@@ -290,7 +292,7 @@ if False:
 solver.net.forward()
 print 'dice 1', dice(blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), label_of_interest=1)
 print 'dice 2', dice(blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), label_of_interest=2)
-imshow(blobs['data'].data[0,0], blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), axis=False,title=["Slice","Ground truth","Prediction"])
+# imshow(blobs['data'].data[0,0], blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), axis=False,title=["Slice","Ground truth","Prediction"])
 
 
 # In[ ]:
@@ -299,7 +301,7 @@ imshow(blobs['data'].data[0,0], blobs['label'].data[0,0], np.argmax(blobs['score
 solver.test_nets[0].forward()
 print 'dice 1', dice(testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), label_of_interest=1)
 print 'dice 2', dice(testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), label_of_interest=2)
-imshow(testblobs['data'].data[0,0,92:-92,92:-92], testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), axis=False,title=["Slice","Ground truth","Prediction"])
+# imshow(testblobs['data'].data[0,0,92:-92,92:-92], testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), axis=False,title=["Slice","Ground truth","Prediction"])
 
 
 # ### Choose below if you want to enable monitoring a third label : set enable_label_2 = True ###
