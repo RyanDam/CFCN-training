@@ -201,7 +201,7 @@ fire3_train_set = [\
 # (319,IRCA_NUMPY_BASE_PATH+"image19.npy",IRCA_NUMPY_BASE_PATH+"label19.npy")]
 # #(320,IRCA_NUMPY_BASE_PATH+"image20.npy",IRCA_NUMPY_BASE_PATH+"label20.npy")]
 
-IRCA_NUMPY_BASE_PATH = '/media/sivic/DATA/Duydam/saratan/3Dircadb1/niftis_segmented_all/'
+IRCA_NUMPY_BASE_PATH = '/home/student/training/CFCN-training/3Dircadb1/niftis_segmented_all/'
 irca_numpy_all = [\
 (301,IRCA_NUMPY_BASE_PATH+"image01.nii",IRCA_NUMPY_BASE_PATH+"label01.nii"),
 (302,IRCA_NUMPY_BASE_PATH+"image02.nii",IRCA_NUMPY_BASE_PATH+"label02.nii"),
