@@ -16,7 +16,7 @@ from collections import defaultdict
 import numpy as np
 from matplotlib import pyplot as plt
 # plt.set_cmap('gray')
-get_ipython().magic(u'matplotlib inline')
+# get_ipython().magic(u'matplotlib inline')
 from IPython import display
 import pandas
 from PIL import Image,ImageFilter
