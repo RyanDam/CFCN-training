@@ -10,7 +10,7 @@ import scipy.misc, scipy.ndimage.interpolation
 import pickle
 sys.path.append("../data/layers")
 sys.path.append("../")
-sys.path.append("~//home/student/caffe/python/")
+sys.path.append("~/caffe/python/")
 
 import plyvel, saratan_utils, math, re, time
 from collections import defaultdict
