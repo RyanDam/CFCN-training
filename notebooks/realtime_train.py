@@ -15,7 +15,7 @@ import plyvel, saratan_utils, math, re, time
 from collections import defaultdict
 import numpy as np
 from matplotlib import pyplot as plt
-plt.set_cmap('gray')
+# plt.set_cmap('gray')
 get_ipython().magic(u'matplotlib inline')
 from IPython import display
 import pandas
