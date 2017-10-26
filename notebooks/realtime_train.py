@@ -22,9 +22,6 @@ from IPython import display
 import pandas
 from PIL import Image,ImageFilter
 
-
-
-
 def hist(arr):
     """Print number of pixels for each label in the given image (arr)"""
     return "%.3f , %.3f , %.3f, %.3f" % (np.sum(arr==0),np.sum(arr==1),np.sum(arr==2),np.sum(arr==4))
@@ -513,449 +510,459 @@ while True:
         if enable_label_2:
             print 'Test dice Label=2 on last image : ', dice(test_pred,test_seg,2)
         # imshow(test_img, test_seg, test_pred, title=["Test Image", "Ground truth", "Prediction"])
+
+        pickle.dump(i, open("i.int",'w'))
+        pickle.dump(dices, open("dices.list",'w'))
+        pickle.dump(dices_2, open("dices_2.list",'w'))
+        pickle.dump(losses, open("losses.list",'w'))
+        pickle.dump(accuracies, open("accuracies.list",'w'))
+        pickle.dump(iterations, open("iterations.list",'w'))
+        pickle.dump(test_dices, open("test_dices.list",'w'))
+        pickle.dump(test_dices_2, open("test_dices_2.list",'w'))
+        pickle.dump(test_accuracies, open("test_accuracies.list",'w'))
     
     
 
 
-# ## ---- End of training notebook (the rest is one-off analysis) ##
+## ---- End of training notebook (the rest is one-off analysis) ##
 
-# # In[ ]:
+# In[ ]:
 
 
-# td2pure = td2[np.logical_and(td2!=1.0, td2!=0.0)]
+td2pure = td2[np.logical_and(td2!=1.0, td2!=0.0)]
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# np.count_nonzero(test_dices_2==1.0)
+np.count_nonzero(test_dices_2==1.0)
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# fidx=1
-# layer_name='u0c'
-# for fidx in range(blobs[layer_name].data.shape[1]):
-#     last_layer_img = blobs[layer_name].data[0,fidx, :,:]
-#     imshow(last_layer_img)
+fidx=1
+layer_name='u0c'
+for fidx in range(blobs[layer_name].data.shape[1]):
+    last_layer_img = blobs[layer_name].data[0,fidx, :,:]
+    imshow(last_layer_img)
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# for i in iterations:
-#     print i
+for i in iterations:
+    print i
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# lyr=solver.net.layers[64]
-# lyr.type
-# lyr.blobs.__len__()
+lyr=solver.net.layers[64]
+lyr.type
+lyr.blobs.__len__()
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# for param_name in solver.net.params:
-#     print param_name,"\t",solver.net.params[param_name][0].data.shape
+for param_name in solver.net.params:
+    print param_name,"\t",solver.net.params[param_name][0].data.shape
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# show_kernels(solver.net.params["conv_d0a-b"][0].data)
+show_kernels(solver.net.params["conv_d0a-b"][0].data)
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# for idx in range(blobs['d2c'].data.shape[1]):
-#     imshow(blobs['d2c'].data[0,idx])
+for idx in range(blobs['d2c'].data.shape[1]):
+    imshow(blobs['d2c'].data[0,idx])
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# show_kernels(blobs['d0b'].data)
+show_kernels(blobs['d0b'].data)
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# blobs
+blobs
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# print solver.net.params["conv_d0a-b"][0].data.shape
-# imshow(solver.net.params["conv_d0a-b"][0].data[7,0])
+print solver.net.params["conv_d0a-b"][0].data.shape
+imshow(solver.net.params["conv_d0a-b"][0].data[7,0])
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# imshow(blobs['data'].data[0,0])
+imshow(blobs['data'].data[0,0])
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# from scipy.signal import convolve2d
-# filter_idx = 7
-# image = blobs['data'].data[0,0]
-# bias = solver.net.params["conv_d0a-b"][1].data[filter_idx]
-# kernel = solver.net.params["conv_d0a-b"][0].data[filter_idx,0]
-# result = convolve2d(image, kernel) + bias
-# print bias
-# imshow(result)
+from scipy.signal import convolve2d
+filter_idx = 7
+image = blobs['data'].data[0,0]
+bias = solver.net.params["conv_d0a-b"][1].data[filter_idx]
+kernel = solver.net.params["conv_d0a-b"][0].data[filter_idx,0]
+result = convolve2d(image, kernel) + bias
+print bias
+imshow(result)
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# import scipy.signal.convolve2d
+import scipy.signal.convolve2d
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# print blobs['d0b'].data.shape
-# imshow(blobs['d0b'].data[0,15],blobs['d0b'].data[0,7])
+print blobs['d0b'].data.shape
+imshow(blobs['d0b'].data[0,15],blobs['d0b'].data[0,7])
 
 
-# # ## Get iteration with best test dice ##
+# ## Get iteration with best test dice ##
 
-# # In[ ]:
+# In[ ]:
 
 
-# dice_iter = zip(test_dices,iterations)
-# dice_iter = sorted(dice_iter, key=lambda t:t[0], reverse=True)
-# for ji in range(10):
-#     print str(ji+1)+'th best test Dice:\t',round(dice_iter[ji][0],3),'\tAt iteration:\t',dice_iter[ji][1]
+dice_iter = zip(test_dices,iterations)
+dice_iter = sorted(dice_iter, key=lambda t:t[0], reverse=True)
+for ji in range(10):
+    print str(ji+1)+'th best test Dice:\t',round(dice_iter[ji][0],3),'\tAt iteration:\t',dice_iter[ji][1]
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# # Save plots
-# import pickle
-# pickle.dump(i, open("i.int",'w'))
-# pickle.dump(dices, open("dices.list",'w'))
-# pickle.dump(dices_2, open("dices_2.list",'w'))
-# pickle.dump(losses, open("losses.list",'w'))
-# pickle.dump(accuracies, open("accuracies.list",'w'))
-# pickle.dump(iterations, open("iterations.list",'w'))
-# pickle.dump(test_dices, open("test_dices.list",'w'))
-# pickle.dump(test_dices_2, open("test_dices_2.list",'w'))
-# pickle.dump(test_accuracies, open("test_accuracies.list",'w'))
+# Save plots
+import pickle
+pickle.dump(i, open("i.int",'w'))
+pickle.dump(dices, open("dices.list",'w'))
+pickle.dump(dices_2, open("dices_2.list",'w'))
+pickle.dump(losses, open("losses.list",'w'))
+pickle.dump(accuracies, open("accuracies.list",'w'))
+pickle.dump(iterations, open("iterations.list",'w'))
+pickle.dump(test_dices, open("test_dices.list",'w'))
+pickle.dump(test_dices_2, open("test_dices_2.list",'w'))
+pickle.dump(test_accuracies, open("test_accuracies.list",'w'))
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# mean = protobinary_to_array("mean.protobinary")
+mean = protobinary_to_array("mean.protobinary")
 
 
-# # ## Predicting Training examples ##
+# ## Predicting Training examples ##
 
-# # In[ ]:
+# In[ ]:
 
 
-# for _ in range(20):
-#     solver.net.forward()
-#     img = (blobs['data'].data[0,0]+mean)[92:480,92:480]
-#     himg =histeq(img)
-#     seg = blobs['label'].data[0,0]
-#     pred= np.argmax(blobs['score'].data[0],axis=0)
+for _ in range(20):
+    solver.net.forward()
+    img = (blobs['data'].data[0,0]+mean)[92:480,92:480]
+    himg =histeq(img)
+    seg = blobs['label'].data[0,0]
+    pred= np.argmax(blobs['score'].data[0],axis=0)
 
-#     imshow_overlay_segmentation(himg,img,seg,pred)
+    imshow_overlay_segmentation(himg,img,seg,pred)
 
 
-# # 
-# # 
-# # 
-# # 
-# # 
-# # 
-# # # Predict TEST examples #
+# 
+# 
+# 
+# 
+# 
+# 
+# # Predict TEST examples #
 
-# # In[ ]:
+# In[ ]:
 
 
-# for _ in range(20):
-#     solver.test_nets[0].forward()
-#     img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
-#     himg =histeq(img)
-#     seg = testblobs['label'].data[0,0]
-#     pred= np.argmax(testblobs['score'].data[0],axis=0)
+for _ in range(20):
+    solver.test_nets[0].forward()
+    img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
+    himg =histeq(img)
+    seg = testblobs['label'].data[0,0]
+    pred= np.argmax(testblobs['score'].data[0],axis=0)
 
-#     imshow_overlay_segmentation(himg,img,seg,pred)
+    imshow_overlay_segmentation(himg,img,seg,pred)
 
 
-# # # Avg Dice score over slices #
+# # Avg Dice score over slices #
 
-# # In[ ]:
+# In[ ]:
 
 
-# #dices_lesions_ = []
-# for _ in range(1000):
-#     solver.test_nets[0].forward()
-#     seg = solver.test_nets[0].blobs['label'].data[0,0]
-#     pred = solver.test_nets[0].blobs['score'].data[0].argmax(0)
-#     dice_lesion_ = dice(pred,seg,label_of_interest=1)
+#dices_lesions_ = []
+for _ in range(1000):
+    solver.test_nets[0].forward()
+    seg = solver.test_nets[0].blobs['label'].data[0,0]
+    pred = solver.test_nets[0].blobs['score'].data[0].argmax(0)
+    dice_lesion_ = dice(pred,seg,label_of_interest=1)
 
-#     if(dice_lesion_ > -1):
-#         dices_lesions_.append(dice_lesion_)
-#     print "Average TEST dice lesion: ", np.average(dices_lesions_)
+    if(dice_lesion_ > -1):
+        dices_lesions_.append(dice_lesion_)
+    print "Average TEST dice lesion: ", np.average(dices_lesions_)
 
-# print "FINAL Average TEST dice lesion: ", np.average(dices_lesions_)
+print "FINAL Average TEST dice lesion: ", np.average(dices_lesions_)
 
 
-# # # Avg Dice score over individual Lesions #
+# # Avg Dice score over individual Lesions #
 
-# # In[ ]:
+# In[ ]:
 
 
-# import sys
-# import scipy.spatial.distance
-# import scipy.ndimage
-# import scipy.ndimage.measurements
-# from collections import defaultdict
-# def dice_separate_lesions(seg,pred, plot=False):
-#     """Returns Avg dice of lesion structures and weight to assign to this avg dice."""
-#     #Ignore liver
-#     if np.unique(seg).size > 2:
-#         seg[seg==1] = 0
-#         seg[seg==2] = 1
-#     if np.unique(pred).size > 2:
-#         pred[pred==1] = 0
-#         pred[pred==2] = 1
-#     # First component is always background
-#     seg[0,0] = 0
-#     pred[0,0] = 0
-#     # Get connected components
-#     comps_seg, num_comps_seg = scipy.ndimage.label(seg)
-#     comps_pred, num_comps_pred = scipy.ndimage.label(pred)
-#     #print 'Found n connected components in ground truth (not including bg) :', num_comps_seg
-#     if plot: imshow(comps_seg, comps_pred, cmap="Spectral", title=['Components in Ground Truth','Components in Prediction'])
-#     # Get component centroids
-#     centroids_seg = scipy.ndimage.measurements.center_of_mass(seg, comps_seg, range(1, num_comps_seg+1))
-#     centroids_pred = scipy.ndimage.measurements.center_of_mass(pred, comps_pred, range(1, num_comps_pred+1))
-#     # round to nearest 2 decimals (otherwise we might have problems removing from list by-value due to fp inaccuracies)
-#     centroids_seg = map(lambda t:(round(t[0],2), round(t[1],2)), centroids_seg)
-#     centroids_pred = map(lambda t:(round(t[0],2), round(t[1],2)), centroids_pred)
+import sys
+import scipy.spatial.distance
+import scipy.ndimage
+import scipy.ndimage.measurements
+from collections import defaultdict
+def dice_separate_lesions(seg,pred, plot=False):
+    """Returns Avg dice of lesion structures and weight to assign to this avg dice."""
+    #Ignore liver
+    if np.unique(seg).size > 2:
+        seg[seg==1] = 0
+        seg[seg==2] = 1
+    if np.unique(pred).size > 2:
+        pred[pred==1] = 0
+        pred[pred==2] = 1
+    # First component is always background
+    seg[0,0] = 0
+    pred[0,0] = 0
+    # Get connected components
+    comps_seg, num_comps_seg = scipy.ndimage.label(seg)
+    comps_pred, num_comps_pred = scipy.ndimage.label(pred)
+    #print 'Found n connected components in ground truth (not including bg) :', num_comps_seg
+    if plot: imshow(comps_seg, comps_pred, cmap="Spectral", title=['Components in Ground Truth','Components in Prediction'])
+    # Get component centroids
+    centroids_seg = scipy.ndimage.measurements.center_of_mass(seg, comps_seg, range(1, num_comps_seg+1))
+    centroids_pred = scipy.ndimage.measurements.center_of_mass(pred, comps_pred, range(1, num_comps_pred+1))
+    # round to nearest 2 decimals (otherwise we might have problems removing from list by-value due to fp inaccuracies)
+    centroids_seg = map(lambda t:(round(t[0],2), round(t[1],2)), centroids_seg)
+    centroids_pred = map(lambda t:(round(t[0],2), round(t[1],2)), centroids_pred)
     
-#     def plot_centroids(comps_img, centroids, title, w=5):
-#         centroid_img = np.ones(comps_img.shape)
-#         for x,y in centroids:
-#             centroid_img[x-w:x+w, y-w:y+w] = 0
-#         plt.title(title)
-#         plt.imshow(comps_img, cmap="Spectral"); plt.hold(True)
-#         plt.imshow(centroid_img,cmap="Reds",alpha=0.5)
-#         plt.show()
+    def plot_centroids(comps_img, centroids, title, w=5):
+        centroid_img = np.ones(comps_img.shape)
+        for x,y in centroids:
+            centroid_img[x-w:x+w, y-w:y+w] = 0
+        plt.title(title)
+        plt.imshow(comps_img, cmap="Spectral"); plt.hold(True)
+        plt.imshow(centroid_img,cmap="Reds",alpha=0.5)
+        plt.show()
     
     
-#     if plot: plot_centroids(comps_seg, centroids_seg, "Centroids in Ground Truth")
-#     if plot: plot_centroids(comps_pred, centroids_pred, "Centroids in Prediction")
+    if plot: plot_centroids(comps_seg, centroids_seg, "Centroids in Ground Truth")
+    if plot: plot_centroids(comps_pred, centroids_pred, "Centroids in Prediction")
     
-#     #### Get Average dice ####
-#     def get_closest(xy, list_xy, except_at_idx):
-#         """Returns the index of coordinate in list_xy that is closest to xy (euclidean distance)
-#         example: get_closest((100,100), [(3,4), (5,9), (101,102), (9999,9999)]) = 2
-#         because (101,102) is the closest to (100,100).
-#         except_at_idx is a list of coordinate indices to ignore in list_xy"""
-#         closest_idx = -1
-#         min_dist = sys.maxint
-#         for i, xy_dest in enumerate(list_xy):
-#             if i in except_at_idx:
-#                 continue
-#             dist = scipy.spatial.distance.euclidean(xy, xy_dest)
-#             if dist < min_dist:
-#                 closest_idx = i
-#                 min_dist = dist
-#         #print xy, map(lambda t:(round(t[0]),round(t[1])),list_xy), closest_idx
-#         return closest_idx
+    #### Get Average dice ####
+    def get_closest(xy, list_xy, except_at_idx):
+        """Returns the index of coordinate in list_xy that is closest to xy (euclidean distance)
+        example: get_closest((100,100), [(3,4), (5,9), (101,102), (9999,9999)]) = 2
+        because (101,102) is the closest to (100,100).
+        except_at_idx is a list of coordinate indices to ignore in list_xy"""
+        closest_idx = -1
+        min_dist = sys.maxint
+        for i, xy_dest in enumerate(list_xy):
+            if i in except_at_idx:
+                continue
+            dist = scipy.spatial.distance.euclidean(xy, xy_dest)
+            if dist < min_dist:
+                closest_idx = i
+                min_dist = dist
+        #print xy, map(lambda t:(round(t[0]),round(t[1])),list_xy), closest_idx
+        return closest_idx
     
-#     dices = []
-#     consumed_lesions_idx = [] #indices of lesions already consumed.
-#     # Iterate after bg component
-#     for i in range(num_comps_pred):
-#         # Add 0 dice to false positives!
-#         if len(centroids_seg) == 0:
-#             dices.append(0)
-#             continue
-#         current_xy = centroids_pred[i]
-#         closest_component = get_closest(current_xy, centroids_seg, except_at_idx=consumed_lesions_idx)
-#         consumed_lesions_idx.append(closest_component)
-#         #mask out other components 
-#         one_lesion_pred = np.clip(comps_pred == i, 0, 1)
-#         one_lesion_seg = np.clip(comps_seg == closest_component, 0, 1)
-#         dices.append(dice(one_lesion_pred, one_lesion_seg, label_of_interest = 1))
+    dices = []
+    consumed_lesions_idx = [] #indices of lesions already consumed.
+    # Iterate after bg component
+    for i in range(num_comps_pred):
+        # Add 0 dice to false positives!
+        if len(centroids_seg) == 0:
+            dices.append(0)
+            continue
+        current_xy = centroids_pred[i]
+        closest_component = get_closest(current_xy, centroids_seg, except_at_idx=consumed_lesions_idx)
+        consumed_lesions_idx.append(closest_component)
+        #mask out other components 
+        one_lesion_pred = np.clip(comps_pred == i, 0, 1)
+        one_lesion_seg = np.clip(comps_seg == closest_component, 0, 1)
+        dices.append(dice(one_lesion_pred, one_lesion_seg, label_of_interest = 1))
     
-#     # Add 0 dice for false negatives
-#     if len(centroids_seg)-len(consumed_lesions_idx) > 0:
-#         dices.extend([0]*(len(centroids_seg)-len(consumed_lesions_idx)))
+    # Add 0 dice for false negatives
+    if len(centroids_seg)-len(consumed_lesions_idx) > 0:
+        dices.extend([0]*(len(centroids_seg)-len(consumed_lesions_idx)))
 
-#     return np.mean(dices), len(dices)
-
-
-# # In[ ]:
+    return np.mean(dices), len(dices)
 
 
-# dices_lesions_ = []
-# weights = []
-# for _ in range(200):
-#     solver.test_nets[0].forward()
-#     seg = solver.test_nets[0].blobs['label'].data[0,0]
-#     pred = solver.test_nets[0].blobs['score'].data[0].argmax(0)
-#     dice_lesion_,weight = dice_separate_lesions(seg,pred)
-
-#     if(dice_lesion_ > -1):
-#         dices_lesions_.append(dice_lesion_)
-#         weights.append(weight)
-
-# total = np.multiply(dices_lesions_, weights)
-# print "Average TEST dice lesion: ", np.average(total)
+# In[ ]:
 
 
-# # ## Changing threshold (instead of 0.5) ##
+dices_lesions_ = []
+weights = []
+for _ in range(200):
+    solver.test_nets[0].forward()
+    seg = solver.test_nets[0].blobs['label'].data[0,0]
+    pred = solver.test_nets[0].blobs['score'].data[0].argmax(0)
+    dice_lesion_,weight = dice_separate_lesions(seg,pred)
 
-# # In[ ]:
+    if(dice_lesion_ > -1):
+        dices_lesions_.append(dice_lesion_)
+        weights.append(weight)
 
-
-# solver.test_nets[0].forward()
-# img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
-# himg =histeq(img)
-# seg = testblobs['label'].data[0,0]
-# pred= np.argmax(testblobs['score'].data[0],axis=0)
-# imshow_overlay_segmentation(himg,img,seg,pred)
-
-
-# # In[ ]:
-
-
-# prob = testblobs['prob'].data[0,1]
-# imshow(prob)
-# pred_t = prob>0.7
-# print dice(seg,pred)
-# print dice(seg,pred_t)
-# imshow(pred_t,seg)
-# #prob[np.logical_and(prob>0.4, prob<0.6)].size*1.0/prob.size
+total = np.multiply(dices_lesions_, weights)
+print "Average TEST dice lesion: ", np.average(total)
 
 
-# #imshow_overlay_segmentation(himg,img,seg,pred)
+# ## Changing threshold (instead of 0.5) ##
+
+# In[ ]:
 
 
-# # In[ ]:
+solver.test_nets[0].forward()
+img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
+himg =histeq(img)
+seg = testblobs['label'].data[0,0]
+pred= np.argmax(testblobs['score'].data[0],axis=0)
+imshow_overlay_segmentation(himg,img,seg,pred)
 
 
-# def softmax(a1,a2):
-#     s1 = np.exp(a1)
-#     s2 = np.exp(a2)
-#     sm= s1+s2
-#     return s1/sm , s2/sm
+# In[ ]:
 
-# thresholds = np.linspace(0,1,40) #20 thresholds
-# dices_athalf = []
-# dices_bythreshold = defaultdict(list) # {0.5:[list of dices], 0.6:[list of dices]}
-# for _ in range(2000):
-#     solver.net.forward()
-#     img = (blobs['data'].data[0,0]+mean)[92:480,92:480]
-#     himg =histeq(img)
-#     seg = blobs['label'].data[0,0]
-#     prob = softmax(blobs['score'].data[0,0],blobs['score'].data[0,1])[1] #probability being a lesion
-#     dices_athalf.append(dice(seg,prob>0.5))
-#     for t in thresholds :
-#         pred_t = prob > t
-#         dice_score = dice(seg,pred_t)
-#         dices_bythreshold[t].append(dice_score)
+
+prob = testblobs['prob'].data[0,1]
+imshow(prob)
+pred_t = prob>0.7
+print dice(seg,pred)
+print dice(seg,pred_t)
+imshow(pred_t,seg)
+#prob[np.logical_and(prob>0.4, prob<0.6)].size*1.0/prob.size
+
+
+#imshow_overlay_segmentation(himg,img,seg,pred)
+
+
+# In[ ]:
+
+
+def softmax(a1,a2):
+    s1 = np.exp(a1)
+    s2 = np.exp(a2)
+    sm= s1+s2
+    return s1/sm , s2/sm
+
+thresholds = np.linspace(0,1,40) #20 thresholds
+dices_athalf = []
+dices_bythreshold = defaultdict(list) # {0.5:[list of dices], 0.6:[list of dices]}
+for _ in range(2000):
+    solver.net.forward()
+    img = (blobs['data'].data[0,0]+mean)[92:480,92:480]
+    himg =histeq(img)
+    seg = blobs['label'].data[0,0]
+    prob = softmax(blobs['score'].data[0,0],blobs['score'].data[0,1])[1] #probability being a lesion
+    dices_athalf.append(dice(seg,prob>0.5))
+    for t in thresholds :
+        pred_t = prob > t
+        dice_score = dice(seg,pred_t)
+        dices_bythreshold[t].append(dice_score)
         
-# # Aggregate dices over slices for each threshold
-# avgdices = []
-# for t in thresholds:
-#     avgdices.append(np.average(dices_bythreshold[t]))
+# Aggregate dices over slices for each threshold
+avgdices = []
+for t in thresholds:
+    avgdices.append(np.average(dices_bythreshold[t]))
 
-# plt.plot(thresholds,avgdices)
-# print 'Found max dice at threshold :', thresholds[np.argmax(avgdices)]
-# print 'Found max dice score :', np.max(avgdices)
-# print 'Vs. the dice at 0.5 which equals :', np.average(dices_athalf)
-
-
-# # In[ ]:
+plt.plot(thresholds,avgdices)
+print 'Found max dice at threshold :', thresholds[np.argmax(avgdices)]
+print 'Found max dice score :', np.max(avgdices)
+print 'Vs. the dice at 0.5 which equals :', np.average(dices_athalf)
 
 
-# THRESHOLD = 0.820512820513
-# dices = []
-# for _ in range(2000):
-#     solver.test_nets[0].forward()
-#     img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
-#     seg = testblobs['label'].data[0,0]
-#     prob = testblobs['prob'].data[0,1] #probability being a lesion
-#     dice_score = dice(seg,prob> THRESHOLD)
-#     dices.append(dice_score)
+# In[ ]:
+
+
+THRESHOLD = 0.820512820513
+dices = []
+for _ in range(2000):
+    solver.test_nets[0].forward()
+    img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
+    seg = testblobs['label'].data[0,0]
+    prob = testblobs['prob'].data[0,1] #probability being a lesion
+    dice_score = dice(seg,prob> THRESHOLD)
+    dices.append(dice_score)
     
-# print 'Average TEST threshold :', np.average(dices)
+print 'Average TEST threshold :', np.average(dices)
 
 
-# # In[ ]:
+# In[ ]:
 
 
 
-# dices = []
-# for _ in range(2000):
-#     solver.test_nets[0].forward()
-#     img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
-#     seg = testblobs['label'].data[0,0]
-#     pred = np.argmax(testblobs['prob'].data[0], axis=0) #probability being a lesion
-#     dice_score = dice(seg,pred)
-#     dices.append(dice_score)
+dices = []
+for _ in range(2000):
+    solver.test_nets[0].forward()
+    img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
+    seg = testblobs['label'].data[0,0]
+    pred = np.argmax(testblobs['prob'].data[0], axis=0) #probability being a lesion
+    dice_score = dice(seg,pred)
+    dices.append(dice_score)
     
-# print 'Average TEST threshold :', np.average(dices)
+print 'Average TEST threshold :', np.average(dices)
 
 
-# # In[ ]:
+# In[ ]:
 
 
-# thresholds = np.linspace(0,1,40) #20 thresholds
-# dices_athalf = []
-# dices_bythreshold = defaultdict(list) # {0.5:[list of dices], 0.6:[list of dices]}
-# for _ in range(2000):
-#     solver.test_nets[0].forward()
-#     img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
-#     himg =histeq(img)
-#     seg = testblobs['label'].data[0,0]
-#     prob = testblobs['prob'].data[0,1] #probability being a lesion
-#     dices_athalf.append(dice(seg,prob>0.5))
-#     for t in thresholds :
-#         pred_t = prob > t
-#         dice_score = dice(seg,pred_t)
-#         dices_bythreshold[t].append(dice_score)
+thresholds = np.linspace(0,1,40) #20 thresholds
+dices_athalf = []
+dices_bythreshold = defaultdict(list) # {0.5:[list of dices], 0.6:[list of dices]}
+for _ in range(2000):
+    solver.test_nets[0].forward()
+    img = (testblobs['data'].data[0,0]+mean)[92:480,92:480]
+    himg =histeq(img)
+    seg = testblobs['label'].data[0,0]
+    prob = testblobs['prob'].data[0,1] #probability being a lesion
+    dices_athalf.append(dice(seg,prob>0.5))
+    for t in thresholds :
+        pred_t = prob > t
+        dice_score = dice(seg,pred_t)
+        dices_bythreshold[t].append(dice_score)
         
-# # Aggregate dices over slices for each threshold
-# avgdices = []
-# for t in thresholds:
-#     avgdices.append(np.average(dices_bythreshold[t]))
+# Aggregate dices over slices for each threshold
+avgdices = []
+for t in thresholds:
+    avgdices.append(np.average(dices_bythreshold[t]))
 
-# plt.plot(thresholds,avgdices)
-# print 'Found max dice at threshold :', thresholds[np.argmax(avgdices)]
-# print 'Found max dice score :', np.max(avgdices)
-# print 'Vs. the dice at 0.5 which equals :', np.average(dices_athalf)
-
-
-# # # Prototxts #
-
-# # In[ ]:
+plt.plot(thresholds,avgdices)
+print 'Found max dice at threshold :', thresholds[np.argmax(avgdices)]
+print 'Found max dice score :', np.max(avgdices)
+print 'Vs. the dice at 0.5 which equals :', np.average(dices_athalf)
 
 
-# get_ipython().system(u'cat solver_unet.prototxt')
+# # Prototxts #
+
+# In[ ]:
 
 
-# # In[ ]:
+get_ipython().system(u'cat solver_unet.prototxt')
 
 
-# get_ipython().system(u'cat unet-overfit.prototxt')
+# In[ ]:
+
+
+get_ipython().system(u'cat unet-overfit.prototxt')
 

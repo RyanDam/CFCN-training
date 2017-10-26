@@ -391,8 +391,6 @@ class NumpyDataLayer(caffe.Layer):
 				break
 		
 		img, seg = self.prepare_slice(img, seg, aug_idx)
-		
-		pdb.set_trace()
 
 		try:
 			self.queue.put((img, seg))
