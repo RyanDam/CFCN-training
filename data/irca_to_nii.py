@@ -18,6 +18,10 @@ import numpy as np
 import os, sys, glob, re
 import natsort
 
+from matplotlib import pyplot as plt
+
+import pdb
+
 MAX_VOLUMES = -1
 
 def flip_volume(input_filename, output_filename):
@@ -161,6 +165,8 @@ for i in range(len(liver_volumes)):
         tumor_value = np.max(np.unique(tumor))
         # Merge into liver volume
         liver[tumor==tumor_value] = 2
+
+    pdb.set_trace()
 
     #final_volume.append(liver)
     # Write to disk
