@@ -20,6 +20,8 @@ from itertools import izip
 import logging
 from contextlib import closing
 
+import pdb
+from matplotlib import pyplot as plt
 
 ## Deformation Augmentation
 from skimage.transform import PiecewiseAffineTransform, warp
@@ -390,6 +392,8 @@ class NumpyDataLayer(caffe.Layer):
 		
 		img, seg = self.prepare_slice(img, seg, aug_idx)
 		
+		pdb.set_trace()
+
 		try:
 			self.queue.put((img, seg))
 		except Full:
