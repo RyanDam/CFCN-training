@@ -216,10 +216,10 @@ def imshow_overlay_segmentation(him,img,seg,pred):
 
 import caffe
 print caffe.__file__
-caffe.set_mode_cpu()
+caffe.set_mode_gpu()
 
 
-# In[10]:
+# In[10]:`
 
 
 # Load net
@@ -307,7 +307,7 @@ print 'dice 2', dice(testblobs['label'].data[0,0], np.argmax(testblobs['score'].
 
 
 # Config and Initialization
-enable_label_2 = True #Set to true when segmenting both liver and lesion (labels=0,1,2)
+enable_label_2 = False #Set to true when segmenting both liver and lesion (labels=0,1,2)
 use_label1_redblue = False # use redblue dice plot. Useful when training cascade Step2 
 LOAD_ARRAYS = False # Load arrays from pickled files
 

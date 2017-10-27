@@ -878,7 +878,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 3
+    num_output: 2
     pad: 0
     kernel_size: 1
     weight_filler {
@@ -898,8 +898,7 @@ layer {
   }
   loss_param {
     class_loss_weights: 1
-    class_loss_weights: 13
-    class_loss_weights: 120}
+    class_loss_weights: 13} # class_loss_weights: 120
 }
 
 layer {
