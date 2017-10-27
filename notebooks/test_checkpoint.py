@@ -240,13 +240,13 @@ for i in range(totalfile):
     WEIGHTS_FILE = 'snapshot/_iter_%d.caffemodel'%iteration
     solver.net.copy_from(WEIGHTS_FILE)
     solver.test_nets[0].copy_from(WEIGHTS_FILE)
-    # TMP : Test network on 1000 slices
+    # TMP : Test network on 200 slices
     print 'iter ', iteration
     print 'file: ', WEIGHTS_FILE
     if True:
         tmp_dices = []
         neg_dice_count = 0
-        for _ in range(1000):
+        for _ in range(200):
             solver.test_nets[0].forward()
             img_=testblobs['data'].data[0,0]
             seg_=testblobs['label'].data[0,0]
