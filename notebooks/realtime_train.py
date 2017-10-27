@@ -216,7 +216,7 @@ def imshow_overlay_segmentation(him,img,seg,pred):
 
 import caffe
 print caffe.__file__
-caffe.set_mode_gpu()
+caffe.set_mode_cpu()
 
 
 # In[10]:`
