@@ -241,7 +241,8 @@ for i in range(totalfile):
     solver.net.copy_from(WEIGHTS_FILE)
     solver.test_nets[0].copy_from(WEIGHTS_FILE)
     # TMP : Test network on 1000 slices
-    print 'iter %6d file: %s'%iteration,WEIGHTS_FILE
+    print 'iter ', iteration
+    print 'file: ', WEIGHTS_FILE
     if True:
         tmp_dices = []
         neg_dice_count = 0
