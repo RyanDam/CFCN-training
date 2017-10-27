@@ -328,16 +328,16 @@ test_dices_2=[]
 test_accuracies=[]
 i = 0
 if LOAD_ARRAYS:
-    i=                pickle.load(open("i.int",'r'))
-    dices=            pickle.load(open("dices.list",'r'))
+    i=                pickle.load(open("monitor/i.int",'r'))
+    dices=            pickle.load(open("monitor/dices.list",'r'))
     if enable_label_2:
-        dices_2=          pickle.load(open("dices_2.list",'r'))
-        test_dices_2 =    pickle.load(open("test_dices_2.list",'r'))
-    losses=           pickle.load(open("losses.list",'r'))
-    accuracies=       pickle.load(open("accuracies.list",'r'))
-    iterations =      pickle.load(open("iterations.list",'r'))
-    test_dices =      pickle.load(open("test_dices.list",'r'))
-    test_accuracies = pickle.load(open("test_accuracies.list",'r'))
+        dices_2=          pickle.load(open("monitor/dices_2.list",'r'))
+        test_dices_2 =    pickle.load(open("monitor/test_dices_2.list",'r'))
+    losses=           pickle.load(open("monitor/losses.list",'r'))
+    accuracies=       pickle.load(open("monitor/accuracies.list",'r'))
+    iterations =      pickle.load(open("monitor/iterations.list",'r'))
+    test_dices =      pickle.load(open("monitor/test_dices.list",'r'))
+    test_accuracies = pickle.load(open("monitor/test_accuracies.list",'r'))
 
 
 # ### To resume run this ###
@@ -511,20 +511,21 @@ while True:
             print 'Test dice Label=2 on last image : ', dice(test_pred,test_seg,2)
         # imshow(test_img, test_seg, test_pred, title=["Test Image", "Ground truth", "Prediction"])
 
-        pickle.dump(i, open("i.int",'w'))
-        pickle.dump(dices, open("dices.list",'w'))
-        pickle.dump(dices_2, open("dices_2.list",'w'))
-        pickle.dump(losses, open("losses.list",'w'))
-        pickle.dump(accuracies, open("accuracies.list",'w'))
-        pickle.dump(iterations, open("iterations.list",'w'))
-        pickle.dump(test_dices, open("test_dices.list",'w'))
-        pickle.dump(test_dices_2, open("test_dices_2.list",'w'))
-        pickle.dump(test_accuracies, open("test_accuracies.list",'w'))
+        pickle.dump(i, open("monitor/i.int",'w'))
+        pickle.dump(dices, open("monitor/dices.list",'w'))
+        pickle.dump(dices_2, open("monitor/dices_2.list",'w'))
+        pickle.dump(losses, open("monitor/losses.list",'w'))
+        pickle.dump(accuracies, open("monitor/accuracies.list",'w'))
+        pickle.dump(iterations, open("monitor/iterations.list",'w'))
+        pickle.dump(test_dices, open("monitor/test_dices.list",'w'))
+        pickle.dump(test_dices_2, open("monitor/test_dices_2.list",'w'))
+        pickle.dump(test_accuracies, open("monitor/test_accuracies.list",'w'))
     
     
 
-
-# ## ---- End of training notebook (the rest is one-off analysis) ##
+# ##########################################################################################
+# # ## ---- End of training notebook (the rest is one-off analysis) ##
+# ##########################################################################################
 
 # # In[ ]:
 
@@ -650,15 +651,15 @@ while True:
 
 # # Save plots
 # import pickle
-# pickle.dump(i, open("i.int",'w'))
-# pickle.dump(dices, open("dices.list",'w'))
-# pickle.dump(dices_2, open("dices_2.list",'w'))
-# pickle.dump(losses, open("losses.list",'w'))
-# pickle.dump(accuracies, open("accuracies.list",'w'))
-# pickle.dump(iterations, open("iterations.list",'w'))
-# pickle.dump(test_dices, open("test_dices.list",'w'))
-# pickle.dump(test_dices_2, open("test_dices_2.list",'w'))
-# pickle.dump(test_accuracies, open("test_accuracies.list",'w'))
+# pickle.dump(i, open("monitor/i.int",'w'))
+# pickle.dump(dices, open("monitor/dices.list",'w'))
+# pickle.dump(dices_2, open("monitor/dices_2.list",'w'))
+# pickle.dump(losses, open("monitor/losses.list",'w'))
+# pickle.dump(accuracies, open("monitor/accuracies.list",'w'))
+# pickle.dump(iterations, open("monitor/iterations.list",'w'))
+# pickle.dump(test_dices, open("monitor/test_dices.list",'w'))
+# pickle.dump(test_dices_2, open("monitor/test_dices_2.list",'w'))
+# pickle.dump(test_accuracies, open("monitor/test_accuracies.list",'w'))
 
 
 # # In[ ]:
