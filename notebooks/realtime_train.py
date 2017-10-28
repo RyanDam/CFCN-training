@@ -17,7 +17,6 @@ from collections import defaultdict
 import numpy as np
 from matplotlib import pyplot as plt
 # plt.set_cmap('gray')
-# get_ipython().magic(u'matplotlib inline')
 from IPython import display
 import pandas
 from PIL import Image,ImageFilter
@@ -232,59 +231,19 @@ params = solver.net.params
 testblobs = solver.test_nets[0].blobs
 testparams= solver.test_nets[0].params
 
-
 # In[11]:
-
-
-WEIGHTS_FILE= "phseg_v5.caffemodel"
-#WEIGHTS_FILE = "unet_models/plainunet/fire3Best18_allslices_plainunet_wd0.001_2dropout_172.5k_0.85_0.65.caffemodel"
-
-
-solver.net.copy_from(WEIGHTS_FILE)
-solver.test_nets[0].copy_from(WEIGHTS_FILE)
-
-
-# In[ ]:
-
-
-# each output is (batch size, feature dim, spatial dim)
-[(k, v.data.shape) for k, v in solver.net.blobs.items()]
-
-
-# In[ ]:
-
-
-# just print the weight sizes (not biases)
-[(k, v[0].data.shape) for k, v in solver.net.params.items()]
-
-
-# In[ ]:
-
-
-# TMP : Test network on 200 slices
-if False:
-    tmp_dices = []
-    neg_dice_count = 0
-    for _ in range(200):
-        solver.net.forward()
-        img_=blobs['data'].data[0,0]
-        seg_=blobs['label'].data[0,0]
-        dice_=dice(seg_,np.argmax(blobs['score'].data[0],axis=0))
-        if dice_ >= 0:
-            tmp_dices.append(dice_)
-        else:
-            neg_dice_count += 1
-        #print "Dice", tmp_dices[-1]
-        #imshow(blobs['data'].data[0,0], blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0))
-        n_liver=np.sum(seg_>0)
-        percent_liver = 100.0*n_liver / seg_.size
-        #print "Liver is",percent_liver,"% of the image"
-    print "Avg dice",np.average(tmp_dices)
-    print "-1's :",neg_dice_count
-
-
-# In[ ]:
-
+onlyfiles = next(os.walk('snapshot/'))[2] #dir is your directory path as string
+totalfile = len(onlyfiles) / 2
+if totalfile > 0:
+    # Restore lated state
+    iterationNum = 700*totalfile
+    STATE_FILE = 'snapshot/_iter_%d.solverstate'%iterationNum
+    solver.restore(STATE_FILE)
+else:
+    # Reload pretrain U-NET model
+    WEIGHTS_FILE= 'phseg_v5.caffemodel'
+    solver.net.copy_from(WEIGHTS_FILE)
+    solver.test_nets[0].copy_from(WEIGHTS_FILE)
 
 solver.net.forward()
 print 'dice 1', dice(blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), label_of_interest=1)
@@ -299,11 +258,6 @@ solver.test_nets[0].forward()
 print 'dice 1', dice(testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), label_of_interest=1)
 print 'dice 2', dice(testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), label_of_interest=2)
 # imshow(testblobs['data'].data[0,0,92:-92,92:-92], testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), axis=False,title=["Slice","Ground truth","Prediction"])
-
-
-# ### Choose below if you want to enable monitoring a third label : set enable_label_2 = True ###
-
-# In[ ]:
 
 
 # Config and Initialization
@@ -378,12 +332,6 @@ if len(dices) % 100 != 0 and len(dices) > len(test_dices):
 
 print len(iterations),len(dices),len(dices_2),len(losses),len(accuracies),len(iterations),len(test_dices),len(test_accuracies)
 print 'i',i
-
-
-# #### You can stop the below training cell - then run the above 2 cells before resuming ####
-# # TRAIN here #
-
-# In[ ]:
 
 
 # TRAIN
