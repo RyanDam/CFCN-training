@@ -239,11 +239,14 @@ if totalfile > 0:
     iterationNum = 700*totalfile
     STATE_FILE = 'snapshot/_iter_%d.solverstate'%iterationNum
     solver.restore(STATE_FILE)
+    print 'RESTORE LAST STATE ',iterationNum
+    print STATE_FILE
 else:
     # Reload pretrain U-NET model
     WEIGHTS_FILE= 'phseg_v5.caffemodel'
     solver.net.copy_from(WEIGHTS_FILE)
     solver.test_nets[0].copy_from(WEIGHTS_FILE)
+    print 'Retrain from beginning'
 
 solver.net.forward()
 print 'dice 1', dice(blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), label_of_interest=1)
