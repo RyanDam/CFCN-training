@@ -11,7 +11,7 @@ import pickle
 sys.path.append("../data/layers")
 sys.path.append("../")
 sys.path.append("~/caffe/python/")
-
+import os
 import plyvel, saratan_utils, math, re, time
 from collections import defaultdict
 import numpy as np
