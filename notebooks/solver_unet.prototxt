@@ -16,8 +16,8 @@ test_interval: 1000000000
 solver_type: 1
 lr_policy: "step"
 gamma: 0.1 # 0.0001
-stepsize: 60000 # für batch size 40 -> 8 Epochen 
-base_lr: 0.01
+stepsize: 40000 # für batch size 40 -> 8 Epochen 
+base_lr: 0.001
 
 display: 10
 max_iter: 100000000 # für batch size 48 -> 24 Epochenn
