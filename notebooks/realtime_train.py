@@ -263,7 +263,7 @@ print 'dice 2', dice(testblobs['label'].data[0,0], np.argmax(testblobs['score'].
 # Config and Initialization
 enable_label_2 = False #Set to true when segmenting both liver and lesion (labels=0,1,2)
 use_label1_redblue = False # use redblue dice plot. Useful when training cascade Step2 
-LOAD_ARRAYS = False # Load arrays from pickled files
+LOAD_ARRAYS = True # Load arrays from pickled files
 
 if use_label1_redblue:
     label1_color_train, label1_color_test = "blue", "red" 
