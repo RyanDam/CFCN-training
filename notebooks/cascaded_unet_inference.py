@@ -215,6 +215,45 @@ def preprocess_lbl_slice(lbl_slc):
     lbl_slc = to_scale(lbl_slc , (388, 388))
     return lbl_slc
 
+def histeq_processor(img):
+		"""Histogram equalization"""
+		nbr_bins=256
+		#get image histogram
+		imhist,bins = np.histogram(img.flatten(),nbr_bins,normed=True)
+		cdf = imhist.cumsum() #cumulative distribution function
+		cdf = 255 * cdf / cdf[-1] #normalize
+		#use linear interpolation of cdf to find new pixel values
+		original_shape = img.shape
+		img = np.interp(img.flatten(),bins[:-1],cdf)
+		img=img/255.0
+		return img.reshape(original_shape)
+
+def norm_hounsfield_dyn(arr, c_min=0.1, c_max=0.3):
+	""" Converts from hounsfield units to float64 image with range 0.0 to 1.0 """
+	# calc min and max
+	min,max = np.amin(arr), np.amax(arr)
+	arr = arr.astype(IMG_DTYPE)
+	if min <= 0:
+		arr = np.clip(arr, min * c_min, max * c_max)
+		# right shift to zero
+		arr = np.abs(min * c_min) + arr
+	else:
+		arr = np.clip(arr, min, max * c_max)
+		# left shift to zero
+		arr = arr - min
+	# normalization
+	norm_fac = np.amax(arr)
+	if norm_fac != 0:
+		#norm = (arr*255)/ norm_fac
+		norm = np.divide(
+				np.multiply(arr,255),
+			 	np.amax(arr))
+	else:  # don't divide through 0
+		norm = np.multiply(arr, 255)
+		
+	norm = np.clip(np.multiply(norm, 0.00390625), 0, 1)
+	return norm
+
 def step1_preprocess_img_slice(img_slc):
     """
     Preprocesses the image 3d volumes by performing the following :
@@ -231,9 +270,16 @@ def step1_preprocess_img_slice(img_slc):
         Preprocessed image slice
     """      
     img_slc   = img_slc.astype(IMG_DTYPE)
-    img_slc[img_slc>1200] = 0
-    img_slc   = np.clip(img_slc, -100, 400)    
-    img_slc   = normalize_image(img_slc)
+
+    # img_slc[img_slc>1200] = 0
+    # img_slc   = np.clip(img_slc, -100, 400)    
+    # img_slc   = normalize_image(img_slc)
+
+    img_slc = norm_hounsfield_dyn(img_slc)
+    
+    if True:
+        img_slc = histeq_processor(img_slc)
+
     img_slc   = to_scale(img_slc, (388,388))
     img_slc   = np.pad(img_slc,((92,92),(92,92)),mode='reflect')
     #if False:
