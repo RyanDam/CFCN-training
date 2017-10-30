@@ -40,6 +40,9 @@ caffe.set_mode_cpu()
 
 import numpy as np
 from matplotlib import pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+
 from IPython import display
 plt.set_cmap('gray')
 #get_ipython().magic(u'matplotlib inline')
