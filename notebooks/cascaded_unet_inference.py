@@ -26,7 +26,7 @@
 
 STEP1_DEPLOY_PROTOTXT = "inference/step1_deploy.prototxt"
 STEP1_MODEL_WEIGHTS   = "snapshot/_iter_38500.caffemodel"
-STEP2_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
+STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
 STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
 STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
 
@@ -168,6 +168,8 @@ def imshowsave(prefix, *args, **kwargs):
         f = plt.figure(1, figsize = (10,5)) 
         ax = plt.subplot(1,2,1)
         ax.set_title('prefix')
+        ax.set_yticklabels([])
+        ax.set_xticklabels([])
         plt.imshow(data[:, :, i])
         plt.imshow(args[0], interpolation='none')
         f.savefig('output/' + prefix, bbox_inches='tight')
@@ -182,6 +184,8 @@ def imshowsave(prefix, *args, **kwargs):
         for i in range(n):
             ax = plt.subplot(1,n,i+1)
             ax.set_title(title[i])
+            ax.set_yticklabels([])
+            ax.set_xticklabels([])
             plt.imshow(args[i], cmap[i])
         f.savefig('output/' + prefix, bbox_inches='tight')
     
@@ -277,7 +281,6 @@ def step1_preprocess_img_slice(img_slc):
     img_slc   = normalize_image(img_slc)
 
     # img_slc = norm_hounsfield_dyn(img_slc)
-
     # if True:
     #     img_slc = histeq_processor(img_slc)
 
@@ -394,7 +397,7 @@ for s in range(0, numimg, 2):
         # Set labels to 0 and 1
         lbl_p_liver[lbl_p_liver==1]=0
         lbl_p_liver[lbl_p_liver==2]=1
-        imshowsave('%03d_step2_result'%s, img_p2[92:-92,92:-92], lbl_p_liver, pred2>0.5)
+        imshowsave('%03d_step2_result'%s, img_p2[92:-92,92:-92], lbl_p_liver, pred2>0.5, title=['Slice','Ground truth', 'Prediction'])
 
     print 'Done predicting %3d'%s
 
