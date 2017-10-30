@@ -31,6 +31,16 @@ STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
 
 # In[2]:
 
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+plt.set_cmap('gray')
+import numpy as np
+
+from IPython import display
+import scipy
+import scipy.misc
+
 import caffe
 print caffe.__file__
 # Use CPU for inference
@@ -38,15 +48,7 @@ caffe.set_mode_cpu()
 # Use GPU for inference
 # caffe.set_mode_gpu()
 
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot as plt
-plt.set_cmap('gray')
 
-from IPython import display
-import scipy
-import scipy.misc
 
 # ### Utility functions ###
 
