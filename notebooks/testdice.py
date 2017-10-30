@@ -13,8 +13,8 @@ def smooth_last_n(arr, n=5, ignore=None):
 testdices = [] #dices for label=1
 iterations = []
 
-testdices=pickle.load(open("test_dices.list",'r'))
-iterations=pickle.load(open("iterations.list",'r'))
+testdices=pickle.load(open("monitor/test_dices.list",'r'))
+iterations=pickle.load(open("monitor/iterations.list",'r'))
 
 plt.plot(testdices)
 plt.show()

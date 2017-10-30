@@ -1,0 +1,4 @@
+#!/bin/bash
+./stdcp test_dices.list
+python testdice.py
+
