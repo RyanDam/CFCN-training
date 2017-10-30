@@ -39,10 +39,10 @@ caffe.set_mode_cpu()
 # caffe.set_mode_gpu()
 
 import numpy as np
-from matplotlib import pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
-# plt.set_cmap('gray')
+from matplotlib import pyplot as plt
+plt.set_cmap('gray')
 
 from IPython import display
 import scipy
@@ -159,7 +159,7 @@ def imshowsave(prefix, *args, **kwargs):
     imshow(img1,img2, title=['title1','title2'])
     imshow(img1,img2, cmap='hot')
     imshow(img1,img2,cmap=['gray','Blues']) """
-    # cmap = kwargs.get('cmap', 'gray')
+    cmap = kwargs.get('cmap', 'gray')
     title= kwargs.get('title','')
     if len(args)==0:
         raise ValueError("No images given to imshow")
@@ -172,8 +172,8 @@ def imshowsave(prefix, *args, **kwargs):
         f.savefig('output/' + prefix, bbox_inches='tight')
     else:
         n=len(args)
-        # if type(cmap)==str:
-        #     cmap = [cmap]*n
+        if type(cmap)==str:
+            cmap = [cmap]*n
         if type(title)==str:
             title= [title]*n
 
@@ -318,7 +318,7 @@ net1 = caffe.Net(STEP1_DEPLOY_PROTOTXT, STEP1_MODEL_WEIGHTS, caffe.TEST)
 # Load step2 network
 net2 = caffe.Net(STEP2_DEPLOY_PROTOTXT, STEP2_MODEL_WEIGHTS, caffe.TEST)
 
-for s in range(40, 100, 5):
+for s in range(numimg):
 
     img_p = step1_preprocess_img_slice(img[...,s])
     lbl_p = preprocess_lbl_slice(lbl[...,s])
