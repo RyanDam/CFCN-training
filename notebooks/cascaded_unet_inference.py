@@ -310,7 +310,7 @@ numimg = img.shape[2]
 
 print numimg
 
-for s in range(numimg):
+for s in range(0, numimg, 2):
    imshowsave('raw_%03d'%s, img[...,s], lbl[...,s])
    print 'Saved raw %3d'%s
 
@@ -320,7 +320,7 @@ net1 = caffe.Net(STEP1_DEPLOY_PROTOTXT, STEP1_MODEL_WEIGHTS, caffe.TEST)
 # Load step2 network
 net2 = caffe.Net(STEP2_DEPLOY_PROTOTXT, STEP2_MODEL_WEIGHTS, caffe.TEST)
 
-for s in range(numimg):
+for s in range(0, numimg, 2):
 
     img_p = step1_preprocess_img_slice(img[...,s])
     lbl_p = preprocess_lbl_slice(lbl[...,s])
