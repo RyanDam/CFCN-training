@@ -42,11 +42,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
+# plt.set_cmap('gray')
 
 from IPython import display
-plt.set_cmap('gray')
-#get_ipython().magic(u'matplotlib inline')
-
 import scipy
 import scipy.misc
 
