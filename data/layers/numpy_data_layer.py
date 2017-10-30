@@ -183,8 +183,6 @@ class augmentation:
 		rand = random.randrange(-10,10)
 		return augmentation._rotate(img, rand), augmentation._rotate(seg, rand) 
 			
-	
-
 class processors:
 
 	@staticmethod
@@ -448,7 +446,6 @@ class NumpyDataLayer(caffe.Layer):
 					augmentation.get_shift_down,
 					augmentation.get_shift_left,
 					augmentation.get_shift_right]
-					#augmentation.noise
 
 		#Invoke the selected augmentation function
 		img, seg = aug_func[aug_idx](img, seg)		
