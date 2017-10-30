@@ -308,8 +308,8 @@ numimg = img.shape[2]
 
 print numimg
 
-for s in range(numimg):
-   imshowsave('raw_%03d'%s, img[...,s], lbl[...,s])
+# for s in range(numimg):
+#    imshowsave('raw_%03d'%s, img[...,s], lbl[...,s])
 
 # Load network 1
 net1 = caffe.Net(STEP1_DEPLOY_PROTOTXT, STEP1_MODEL_WEIGHTS, caffe.TEST)
@@ -328,7 +328,7 @@ for s in range(40, 100, 5):
     net1.blobs['data'].data[0,0,...] = img_p
     pred = net1.forward()['prob'][0,1] > 0.5
 
-    imshowsave('%03d_step1_result'%s, img_p, temp_lbl_p, pred > 0.5, title=['Slice','Ground truth', 'Prediction'])
+    # imshowsave('%03d_step1_result'%s, img_p, temp_lbl_p, pred > 0.5, title=['Slice','Ground truth', 'Prediction'])
 
     if np.sum(pred) > 0:
         # Prepare liver patch for step2
@@ -345,7 +345,7 @@ for s in range(40, 100, 5):
         # Set labels to 0 and 1
         lbl_p_liver[lbl_p_liver==1]=0
         lbl_p_liver[lbl_p_liver==2]=1
-        imshowsave('%03d_step2_result', img_p2[92:-92,92:-92], lbl_p_liver, pred2>0.5)
+        # imshowsave('%03d_step2_result', img_p2[92:-92,92:-92], lbl_p_liver, pred2>0.5)
 
     print 'Done predicting %3d'%s
 
