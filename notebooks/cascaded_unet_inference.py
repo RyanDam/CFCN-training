@@ -276,7 +276,7 @@ def step1_preprocess_img_slice(img_slc):
     # img_slc   = normalize_image(img_slc)
 
     img_slc = norm_hounsfield_dyn(img_slc)
-    
+
     if True:
         img_slc = histeq_processor(img_slc)
 
@@ -377,7 +377,8 @@ for s in range(0, numimg, 2):
 
     imshowsave('%03d_step1_result'%s, img_p, temp_lbl_p, pred > 0.5, title=['Slice','Ground truth', 'Prediction'])
 
-    if np.sum(pred) > 0:
+    summ = np.sum(pred.astype(np.int))
+    if summ > 0: # have liver
         # Prepare liver patch for step2
         # net1 output is used to determine the predicted liver bounding box
         img_p2, bbox = step2_preprocess_img_slice(img_p, pred)
@@ -392,7 +393,7 @@ for s in range(0, numimg, 2):
         # Set labels to 0 and 1
         lbl_p_liver[lbl_p_liver==1]=0
         lbl_p_liver[lbl_p_liver==2]=1
-        imshowsave('%03d_step2_result', img_p2[92:-92,92:-92], lbl_p_liver, pred2>0.5)
+        imshowsave('%03d_step2_result'%s, img_p2[92:-92,92:-92], lbl_p_liver, pred2>0.5)
 
     print 'Done predicting %3d'%s
 
