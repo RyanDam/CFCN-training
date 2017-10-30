@@ -25,7 +25,7 @@
 # In[1]:
 
 STEP1_DEPLOY_PROTOTXT = "inference/step1_deploy.prototxt"
-STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
+STEP1_MODEL_WEIGHTS   = "snapshot/_iter_38500.caffemodel"
 STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
 STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
 
