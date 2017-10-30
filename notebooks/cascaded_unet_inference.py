@@ -310,6 +310,7 @@ print numimg
 
 for s in range(numimg):
    imshowsave('raw_%03d'%s, img[...,s], lbl[...,s])
+   print 'Saved raw %3d'%s
 
 # Load network 1
 net1 = caffe.Net(STEP1_DEPLOY_PROTOTXT, STEP1_MODEL_WEIGHTS, caffe.TEST)
