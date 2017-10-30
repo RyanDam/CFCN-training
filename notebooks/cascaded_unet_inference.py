@@ -44,11 +44,9 @@ import scipy.misc
 import caffe
 print caffe.__file__
 # Use CPU for inference
-caffe.set_mode_cpu()
+# caffe.set_mode_cpu()
 # Use GPU for inference
-# caffe.set_mode_gpu()
-
-
+caffe.set_mode_gpu()
 
 # ### Utility functions ###
 
