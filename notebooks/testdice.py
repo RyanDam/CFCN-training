@@ -19,24 +19,38 @@ test_dices=[]
 test_dices_2=[]
 test_accuracies=[]
 
-i=                pickle.load(open("monitor/i.int",'r'))
-dices=            pickle.load(open("monitor/dices.list",'r'))
-dices_2=          pickle.load(open("monitor/dices_2.list",'r'))
-test_dices_2 =    pickle.load(open("monitor/test_dices_2.list",'r'))
-losses=           pickle.load(open("monitor/losses.list",'r'))
-accuracies=       pickle.load(open("monitor/accuracies.list",'r'))
-iterations =      pickle.load(open("monitor/iterations.list",'r'))
-test_dices =      pickle.load(open("monitor/test_dices.list",'r'))
-test_accuracies = pickle.load(open("monitor/test_accuracies.list",'r'))
+PREFIX_FOLDER = 'monitor'
 
-plt.plot(test_dices)
-plt.show()
+i=                pickle.load(open("%s/i.int"%PREFIX_FOLDER,'r'))
+dices=            pickle.load(open("%s/dices.list"%PREFIX_FOLDER,'r'))
+dices_2=          pickle.load(open("%s/dices_2.list"%PREFIX_FOLDER,'r'))
+test_dices_2 =    pickle.load(open("%s/test_dices_2.list"%PREFIX_FOLDER,'r'))
+losses=           pickle.load(open("%s/losses.list"%PREFIX_FOLDER,'r'))
+accuracies=       pickle.load(open("%s/accuracies.list"%PREFIX_FOLDER,'r'))
+iterations =      pickle.load(open("%s/iterations.list"%PREFIX_FOLDER,'r'))
+test_dices =      pickle.load(open("%s/test_dices.list"%PREFIX_FOLDER,'r'))
+test_accuracies = pickle.load(open("%s/test_accuracies.list"%PREFIX_FOLDER,'r'))
 
 dice_iter = zip(test_dices,iterations)
 dice_iter = sorted(dice_iter, key=lambda t:t[0], reverse=True)
 for ji in range(10):
     print str(ji+1)+'th best test Dice:\t',round(dice_iter[ji][0],3),'\tAt iteration:\t',dice_iter[ji][1]
 
-pdb.set_trace()
+fig, axs = plt.subplots(2, 3, figsize=(9, 6))
 
-print 1
+axs[0][0].set_title('Train loss')
+axs[0][0].plot(losses)
+
+axs[0][1].set_title('Train dice')
+axs[0][1].plot(dices)
+
+axs[0][2].set_title('Test dice')
+axs[0][2].plot(test_dices)
+
+axs[1][1].set_title('Train acc')
+axs[1][1].plot(accuracies)
+
+axs[1][2].set_title('Test acc')
+axs[1][2].plot(test_accuracies)
+
+plt.show()
