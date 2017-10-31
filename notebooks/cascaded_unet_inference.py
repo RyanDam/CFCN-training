@@ -348,8 +348,8 @@ def step2_preprocess_img_slice(img_p, step1_pred):
     img=np.pad(img,92,mode='reflect')
     return img, (x1,x2,y1,y2)
 
-img=read_dicom_series("test_image/3Dircadb1.17/PATIENT_DICOM/")
-lbl=read_liver_lesion_masks("test_image/3Dircadb1.17/MASKS_DICOM/")
+img=read_dicom_series("test_image/3Dircadb1.19/PATIENT_DICOM/")
+lbl=read_liver_lesion_masks("test_image/3Dircadb1.19/MASKS_DICOM/")
 
 img.shape, lbl.shape
 
