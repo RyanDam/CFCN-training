@@ -260,7 +260,7 @@ def norm_hounsfield_dyn(arr, c_min=0.1, c_max=0.3):
 	norm = np.clip(np.multiply(norm, 0.00390625), 0, 1)
 	return norm
 
-def step1_preprocess_img_slice(img_slc):
+def step1_preprocess_img_slice(img_slc, need_eq=True):
     """
     Preprocesses the image 3d volumes by performing the following :
     1- Rotate the input volume so the the liver is on the left, spine is at the bottom of the image
@@ -282,7 +282,7 @@ def step1_preprocess_img_slice(img_slc):
     # img_slc   = normalize_image(img_slc)
 
     img_slc = norm_hounsfield_dyn(img_slc)
-    if True:
+    if need_eq:
         img_slc = histeq_processor(img_slc)
 
     img_slc   = to_scale(img_slc, (388,388))
@@ -372,6 +372,7 @@ net2 = caffe.Net(STEP2_DEPLOY_PROTOTXT, STEP2_MODEL_WEIGHTS, caffe.TEST)
 for s in range(0, numimg, 2):
 
     img_p = step1_preprocess_img_slice(img[...,s])
+    img_o = step1_preprocess_img_slice(img[...,s], need_eq=False)
     lbl_p = preprocess_lbl_slice(lbl[...,s])
 
     temp_lbl_p = np.copy(lbl_p)
@@ -386,7 +387,7 @@ for s in range(0, numimg, 2):
     if summ > 0: # have liver
         # Prepare liver patch for step2
         # net1 output is used to determine the predicted liver bounding box
-        img_p2, bbox = step2_preprocess_img_slice(img_p, pred)
+        img_p2, bbox = step2_preprocess_img_slice(img_o, pred)
 
         # Predict
         net2.blobs['data'].data[0,0,...] = img_p2
