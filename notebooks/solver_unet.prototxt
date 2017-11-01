@@ -24,6 +24,6 @@ max_iter: 100000000 # für batch size 48 -> 24 Epochenn
 momentum: 0.8
 weight_decay: 0.0005
 
-snapshot: 700
-snapshot_prefix: "snapshot/"
+snapshot: 500
+snapshot_prefix: "/mnt/data/student/snapshot/"
 solver_mode: GPU

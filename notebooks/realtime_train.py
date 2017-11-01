@@ -232,21 +232,21 @@ testblobs = solver.test_nets[0].blobs
 testparams= solver.test_nets[0].params
 
 # In[11]:
-onlyfiles = next(os.walk('snapshot/'))[2] #dir is your directory path as string
-totalfile = len(onlyfiles) / 2
-if totalfile > 0:
-    # Restore lated state
-    iterationNum = 700*totalfile
-    STATE_FILE = 'snapshot/_iter_%d.solverstate'%iterationNum
-    solver.restore(STATE_FILE)
-    print 'RESTORE LAST STATE ',iterationNum
-    print STATE_FILE
-else:
-    # Reload pretrain U-NET model
-    WEIGHTS_FILE= 'phseg_v5.caffemodel'
-    solver.net.copy_from(WEIGHTS_FILE)
-    solver.test_nets[0].copy_from(WEIGHTS_FILE)
-    print 'Retrain from beginning'
+# onlyfiles = next(os.walk('snapshot/'))[2] #dir is your directory path as string
+# totalfile = len(onlyfiles) / 2
+# if totalfile > 0:
+#     # Restore lated state
+#     iterationNum = 700*totalfile
+#     STATE_FILE = 'snapshot/_iter_%d.solverstate'%iterationNum
+#     solver.restore(STATE_FILE)
+#     print 'RESTORE LAST STATE ',iterationNum
+#     print STATE_FILE
+# else:
+# Reload pretrain U-NET model
+WEIGHTS_FILE= 'phseg_v5.caffemodel'
+solver.net.copy_from(WEIGHTS_FILE)
+solver.test_nets[0].copy_from(WEIGHTS_FILE)
+print 'Retrain from beginning'
 
 solver.net.forward()
 print 'dice 1', dice(blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), label_of_interest=1)
