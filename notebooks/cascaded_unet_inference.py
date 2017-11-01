@@ -25,8 +25,8 @@
 # In[1]:
 
 STEP1_DEPLOY_PROTOTXT = "inference/step1_deploy.prototxt"
-# STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
-STEP1_MODEL_WEIGHTS   = "snapshot_step1/_iter_38500.caffemodel"
+STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
+# STEP1_MODEL_WEIGHTS   = "snapshot_step1/_iter_38500.caffemodel"
 STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
 # STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
 STEP2_MODEL_WEIGHTS   = "snapshot/_iter_32900.caffemodel"
@@ -371,7 +371,8 @@ net2 = caffe.Net(STEP2_DEPLOY_PROTOTXT, STEP2_MODEL_WEIGHTS, caffe.TEST)
 
 for s in range(0, numimg, 2):
 
-    img_p = step1_preprocess_img_slice(img[...,s])
+    img_p = step1_preprocess_img_slice(img[...,s], need_eq=False)
+    img_o = step1_preprocess_img_slice(img[...,s], need_eq=True)
     lbl_p = preprocess_lbl_slice(lbl[...,s])
 
     temp_lbl_p = np.copy(lbl_p)
@@ -386,7 +387,7 @@ for s in range(0, numimg, 2):
     if summ > 0: # have liver
         # Prepare liver patch for step2
         # net1 output is used to determine the predicted liver bounding box
-        img_p2, bbox = step2_preprocess_img_slice(img_p, pred)
+        img_p2, bbox = step2_preprocess_img_slice(img_o, pred)
 
         # Predict
         net2.blobs['data'].data[0,0,...] = img_p2
