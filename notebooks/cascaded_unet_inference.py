@@ -25,8 +25,8 @@
 # In[1]:
 
 STEP1_DEPLOY_PROTOTXT = "inference/step1_deploy.prototxt"
-STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
-# STEP1_MODEL_WEIGHTS   = "snapshot_step1/_iter_38500.caffemodel"
+# STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
+STEP1_MODEL_WEIGHTS   = "snapshot_step1/_iter_38500.caffemodel"
 STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
 # STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
 STEP2_MODEL_WEIGHTS   = "snapshot/_iter_32900.caffemodel"
@@ -277,11 +277,11 @@ def step1_preprocess_img_slice(img_slc, need_eq=True):
     """      
     img_slc   = img_slc.astype(IMG_DTYPE)
 
-    # img_slc[img_slc>1200] = 0
-    # img_slc   = np.clip(img_slc, -100, 400)    
-    # img_slc   = normalize_image(img_slc)
+    img_slc[img_slc>1200] = 0
+    img_slc   = np.clip(img_slc, -100, 400)    
+    img_slc   = normalize_image(img_slc)
 
-    img_slc = norm_hounsfield_dyn(img_slc)
+    # img_slc = norm_hounsfield_dyn(img_slc)
     if need_eq:
         img_slc = histeq_processor(img_slc)
 
