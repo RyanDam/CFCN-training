@@ -372,7 +372,7 @@ net2 = caffe.Net(STEP2_DEPLOY_PROTOTXT, STEP2_MODEL_WEIGHTS, caffe.TEST)
 for s in range(0, numimg, 2):
 
     img_p = step1_preprocess_img_slice(img[...,s], need_eq=False)
-    img_o = step1_preprocess_img_slice(img[...,s], need_eq=True)
+    img_o = step1_preprocess_img_slice(img[...,s], need_eq=False)
     lbl_p = preprocess_lbl_slice(lbl[...,s])
 
     temp_lbl_p = np.copy(lbl_p)
