@@ -42,15 +42,19 @@ axs[0][0].set_title('Train loss')
 axs[0][0].plot(losses)
 
 axs[0][1].set_title('Train dice')
+axs[0][1].set_ylim([0,1])
 axs[0][1].plot(dices)
 
 axs[0][2].set_title('Test dice')
+axs[0][2].set_ylim([0,1])
 axs[0][2].plot(test_dices)
 
 axs[1][1].set_title('Train acc')
+axs[1][1].set_ylim([0.5,1])
 axs[1][1].plot(accuracies)
 
 axs[1][2].set_title('Test acc')
+axs[1][2].set_ylim([0.5,1])
 axs[1][2].plot(test_accuracies)
 
 plt.show()
