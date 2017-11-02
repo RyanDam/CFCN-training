@@ -231,10 +231,10 @@ params = solver.net.params
 testblobs = solver.test_nets[0].blobs
 testparams= solver.test_nets[0].params
 
-# TRAIN FROM SPECIFIC STEP
-STATE_FILE = "/mnt/data/student/snapshot/_iter_23000.solverstate"
-solver.restore(STATE_FILE)
-print 'RESTORE LAST STATE: ',STATE_FILE
+# # TRAIN FROM SPECIFIC STEP
+# STATE_FILE = "/mnt/data/student/snapshot/_iter_23000.solverstate"
+# solver.restore(STATE_FILE)
+# print 'RESTORE LAST STATE: ',STATE_FILE
 
 # TRAIN FROM LAST STATE OR A FRESH TRAIN
 # onlyfiles = next(os.walk('snapshot/'))[2] #dir is your directory path as string
@@ -247,11 +247,11 @@ print 'RESTORE LAST STATE: ',STATE_FILE
 #     print 'RESTORE LAST STATE ',iterationNum
 #     print STATE_FILE
 # else:
-#     Reload pretrain U-NET model
-#     WEIGHTS_FILE= 'phseg_v5.caffemodel'
-#     solver.net.copy_from(WEIGHTS_FILE)
-#     solver.test_nets[0].copy_from(WEIGHTS_FILE)
-#     print 'Retrain from beginning'
+# Reload pretrain U-NET model
+WEIGHTS_FILE= 'phseg_v5.caffemodel'
+solver.net.copy_from(WEIGHTS_FILE)
+solver.test_nets[0].copy_from(WEIGHTS_FILE)
+print 'Retrain from beginning'
 
 solver.net.forward()
 print 'dice 1', dice(blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), label_of_interest=1)
