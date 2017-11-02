@@ -236,7 +236,7 @@ iters = []
 dices = []
 
 for i in range(totalfile):
-    iteration = (i+1)*700
+    iteration = (i+1)*500
     WEIGHTS_FILE = '/mnt/data/student/snapshot/_iter_%d.caffemodel'%iteration
     solver.net.copy_from(WEIGHTS_FILE)
     solver.test_nets[0].copy_from(WEIGHTS_FILE)
