@@ -26,7 +26,7 @@
 
 STEP1_DEPLOY_PROTOTXT = "inference/step1_deploy.prototxt"
 # STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
-STEP1_MODEL_WEIGHTS   = "/mnt/data/student/snapshot/_iter_38000.caffemodel"
+STEP1_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_save/snapshot_step1_retrain/_iter_38000.caffemodel"
 STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
 STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
 # STEP2_MODEL_WEIGHTS   = "snapshot/_iter_32900.caffemodel"
