@@ -229,7 +229,7 @@ testparams= solver.test_nets[0].params
 
 # In[11]:
 
-onlyfiles = next(os.walk('snapshot/'))[2] #dir is your directory path as string
+onlyfiles = next(os.walk('/mnt/data/student/snapshot/'))[2] #dir is your directory path as string
 totalfile = len(onlyfiles) / 2
 
 iters = []
@@ -237,7 +237,7 @@ dices = []
 
 for i in range(totalfile):
     iteration = (i+1)*700
-    WEIGHTS_FILE = 'snapshot/_iter_%d.caffemodel'%iteration
+    WEIGHTS_FILE = '/mnt/data/student/snapshot/_iter_%d.caffemodel'%iteration
     solver.net.copy_from(WEIGHTS_FILE)
     solver.test_nets[0].copy_from(WEIGHTS_FILE)
     # TMP : Test network on 200 slices
