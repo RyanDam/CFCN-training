@@ -234,8 +234,7 @@ testparams= solver.test_nets[0].params
 # TRAIN FROM SPECIFIC STEP
 STATE_FILE = "/mnt/data/student/snapshot_save/snapshot_step1_retrain/_iter_38000.solverstate"
 solver.restore(STATE_FILE)
-print 'RESTORE LAST STATE ',iterationNum
-print STATE_FILE
+print 'RESTORE LAST STATE: ',STATE_FILE
 
 # TRAIN FROM LAST STATE OR A FRESH TRAIN
 # onlyfiles = next(os.walk('snapshot/'))[2] #dir is your directory path as string
