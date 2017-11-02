@@ -232,7 +232,7 @@ testblobs = solver.test_nets[0].blobs
 testparams= solver.test_nets[0].params
 
 # TRAIN FROM SPECIFIC STEP
-STATE_FILE = "/mnt/data/student/snapshot_save/snapshot_step1_retrain/_iter_38000.solverstate"
+STATE_FILE = "/mnt/data/student/snapshot/_iter_23000.solverstate"
 solver.restore(STATE_FILE)
 print 'RESTORE LAST STATE: ',STATE_FILE
 
