@@ -31,6 +31,9 @@ STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
 STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
 # STEP2_MODEL_WEIGHTS   = "snapshot/_iter_32900.caffemodel"
 
+PATIENT_DICOM_PATH = "test_image/3Dircadb1.19/PATIENT_DICOM/"
+PATIENT_MASH_PATH = "test_image/3Dircadb1.19/MASKS_DICOM/"
+
 # In[2]:
 
 import matplotlib
@@ -348,8 +351,8 @@ def step2_preprocess_img_slice(img_p, step1_pred):
     img=np.pad(img,92,mode='reflect')
     return img, (x1,x2,y1,y2)
 
-img=read_dicom_series("test_image/3Dircadb1.19/PATIENT_DICOM/")
-lbl=read_liver_lesion_masks("test_image/3Dircadb1.19/MASKS_DICOM/")
+img=read_dicom_series(PATIENT_DICOM_PATH)
+lbl=read_liver_lesion_masks(PATIENT_MASH_PATH)
 
 img.shape, lbl.shape
 

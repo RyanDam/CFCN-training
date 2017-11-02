@@ -38,9 +38,9 @@ augmentation_factor = 10
 # liver-only:   Include only slices which are labeld with liver or lower (1 or 0)
 # lesion-only:  Include only slices which are labeled with lesion or lower (2, 1 or 0)
 # liver-lesion: Include only slices which are labeled with liver or lesion (slices with max=2 or with max=1)
-select_slices = "all" # step 1
+# select_slices = "all" # step 1
 # select_slices = 'liver-lesion' # step 2
-# select_slices = 'lesion-only' # for testing step 2
+select_slices = 'lesion-only' # for testing step 2, also used for training lesion as liver for step 1
 
 more_small_livers = False
 # Percentage of the image, such that any liver small than that is considered small
