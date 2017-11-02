@@ -246,7 +246,7 @@ for i in range(totalfile):
     if True:
         tmp_dices = []
         neg_dice_count = 0
-        for _ in range(300):
+        for _ in range(500):
             solver.test_nets[0].forward()
             img_=testblobs['data'].data[0,0]
             seg_=testblobs['label'].data[0,0]
