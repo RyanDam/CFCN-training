@@ -281,11 +281,11 @@ def step1_preprocess_img_slice(img_slc, need_eq=True):
     """      
     img_slc   = img_slc.astype(IMG_DTYPE)
 
-    # img_slc[img_slc>1200] = 0
-    # img_slc   = np.clip(img_slc, -100, 400)    
-    # img_slc   = normalize_image(img_slc)
+    img_slc[img_slc>1200] = 0
+    img_slc   = np.clip(img_slc, -100, 400)    
+    img_slc   = normalize_image(img_slc)
 
-    img_slc = norm_hounsfield_dyn(img_slc)
+    # img_slc = norm_hounsfield_dyn(img_slc)
     if need_eq:
         img_slc = histeq_processor(img_slc)
 
