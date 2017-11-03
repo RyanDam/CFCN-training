@@ -248,8 +248,8 @@ testparams= solver.test_nets[0].params
 #     print STATE_FILE
 # else:
 # Reload pretrain U-NET model
-# WEIGHTS_FILE= 'phseg_v5.caffemodel'
-WEIGHTS_FILE= '/mnt/data/student/snapshot_step1/_iter_2500.caffemodel'
+WEIGHTS_FILE= 'phseg_v5.caffemodel'
+# WEIGHTS_FILE= '/mnt/data/student/snapshot_step1/_iter_2500.caffemodel'
 solver.net.copy_from(WEIGHTS_FILE)
 solver.test_nets[0].copy_from(WEIGHTS_FILE)
 print 'Retrain from beginning'
