@@ -34,8 +34,8 @@ STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
 STEP2_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_step2/_iter_23000.caffemodel"
 # STEP2_MODEL_WEIGHTS   = "/mnt/data/student/snapshot/_iter_3500.caffemodel"
 
-PATIENT_DICOM_PATH = "test_image/3Dircadb1.19/PATIENT_DICOM/"
-PATIENT_MASH_PATH = "test_image/3Dircadb1.19/MASKS_DICOM/"
+PATIENT_DICOM_PATH = "test_image/3Dircadb1.17/PATIENT_DICOM/"
+PATIENT_MASH_PATH = "test_image/3Dircadb1.17/MASKS_DICOM/"
 
 # In[2]:
 
