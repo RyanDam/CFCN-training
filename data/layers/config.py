@@ -20,10 +20,10 @@ from numpy_data_layer import processors
 
 # Step 1
 # processors_list = [processors.histeq_processor, processors.plain_UNET_processor, processors.liveronly_label_processor]
-# processors_list = [processors.plain_UNET_processor, processors.liveronly_label_processor]
+processors_list = [processors.plain_UNET_processor, processors.liveronly_label_processor]
 # Step 2
 # processors_list = [processors.histeq_processor, processors.remove_non_liver, processors.zoomliver_UNET_processor]
-processors_list = [processors.remove_non_liver, processors.zoomliver_UNET_processor]
+# processors_list = [processors.remove_non_liver, processors.zoomliver_UNET_processor]
 
 # Shuffle slices and their augmentations globally across the database
 # You might want to set to False if dataset = test_set
@@ -39,9 +39,9 @@ augmentation_factor = 10
 # liver-only:   Include only slices which are labeld with liver or lower (1 or 0)
 # lesion-only:  Include only slices which are labeled with lesion or lower (2, 1 or 0)
 # liver-lesion: Include only slices which are labeled with liver or lesion (slices with max=2 or with max=1)
-# select_slices = "all" # step 1
+select_slices = "all" # step 1
 # select_slices = 'liver-lesion' # step 2
-select_slices = 'lesion-only' # for testing step 2, also used for training lesion as liver for step 1
+# select_slices = 'lesion-only' # for testing step 2, also used for training lesion as liver for step 1
 
 more_small_livers = False
 # Percentage of the image, such that any liver small than that is considered small

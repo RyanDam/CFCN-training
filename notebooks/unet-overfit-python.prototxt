@@ -898,11 +898,11 @@ layer {
   }
   loss_param {
     # step 1
-    #class_loss_weights: 1
-    #class_loss_weights: 13} # class_loss_weights: 120
-    # step 2
     class_loss_weights: 1
-    class_loss_weights: 14}
+    class_loss_weights: 13} # class_loss_weights: 120
+    # step 2
+    #class_loss_weights: 1
+    #class_loss_weights: 14}
 }
 
 layer {
