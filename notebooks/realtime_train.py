@@ -399,8 +399,6 @@ while True:
             test_dices_2.append(test_dice_score_2 if test_dice_score_2 > -1 else 1)
             test_accuracies.append(test_accuracy_score)
             
-        
-        
         # Smooth
         iterations = smooth_last_n(iterations  ,n=PLOT_INTERVAL)
         losses     = smooth_last_n(losses      ,n=PLOT_INTERVAL)

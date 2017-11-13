@@ -78,6 +78,20 @@ def norm_hounsfield_dyn(arr, c_min=0.1, c_max=0.3):
 	norm = np.clip(np.multiply(norm, 0.00390625), 0, 1)
 	return norm
 
+def norm_hounsfield_ryan(arr, c_min=800, c_max=1400):
+	arr = arr.astype(IMG_DTYPE)
+	min = np.amin(arr)
+	if min <= 0:
+		arr = arr - min # shift to zero
+	min,max = np.amin(arr), np.amax(arr)
+	arr = 2047.0*arr/(max - min) # scale to [0, 2047]
+	clipp = np.clip(arr, c_min, c_max)
+	clipp = (clipp - c_min)/(c_max - c_min) # scale to [0, 1]
+	return clipp
+
+
+
+
 
 class augmentation:
 	
@@ -426,7 +440,8 @@ class NumpyDataLayer(caffe.Layer):
 	def prepare_slice(self, img, seg, aug_idx):
 		# Make sure 0 >= label >= 2
 		seg = np.clip(seg, 0, 2)
-		img = norm_hounsfield_dyn(img)
+		# img = norm_hounsfield_dyn(img)
+		img = norm_hounsfield_ryan(img)
 		img, seg = self.augment_slice(img, seg, aug_idx)
 		for processor in config.processors_list:
 			img, seg = processor(img, seg)
