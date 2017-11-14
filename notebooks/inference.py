@@ -22,23 +22,6 @@
 # get_ipython().system(u'wget --tries=2 -O ../models/cascadedfcn/step1/step1_weights.caffemodel https://www.dropbox.com/s/aoykiiuu669igxa/step1_weights.caffemodel?dl=1')
 # get_ipython().system(u'wget --tries=2 -O ../models/cascadedfcn/step2/step2_weights.caffemodel https://www.dropbox.com/s/ql10c37d7ura23l/step2_weights.caffemodel?dl=1')
 
-# In[1]:
-
-STEP1_DEPLOY_PROTOTXT = "inference/step1_deploy.prototxt"
-# STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
-# STEP1_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_save/snapshot_step1_retrain/_iter_38000.caffemodel"
-# STEP1_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_step1/_iter_2500.caffemodel"
-STEP1_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_step1_enhanced/_iter_8500.caffemodel"
-STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
-# STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
-STEP2_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_step2/_iter_23000.caffemodel"
-# STEP2_MODEL_WEIGHTS   = "/mnt/data/student/snapshot/_iter_3500.caffemodel"
-
-PATIENT_DICOM_PATH = "test_image/3Dircadb1.18/PATIENT_DICOM/"
-PATIENT_MASH_PATH = "test_image/3Dircadb1.18/MASKS_DICOM/"
-
-# In[2]:
-
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
@@ -51,10 +34,13 @@ import scipy.misc
 
 import caffe
 print caffe.__file__
-# Use CPU for inference
-# caffe.set_mode_cpu()
-# Use GPU for inference
-caffe.set_mode_gpu()
+
+if config.CAFE_MODE is 'GPU':
+    caffe.set_mode_gpu()
+else if config.CAFE_MODE is 'CPU':
+    caffe.set_mode_cpu()
+else:
+    raise NameError('Invalid CAFE_MODE')
 
 # ### Utility functions ###
 
@@ -179,7 +165,7 @@ def imshowsave(prefix, *args, **kwargs):
         ax.set_xticklabels([])
         plt.imshow(data[:, :, i])
         plt.imshow(args[0], interpolation='none')
-        f.savefig('output/' + prefix, bbox_inches='tight')
+        f.savefig(config.INFERENCE_SAVE_FOLDER%prefix, bbox_inches='tight')
     else:
         n=len(args)
         if type(cmap)==str:
@@ -194,7 +180,7 @@ def imshowsave(prefix, *args, **kwargs):
             ax.set_yticklabels([])
             ax.set_xticklabels([])
             plt.imshow(args[i], cmap[i])
-        f.savefig('output/' + prefix, bbox_inches='tight')
+        f.savefig(config.INFERENCE_SAVE_FOLDER%prefix, bbox_inches='tight')
     
 def to_scale(img, shape=None):
 
@@ -266,7 +252,18 @@ def norm_hounsfield_dyn(arr, c_min=0.1, c_max=0.3):
 	norm = np.clip(np.multiply(norm, 0.00390625), 0, 1)
 	return norm
 
-def step1_preprocess_img_slice(img_slc, need_eq=True):
+def norm_hounsfield_ryan(arr, c_min=800, c_max=1400):
+	arr = arr.astype(IMG_DTYPE)
+	min = np.amin(arr)
+	if min <= 0:
+		arr = arr - min # shift to zero
+	min,max = np.amin(arr), np.amax(arr)
+	arr = 2047.0*arr/(max - min) # scale to [0, 2047]
+	clipp = np.clip(arr, c_min, c_max)
+	clipp = (clipp - c_min)/(c_max - c_min) # scale to [0, 1]
+	return clipp
+
+def step1_preprocess_img_slice(img_slc):
     """
     Preprocesses the image 3d volumes by performing the following :
     1- Rotate the input volume so the the liver is on the left, spine is at the bottom of the image
@@ -281,20 +278,9 @@ def step1_preprocess_img_slice(img_slc, need_eq=True):
     Return:
         Preprocessed image slice
     """      
-    img_slc   = img_slc.astype(IMG_DTYPE)
-
-    img_slc[img_slc>1200] = 0
-    img_slc   = np.clip(img_slc, -100, 400)    
-    img_slc   = normalize_image(img_slc)
-
-    # img_slc = norm_hounsfield_dyn(img_slc)
-    if need_eq:
-        img_slc = histeq_processor(img_slc)
-
+    img_slc   = norm_hounsfield_ryan(img_slc, config.C_MIN_THRESHOLD, config.C_MAX_THRESHOLD)
     img_slc   = to_scale(img_slc, (388,388))
     img_slc   = np.pad(img_slc,((92,92),(92,92)),mode='reflect')
-    #if False:
-    #    img_slc = histeq_processor(img_slc)
 
     return img_slc
 
@@ -354,8 +340,8 @@ def step2_preprocess_img_slice(img_p, step1_pred):
     img=np.pad(img,92,mode='reflect')
     return img, (x1,x2,y1,y2)
 
-img=read_dicom_series(PATIENT_DICOM_PATH)
-lbl=read_liver_lesion_masks(PATIENT_MASH_PATH)
+img=read_dicom_series(config.PATIENT_DICOM_PATH)
+lbl=read_liver_lesion_masks(config.PATIENT_MASH_PATH)
 
 img.shape, lbl.shape
 
@@ -370,14 +356,14 @@ for s in range(0, numimg, 2):
    print 'Saved raw %3d'%s
 
 # Load network 1
-net1 = caffe.Net(STEP1_DEPLOY_PROTOTXT, STEP1_MODEL_WEIGHTS, caffe.TEST)
+net1 = caffe.Net(config.STEP1_DEPLOY_PROTOTXT, config.STEP1_MODEL_WEIGHTS, caffe.TEST)
 
 # Load step2 network
-net2 = caffe.Net(STEP2_DEPLOY_PROTOTXT, STEP2_MODEL_WEIGHTS, caffe.TEST)
+net2 = caffe.Net(config.STEP2_DEPLOY_PROTOTXT, config.STEP2_MODEL_WEIGHTS, caffe.TEST)
 
 for s in range(0, numimg, 2):
 
-    img_p = step1_preprocess_img_slice(img[...,s], need_eq=False)
+    img_p = step1_preprocess_img_slice(img[...,s])
     lbl_p = preprocess_lbl_slice(lbl[...,s])
 
     temp_lbl_p = np.copy(lbl_p)

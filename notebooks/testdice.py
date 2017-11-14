@@ -2,14 +2,6 @@ import pickle
 import pdb
 from matplotlib import pyplot as plt
 
-def smooth_last_n(arr, n=5, ignore=None):
-    """Replaces the last n elements in arr (list) with their average."""
-    subarr = np.array(arr[-n:])
-    if ignore != None:
-        subarr = subarr[subarr != ignore] 
-    mean = np.mean(subarr)
-    return arr[:-n]+[mean]
-
 dices = [] #dices for label=1
 dices_2 = [] #dices for label=2
 losses= []
@@ -19,17 +11,15 @@ test_dices=[]
 test_dices_2=[]
 test_accuracies=[]
 
-PREFIX_FOLDER = 'monitor'
-
-i=                pickle.load(open("%s/i.int"%PREFIX_FOLDER,'r'))
-dices=            pickle.load(open("%s/dices.list"%PREFIX_FOLDER,'r'))
-dices_2=          pickle.load(open("%s/dices_2.list"%PREFIX_FOLDER,'r'))
-test_dices_2 =    pickle.load(open("%s/test_dices_2.list"%PREFIX_FOLDER,'r'))
-losses=           pickle.load(open("%s/losses.list"%PREFIX_FOLDER,'r'))
-accuracies=       pickle.load(open("%s/accuracies.list"%PREFIX_FOLDER,'r'))
-iterations =      pickle.load(open("%s/iterations.list"%PREFIX_FOLDER,'r'))
-test_dices =      pickle.load(open("%s/test_dices.list"%PREFIX_FOLDER,'r'))
-test_accuracies = pickle.load(open("%s/test_accuracies.list"%PREFIX_FOLDER,'r'))
+i=                pickle.load(open(config.MONITOR_FOLDER%"i.int",'r'))
+dices=            pickle.load(open(config.MONITOR_FOLDER%"dices.list",'r'))
+dices_2=          pickle.load(open(config.MONITOR_FOLDER%"dices_2.list",'r'))
+test_dices_2 =    pickle.load(open(config.MONITOR_FOLDER%"test_dices_2.list",'r'))
+losses=           pickle.load(open(config.MONITOR_FOLDER%"losses.list",'r'))
+accuracies=       pickle.load(open(config.MONITOR_FOLDER%"accuracies.list",'r'))
+iterations =      pickle.load(open(config.MONITOR_FOLDER%"iterations.list",'r'))
+test_dices =      pickle.load(open(config.MONITOR_FOLDER%"test_dices.list",'r'))
+test_accuracies = pickle.load(open(config.MONITOR_FOLDER%"test_accuracies.list",'r'))
 
 dice_iter = zip(test_dices,iterations)
 dice_iter = sorted(dice_iter, key=lambda t:t[0], reverse=True)

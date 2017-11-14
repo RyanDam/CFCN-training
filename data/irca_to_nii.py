@@ -84,7 +84,7 @@ for i, volume_dirname in enumerate(natsort.natsorted(os.listdir(DATA_PATH))):
     print 'Volume',volume_dirname
     relevant_masks = 0 # number of relevant masks files found for this volume (liver or tumor)
     mask_dirname = os.path.join(volume_fulldirname,"MASKS_DICOM")
-    patient_dirname = os.path.join(volume_fulldirname,"PATIENT_DICOM")
+    patient_dirname = os.path.join(volume_fulldirname,"PATIENT_DICOM_NORM")
     volume_id = volume_dirname.replace("3Dircadb1.","") #id of volume ("1" to "20")
     # Save the volume id
     volume_ids.append(int(volume_id))
@@ -166,7 +166,7 @@ for i in range(len(liver_volumes)):
         # Merge into liver volume
         liver[tumor==tumor_value] = 2
 
-    pdb.set_trace()
+    # pdb.set_trace()
 
     #final_volume.append(liver)
     # Write to disk

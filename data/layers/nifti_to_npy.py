@@ -20,7 +20,7 @@ import nibabel
 ##### 3DIRCA DATASET ######
 ###########################
 
-IRCA_NUMPY_BASE_PATH = '/home/student/training/CFCN-training/3Dircadb1/niftis_segmented_all/'
+IRCA_NUMPY_BASE_PATH = '/Users/Ryan/Data/niftis_segmented_all/'
 irca_numpy_all = [\
 (301,IRCA_NUMPY_BASE_PATH+"image01.nii",IRCA_NUMPY_BASE_PATH+"label01.nii"),
 (302,IRCA_NUMPY_BASE_PATH+"image02.nii",IRCA_NUMPY_BASE_PATH+"label02.nii"),

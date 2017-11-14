@@ -89,10 +89,6 @@ def norm_hounsfield_ryan(arr, c_min=800, c_max=1400):
 	clipp = (clipp - c_min)/(c_max - c_min) # scale to [0, 1]
 	return clipp
 
-
-
-
-
 class augmentation:
 	
 ### Core functions
