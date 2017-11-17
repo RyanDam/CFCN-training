@@ -305,7 +305,7 @@ while True:
         iteration_times = []
         
         liver_train_dices = []
-        for _ in range(setup.PLOT_INTERVAL):
+        for _ in range(setup.TEST_NUMBER):
             solver.test_nets[0].forward()
             test_img = testblobs['data'].data[0,0]
             test_seg = testblobs['label'].data[0,0]
@@ -318,12 +318,12 @@ while True:
             test_accuracies.append(test_accuracy_score)
             
         # Smooth
-        iterations = smooth_last_n(iterations  ,n=PLOT_INTERVAL)
-        losses     = smooth_last_n(losses      ,n=PLOT_INTERVAL)
-        dices      = smooth_last_n(dices       ,n=PLOT_INTERVAL)
-        accuracies = smooth_last_n(accuracies  ,n=PLOT_INTERVAL)
-        test_dices = smooth_last_n(test_dices  ,n=PLOT_INTERVAL)
-        test_accuracies = smooth_last_n(test_accuracies,n=PLOT_INTERVAL)
+        iterations = smooth_last_n(iterations  ,n=setup.PLOT_INTERVAL)
+        losses     = smooth_last_n(losses      ,n=setup.PLOT_INTERVAL)
+        dices      = smooth_last_n(dices       ,n=setup.PLOT_INTERVAL)
+        accuracies = smooth_last_n(accuracies  ,n=setup.PLOT_INTERVAL)
+        test_dices = smooth_last_n(test_dices  ,n=setup.TEST_NUMBER)
+        test_accuracies = smooth_last_n(test_accuracies,n=setup.TEST_NUMBER)
         
         # Print last metrics
         print "Average solver.step duration is", avg_iteration_time

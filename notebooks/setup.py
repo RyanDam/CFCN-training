@@ -3,6 +3,7 @@ CAFE_MODE = 'GPU'
 
 ############### TRAINING CONFIG ###############
 PLOT_INTERVAL = 100
+TEST_NUMBER = 300
 
 # RUN_MODE = 'resume-last'
 # STATE_FOLDER = '/mnt/data/student/snapshot/'
