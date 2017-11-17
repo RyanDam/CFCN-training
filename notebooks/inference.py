@@ -374,7 +374,7 @@ for s in range(0, numimg, 2):
     net1.blobs['data'].data[0,0,...] = img_p
     pred = net1.forward()['prob'][0,1] > 0.5
 
-    imshowsave('%03d_step1_result'%s, img_p, temp_lbl_p, pred > 0.5, title=['Slice','Ground truth', 'Prediction'])
+    imshowsave('%03d_step1_result'%s, img_p[92:-92,92:-92], temp_lbl_p, pred > 0.5, title=['Slice','Ground truth', 'Prediction'])
 
     summ = np.sum(pred.astype(np.int))
     if summ > 0: # have liver
