@@ -21,6 +21,8 @@ from IPython import display
 import pandas
 from PIL import Image,ImageFilter
 
+import config
+
 def hist(arr):
     """Print number of pixels for each label in the given image (arr)"""
     return "%.3f , %.3f , %.3f, %.3f" % (np.sum(arr==0),np.sum(arr==1),np.sum(arr==2),np.sum(arr==4))

@@ -2,6 +2,8 @@ import pickle
 import pdb
 from matplotlib import pyplot as plt
 
+import config
+
 dices = [] #dices for label=1
 dices_2 = [] #dices for label=2
 losses= []

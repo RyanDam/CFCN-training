@@ -20,6 +20,8 @@ from IPython import display
 import pandas
 from PIL import Image,ImageFilter
 
+import config
+
 def dice(prediction, segmentation, label_of_interest = 1):
     """ Takes 2 2-D arrays with class labels, and return a float dice score.
     Only label=label_of_interest is considered """

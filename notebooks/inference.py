@@ -35,6 +35,8 @@ import scipy.misc
 import caffe
 print caffe.__file__
 
+import config
+
 if config.CAFE_MODE is 'GPU':
     caffe.set_mode_gpu()
 elif config.CAFE_MODE is 'CPU':
