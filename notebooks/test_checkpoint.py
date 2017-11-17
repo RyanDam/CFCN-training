@@ -43,7 +43,7 @@ print caffe.__file__
 
 if config.CAFE_MODE is 'GPU':
     caffe.set_mode_gpu()
-else if config.CAFE_MODE is 'CPU':
+elif config.CAFE_MODE is 'CPU':
     caffe.set_mode_cpu()
 else:
     raise NameError('Invalid CAFE_MODE')

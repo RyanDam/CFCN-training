@@ -214,7 +214,7 @@ import caffe
 print caffe.__file__
 if config.CAFE_MODE is 'GPU':
     caffe.set_mode_gpu()
-else if config.CAFE_MODE is 'CPU':
+elif config.CAFE_MODE is 'CPU':
     caffe.set_mode_cpu()
 else:
     raise NameError('Invalid CAFE_MODE')
@@ -234,10 +234,10 @@ if config.RUN_MODE is 'retrain':
     solver.net.copy_from(config.PRE_TRAIN_WEIGHTS)
     solver.test_nets[0].copy_from(config.PRE_TRAIN_WEIGHTS)
     print 'RETRAIN from beginning of weights: ', config.PRE_TRAIN_WEIGHTS
-else if config.RUN_MODE is 'resume':
+elif config.RUN_MODE is 'resume':
     solver.restore(config.STATE_FILE)
     print 'RESTORE from specific state: ', config.STATE_FILE
-else if config.RUN_MODE is 'resume-last':
+elif config.RUN_MODE is 'resume-last':
     onlyfiles = next(os.walk(config.STATE_FOLDER))[2] #dir is your directory path as string
     totalfile = len(onlyfiles) / 2
     if totalfile > 0:
