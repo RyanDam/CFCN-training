@@ -33,7 +33,6 @@ SEG_DTYPE = np.uint8
 MAX_QUEUE_SIZE = 1000
 PREFETCH_BATCH_SIZE = 100
 
-
 import config
 
 def maybe_true(probability=0.5):

@@ -21,8 +21,6 @@ from IPython import display
 import pandas
 from PIL import Image,ImageFilter
 
-import setup
-
 def hist(arr):
     """Print number of pixels for each label in the given image (arr)"""
     return "%.3f , %.3f , %.3f, %.3f" % (np.sum(arr==0),np.sum(arr==1),np.sum(arr==2),np.sum(arr==4))
@@ -211,15 +209,14 @@ def imshow_overlay_segmentation(him,img,seg,pred):
     plt.imshow(pred, cmap="Reds", alpha=0.3)
     plt.show()
 
-
 import caffe
 print caffe.__file__
-if setup.CAFE_MODE is 'GPU':
+# if setup.CAFE_MODE is 'GPU':
     caffe.set_mode_gpu()
-elif setup.CAFE_MODE is 'CPU':
-    caffe.set_mode_cpu()
-else:
-    raise NameError('Invalid CAFE_MODE')
+# elif setup.CAFE_MODE is 'CPU':
+#     caffe.set_mode_cpu()
+# else:
+#     raise NameError('Invalid CAFE_MODE')
 
 
 # Load net
@@ -228,6 +225,8 @@ except: pass
 solver = caffe.SGDSolver("solver_unet.prototxt")
 blobs = solver.net.blobs
 params = solver.net.params
+
+import setup
 
 testblobs = solver.test_nets[0].blobs
 testparams= solver.test_nets[0].params
