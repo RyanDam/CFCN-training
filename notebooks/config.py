@@ -1,6 +1,6 @@
 
-# CAFE_MODE = 'GPU'
-CAFE_MODE = 'CPU'
+CAFE_MODE = 'GPU'
+# CAFE_MODE = 'CPU'
 
 ############### TRAINING CONFIG ###############
 PLOT_INTERVAL = 100
