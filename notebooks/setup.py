@@ -1,4 +1,3 @@
-
 CAFE_MODE = 'GPU'
 # CAFE_MODE = 'CPU'
 
