@@ -33,8 +33,6 @@ SEG_DTYPE = np.uint8
 MAX_QUEUE_SIZE = 1000
 PREFETCH_BATCH_SIZE = 100
 
-import config
-
 def maybe_true(probability=0.5):
 	rnd = random.random()
 	return rnd <= probability
@@ -276,6 +274,8 @@ class processors:
 		#seg=np.pad(seg,((92,92),(92,92)),mode='reflect')
 		img=np.pad(img,92,mode='reflect')
 		return img, seg
+
+import config
 
 class NumpyDataLayer(caffe.Layer):
 	""" Caffe Data layer that reads directly from npy files """
