@@ -253,19 +253,15 @@ else:
 
 solver.net.forward()
 print 'dice 1', dice(blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), label_of_interest=1)
-print 'dice 2', dice(blobs['label'].data[0,0], np.argmax(blobs['score'].data[0],axis=0), label_of_interest=2)
 
 solver.test_nets[0].forward()
 print 'dice 1', dice(testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), label_of_interest=1)
-print 'dice 2', dice(testblobs['label'].data[0,0], np.argmax(testblobs['score'].data[0],axis=0), label_of_interest=2)
 
 dices = [] #dices for label=1
-dices_2 = [] #dices for label=2
 losses= []
 accuracies=[]
 iterations=[]
 test_dices=[]
-test_dices_2=[]
 test_accuracies=[]
 i = 0
 
@@ -318,21 +314,17 @@ while True:
             test_pred= np.argmax(testblobs['score'].data[0], axis=0)
 
             test_dice_score = dice(test_pred, test_seg, 1)
-            test_dice_score_2 = dice(test_pred, test_seg, 2) if enable_label_2 else 0
             test_accuracy_score = np.sum(test_seg==test_pred)*1.0 / test_seg.size
 
             test_dices.append(test_dice_score if test_dice_score > -1 else 1)
-            test_dices_2.append(test_dice_score_2 if test_dice_score_2 > -1 else 1)
             test_accuracies.append(test_accuracy_score)
             
         # Smooth
         iterations = smooth_last_n(iterations  ,n=PLOT_INTERVAL)
         losses     = smooth_last_n(losses      ,n=PLOT_INTERVAL)
         dices      = smooth_last_n(dices       ,n=PLOT_INTERVAL)
-        dices_2    = smooth_last_n(dices_2     ,n=PLOT_INTERVAL) if enable_label_2 else []
         accuracies = smooth_last_n(accuracies  ,n=PLOT_INTERVAL)
         test_dices = smooth_last_n(test_dices  ,n=PLOT_INTERVAL)
-        test_dices_2=smooth_last_n(test_dices_2,n=PLOT_INTERVAL) if enable_label_2 else []
         test_accuracies = smooth_last_n(test_accuracies,n=PLOT_INTERVAL)
         
         # Print last metrics
@@ -344,29 +336,20 @@ while True:
         print "#### DICE ####"
         print 'Train dice (label=1)',dices[-1]
         print 'Test dice (label=1)', test_dices[-1]
-        if enable_label_2:
-            print 'Train dice (label=2)',dices_2[-1]
-            print 'Test dice (label=2)', test_dices_2[-1]
         print '\n'
 
         print "Iteration:", i
         print 'Train accuracy on last image :', np.sum(pred==seg)*1.0/pred.size
         print 'Train dice Label=1 on last image : ', dice(pred,seg,1)
-        if enable_label_2:
-            print 'Train dice Label=2 on last image : ', dice(pred,seg,2)
         print 'Test accuracy on last image :', np.sum(test_pred==test_seg)*1.0/test_pred.size
         print 'Test dice Label=1 on last image : ', dice(test_pred,test_seg,1)
-        if enable_label_2:
-            print 'Test dice Label=2 on last image : ', dice(test_pred,test_seg,2)
 
         pickle.dump(i, open(setup.MONITOR_FOLDER%"i.int",'w'))
         pickle.dump(dices, open(setup.MONITOR_FOLDER%"dices.list",'w'))
-        pickle.dump(dices_2, open(setup.MONITOR_FOLDER%"dices_2.list",'w'))
         pickle.dump(losses, open(setup.MONITOR_FOLDER%"losses.list",'w'))
         pickle.dump(accuracies, open(setup.MONITOR_FOLDER%"accuracies.list",'w'))
         pickle.dump(iterations, open(setup.MONITOR_FOLDER%"iterations.list",'w'))
         pickle.dump(test_dices, open(setup.MONITOR_FOLDER%"test_dices.list",'w'))
-        pickle.dump(test_dices_2, open(setup.MONITOR_FOLDER%"test_dices_2.list",'w'))
         pickle.dump(test_accuracies, open(setup.MONITOR_FOLDER%"test_accuracies.list",'w'))
     
     
