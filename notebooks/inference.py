@@ -35,11 +35,11 @@ import scipy.misc
 import caffe
 print caffe.__file__
 
-import config
+import setup
 
-if config.CAFE_MODE is 'GPU':
+if setup.CAFE_MODE is 'GPU':
     caffe.set_mode_gpu()
-elif config.CAFE_MODE is 'CPU':
+elif setup.CAFE_MODE is 'CPU':
     caffe.set_mode_cpu()
 else:
     raise NameError('Invalid CAFE_MODE')
@@ -167,7 +167,7 @@ def imshowsave(prefix, *args, **kwargs):
         ax.set_xticklabels([])
         plt.imshow(data[:, :, i])
         plt.imshow(args[0], interpolation='none')
-        f.savefig(config.INFERENCE_SAVE_FOLDER%prefix, bbox_inches='tight')
+        f.savefig(setup.INFERENCE_SAVE_FOLDER%prefix, bbox_inches='tight')
     else:
         n=len(args)
         if type(cmap)==str:
@@ -182,7 +182,7 @@ def imshowsave(prefix, *args, **kwargs):
             ax.set_yticklabels([])
             ax.set_xticklabels([])
             plt.imshow(args[i], cmap[i])
-        f.savefig(config.INFERENCE_SAVE_FOLDER%prefix, bbox_inches='tight')
+        f.savefig(setup.INFERENCE_SAVE_FOLDER%prefix, bbox_inches='tight')
     
 def to_scale(img, shape=None):
 
@@ -280,7 +280,7 @@ def step1_preprocess_img_slice(img_slc):
     Return:
         Preprocessed image slice
     """      
-    img_slc   = norm_hounsfield_ryan(img_slc, config.C_MIN_THRESHOLD, config.C_MAX_THRESHOLD)
+    img_slc   = norm_hounsfield_ryan(img_slc, setup.C_MIN_THRESHOLD, setup.C_MAX_THRESHOLD)
     img_slc   = to_scale(img_slc, (388,388))
     img_slc   = np.pad(img_slc,((92,92),(92,92)),mode='reflect')
 
@@ -342,8 +342,8 @@ def step2_preprocess_img_slice(img_p, step1_pred):
     img=np.pad(img,92,mode='reflect')
     return img, (x1,x2,y1,y2)
 
-img=read_dicom_series(config.PATIENT_DICOM_PATH)
-lbl=read_liver_lesion_masks(config.PATIENT_MASH_PATH)
+img=read_dicom_series(setup.PATIENT_DICOM_PATH)
+lbl=read_liver_lesion_masks(setup.PATIENT_MASH_PATH)
 
 img.shape, lbl.shape
 
@@ -358,10 +358,10 @@ for s in range(0, numimg, 2):
    print 'Saved raw %3d'%s
 
 # Load network 1
-net1 = caffe.Net(config.STEP1_DEPLOY_PROTOTXT, config.STEP1_MODEL_WEIGHTS, caffe.TEST)
+net1 = caffe.Net(setup.STEP1_DEPLOY_PROTOTXT, setup.STEP1_MODEL_WEIGHTS, caffe.TEST)
 
 # Load step2 network
-net2 = caffe.Net(config.STEP2_DEPLOY_PROTOTXT, config.STEP2_MODEL_WEIGHTS, caffe.TEST)
+net2 = caffe.Net(setup.STEP2_DEPLOY_PROTOTXT, setup.STEP2_MODEL_WEIGHTS, caffe.TEST)
 
 for s in range(0, numimg, 2):
 

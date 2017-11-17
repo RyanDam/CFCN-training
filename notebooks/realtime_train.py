@@ -21,7 +21,7 @@ from IPython import display
 import pandas
 from PIL import Image,ImageFilter
 
-import config
+import setup
 
 def hist(arr):
     """Print number of pixels for each label in the given image (arr)"""
@@ -214,9 +214,9 @@ def imshow_overlay_segmentation(him,img,seg,pred):
 
 import caffe
 print caffe.__file__
-if config.CAFE_MODE is 'GPU':
+if setup.CAFE_MODE is 'GPU':
     caffe.set_mode_gpu()
-elif config.CAFE_MODE is 'CPU':
+elif setup.CAFE_MODE is 'CPU':
     caffe.set_mode_cpu()
 else:
     raise NameError('Invalid CAFE_MODE')
@@ -232,23 +232,23 @@ params = solver.net.params
 testblobs = solver.test_nets[0].blobs
 testparams= solver.test_nets[0].params
 
-if config.RUN_MODE is 'retrain':
-    solver.net.copy_from(config.PRE_TRAIN_WEIGHTS)
-    solver.test_nets[0].copy_from(config.PRE_TRAIN_WEIGHTS)
-    print 'RETRAIN from beginning of weights: ', config.PRE_TRAIN_WEIGHTS
-elif config.RUN_MODE is 'resume':
-    solver.restore(config.STATE_FILE)
-    print 'RESTORE from specific state: ', config.STATE_FILE
-elif config.RUN_MODE is 'resume-last':
-    onlyfiles = next(os.walk(config.STATE_FOLDER))[2] #dir is your directory path as string
+if setup.RUN_MODE is 'retrain':
+    solver.net.copy_from(setup.PRE_TRAIN_WEIGHTS)
+    solver.test_nets[0].copy_from(setup.PRE_TRAIN_WEIGHTS)
+    print 'RETRAIN from beginning of weights: ', setup.PRE_TRAIN_WEIGHTS
+elif setup.RUN_MODE is 'resume':
+    solver.restore(setup.STATE_FILE)
+    print 'RESTORE from specific state: ', setup.STATE_FILE
+elif setup.RUN_MODE is 'resume-last':
+    onlyfiles = next(os.walk(setup.STATE_FOLDER))[2] #dir is your directory path as string
     totalfile = len(onlyfiles) / 2
     if totalfile > 0:
         iterationNum = 500*totalfile
-        config.STATE_FILE = config.STATE_FOLDER,'_iter_%d.solverstate'%iterationNum
-        solver.restore(config.STATE_FILE)
+        setup.STATE_FILE = setup.STATE_FOLDER,'_iter_%d.solverstate'%iterationNum
+        solver.restore(setup.STATE_FILE)
         print 'RESTORE LAST STATE ', iterationNum
     else:
-        raise NameError('Not found any state in %s'%config.STATE_FOLDER)
+        raise NameError('Not found any state in %s'%setup.STATE_FOLDER)
 else:
     raise NameError('Invalid RUN_MODE')
 
@@ -304,7 +304,7 @@ while True:
     accuracies.append(accuracy_score)
     losses.append(loss)
     
-    if i % config.PLOT_INTERVAL == 0:
+    if i % setup.PLOT_INTERVAL == 0:
         display.clear_output(wait=True)
         
         # Print timing stats
@@ -312,7 +312,7 @@ while True:
         iteration_times = []
         
         liver_train_dices = []
-        for _ in range(config.PLOT_INTERVAL):
+        for _ in range(setup.PLOT_INTERVAL):
             solver.test_nets[0].forward()
             test_img = testblobs['data'].data[0,0]
             test_seg = testblobs['label'].data[0,0]
@@ -360,14 +360,14 @@ while True:
         if enable_label_2:
             print 'Test dice Label=2 on last image : ', dice(test_pred,test_seg,2)
 
-        pickle.dump(i, open(config.MONITOR_FOLDER%"i.int",'w'))
-        pickle.dump(dices, open(config.MONITOR_FOLDER%"dices.list",'w'))
-        pickle.dump(dices_2, open(config.MONITOR_FOLDER%"dices_2.list",'w'))
-        pickle.dump(losses, open(config.MONITOR_FOLDER%"losses.list",'w'))
-        pickle.dump(accuracies, open(config.MONITOR_FOLDER%"accuracies.list",'w'))
-        pickle.dump(iterations, open(config.MONITOR_FOLDER%"iterations.list",'w'))
-        pickle.dump(test_dices, open(config.MONITOR_FOLDER%"test_dices.list",'w'))
-        pickle.dump(test_dices_2, open(config.MONITOR_FOLDER%"test_dices_2.list",'w'))
-        pickle.dump(test_accuracies, open(config.MONITOR_FOLDER%"test_accuracies.list",'w'))
+        pickle.dump(i, open(setup.MONITOR_FOLDER%"i.int",'w'))
+        pickle.dump(dices, open(setup.MONITOR_FOLDER%"dices.list",'w'))
+        pickle.dump(dices_2, open(setup.MONITOR_FOLDER%"dices_2.list",'w'))
+        pickle.dump(losses, open(setup.MONITOR_FOLDER%"losses.list",'w'))
+        pickle.dump(accuracies, open(setup.MONITOR_FOLDER%"accuracies.list",'w'))
+        pickle.dump(iterations, open(setup.MONITOR_FOLDER%"iterations.list",'w'))
+        pickle.dump(test_dices, open(setup.MONITOR_FOLDER%"test_dices.list",'w'))
+        pickle.dump(test_dices_2, open(setup.MONITOR_FOLDER%"test_dices_2.list",'w'))
+        pickle.dump(test_accuracies, open(setup.MONITOR_FOLDER%"test_accuracies.list",'w'))
     
     

@@ -276,10 +276,7 @@ class processors:
 		img=np.pad(img,92,mode='reflect')
 		return img, seg
 	
-
-
 import config
-
 
 class NumpyDataLayer(caffe.Layer):
 	""" Caffe Data layer that reads directly from npy files """
@@ -463,14 +460,12 @@ class NumpyDataLayer(caffe.Layer):
 		return img, seg
 	
 class NumpyTrainDataLayer(NumpyDataLayer):
-	import config
 	""" NumpyDataLayer for the Train dataset """
 	def setup(self, bottom, top):
 		self.dataset = config.train_dataset
 		super(NumpyTrainDataLayer, self).setup(bottom, top)
 
 class NumpyTestDataLayer(NumpyDataLayer):
-	import config
 	""" NumpyDataLayer for the Test dataset """
 	def setup(self, bottom, top):
 		self.dataset = config.test_dataset

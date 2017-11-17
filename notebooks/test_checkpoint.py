@@ -20,7 +20,7 @@ from IPython import display
 import pandas
 from PIL import Image,ImageFilter
 
-import config
+import setup
 
 def dice(prediction, segmentation, label_of_interest = 1):
     """ Takes 2 2-D arrays with class labels, and return a float dice score.
@@ -43,9 +43,9 @@ def dice(prediction, segmentation, label_of_interest = 1):
 import caffe
 print caffe.__file__
 
-if config.CAFE_MODE is 'GPU':
+if setup.CAFE_MODE is 'GPU':
     caffe.set_mode_gpu()
-elif config.CAFE_MODE is 'CPU':
+elif setup.CAFE_MODE is 'CPU':
     caffe.set_mode_cpu()
 else:
     raise NameError('Invalid CAFE_MODE')
@@ -61,7 +61,7 @@ testblobs = solver.test_nets[0].blobs
 testparams= solver.test_nets[0].params
 
 
-onlyfiles = next(os.walk(config.TEST_STATE_FOLDER))[2] #dir is your directory path as string
+onlyfiles = next(os.walk(setup.TEST_STATE_FOLDER))[2] #dir is your directory path as string
 totalfile = len(onlyfiles) / 2
 
 iters = []
@@ -69,11 +69,11 @@ dices = []
 
 for i in range(totalfile):
     iteration = (i+1)*500
-    solver.net.copy_from(config.TEST_WEIGHT_FILE%iteration)
-    solver.test_nets[0].copy_from(config.TEST_WEIGHT_FILE%iteration)
+    solver.net.copy_from(setup.TEST_WEIGHT_FILE%iteration)
+    solver.test_nets[0].copy_from(setup.TEST_WEIGHT_FILE%iteration)
     # TMP : Test network on 200 slices
     print 'iter ', iteration
-    print 'file: ', config.TEST_WEIGHT_FILE%iteration
+    print 'file: ', setup.TEST_WEIGHT_FILE%iteration
     if True:
         tmp_dices = []
         neg_dice_count = 0
