@@ -31,4 +31,4 @@ PATIENT_DICOM_PATH = "/mnt/data/student/3Dircadb1/3Dircadb1.17/PATIENT_DICOM_NOR
 PATIENT_MASH_PATH = "/mnt/data/student/3Dircadb1/3Dircadb1.17/MASKS_DICOM/"
 C_MIN_THRESHOLD = 800
 C_MAX_THRESHOLD = 1400
-INFERENCE_SAVE_FOLDER = 'output/%s'
+INFERENCE_SAVE_FOLDER = '/mnt/data/student/inference/%s'
