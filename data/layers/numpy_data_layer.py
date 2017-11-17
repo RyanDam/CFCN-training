@@ -463,12 +463,14 @@ class NumpyDataLayer(caffe.Layer):
 		return img, seg
 	
 class NumpyTrainDataLayer(NumpyDataLayer):
+	import config
 	""" NumpyDataLayer for the Train dataset """
 	def setup(self, bottom, top):
 		self.dataset = config.train_dataset
 		super(NumpyTrainDataLayer, self).setup(bottom, top)
 
 class NumpyTestDataLayer(NumpyDataLayer):
+	import config
 	""" NumpyDataLayer for the Test dataset """
 	def setup(self, bottom, top):
 		self.dataset = config.test_dataset
