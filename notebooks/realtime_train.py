@@ -288,14 +288,12 @@ while True:
     seg = blobs['label'].data[0,0]
     pred= np.argmax(blobs['score'].data[0],axis=0)
     dice_score = dice(pred,seg,1)
-    dice_score_2 = dice(pred,seg,2) if enable_label_2 else 0
     accuracy_score = np.sum(seg==pred)*1.0 / seg.size
     loss = float(solver.net.blobs['loss'].data)
     
     #Save metrics values
     iterations.append(i)
     dices.append(dice_score if dice_score>-1 else 1)
-    dices_2.append(dice_score_2 if dice_score_2>-1 else 1)
     accuracies.append(accuracy_score)
     losses.append(loss)
     
