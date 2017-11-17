@@ -461,14 +461,14 @@ class NumpyDataLayer(caffe.Layer):
 class NumpyTrainDataLayer(NumpyDataLayer):
 	""" NumpyDataLayer for the Train dataset """
 	def setup(self, bottom, top):
-		pdb.set_trace()
+		# pdb.set_trace()
 		self.dataset = config.train_dataset
 		super(NumpyTrainDataLayer, self).setup(bottom, top)
 
 class NumpyTestDataLayer(NumpyDataLayer):
 	""" NumpyDataLayer for the Test dataset """
 	def setup(self, bottom, top):
-		pdb.set_trace()
+		# pdb.set_trace()
 		self.dataset = config.test_dataset
 		super(NumpyTestDataLayer, self).setup(bottom, top)
 	
