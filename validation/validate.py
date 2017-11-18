@@ -126,7 +126,7 @@ def downscale_img_label(imgvol,label_vol):
 		#Get the current slc, normalize and downscale
 		slc = imgvol[:,:,i]
 		
-		img = norm_hounsfield_ryan(img, c_min=800, c_max=1400)
+		slc = norm_hounsfield_ryan(slc, c_min=800, c_max=1400)
 
 		slc = to_scale(slc, config.slice_shape)
 
