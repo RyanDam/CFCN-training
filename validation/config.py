@@ -24,7 +24,7 @@ plot_every_n_slices = 1
 ##### 3DIRCA DATASET ######
 ###########################
 
-IRCA_BASE_PATH = '/mnt/data/student/3Dircadb1/niftis_segmented_all_not_norm/'
+IRCA_BASE_PATH = '/mnt/data/student/3Dircadb1/niftis_segmented_all/'
 #the array after the label element is the voxel spacing
 irca_all= [\
 (301,IRCA_BASE_PATH+"image01.nii",IRCA_BASE_PATH+"label01.nii",[0.57,0.57,1.6]),
