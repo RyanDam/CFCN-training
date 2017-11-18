@@ -152,7 +152,10 @@ def scorer(pred,label,vxlspacing):
 	volscores['dice'] = metric.dc(pred,label)
 	volscores['jaccard'] = metric.binary.jc(pred,label)
 	volscores['voe'] = 1. - volscores['jaccard']
-	volscores['rvd'] = metric.ravd(label,pred)
+	if np.sum(label) > 0 and np.sum(pred) > 0:
+		volscores['rvd'] = metric.ravd(label,pred)
+	else:
+		volscores['rvd'] = 0
 
 	if np.count_nonzero(pred) ==0 or np.count_nonzero(label)==0:
 		volscores['assd'] = 0
