@@ -269,9 +269,9 @@ if __name__ == '__main__':
 			except NameError:
 				net=caffe.Net(deployprototxt,model,caffe.TEST)
 
-			logging.info("Loading " + volpath)
-			imgvol = nib.load(volpath).get_data()
-			labelvol = nib.load(maspath).get_data()
+			logging.info("Loading " + volpath[1])
+			imgvol = nib.load(volpath[1]).get_data()
+			labelvol = nib.load(maspath[1]).get_data()
 
 			#the raw probabilites of step 1
 			probvol = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2],2))
@@ -313,7 +313,7 @@ if __name__ == '__main__':
 			pred_to_use = np.logical_or(probvol.argmax(3)==1,probvol.argmax(3)==2)
 			label_to_use = np.logical_or(labelvol_downscaled==1, labelvol_downscaled==2)
 
-			voxelspacing = voxsize
+			voxelspacing = voxsize[1]
 			volumescore_liver = scorer(pred_to_use, label_to_use, voxelspacing)
 
 
