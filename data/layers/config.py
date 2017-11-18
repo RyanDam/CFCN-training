@@ -43,7 +43,7 @@ augmentation_factor = 10
 # select_slices = 'lesion-only' # For step 1.1, learn liver with lesion is one
 # select_slices = 'liver-lesion' # For step 1.2 learn all healhty liver
 # step 2
-# select_slices = 'llesion-only'
+select_slices = 'lesion-only'
 
 more_small_livers = False
 # Percentage of the image, such that any liver small than that is considered small
