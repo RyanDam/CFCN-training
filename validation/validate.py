@@ -259,7 +259,7 @@ if __name__ == '__main__':
 			foldscore_lesion = []
 	
 			#Iterate volumes in fold
-			for volidx, volpaths in enumerate(fold):
+			for volidx, volpath, maspath, voxsize in enumerate(fold):
 	
 				logging.info("Loading Network for Step 1")
 				#load new network for this fold
@@ -269,9 +269,9 @@ if __name__ == '__main__':
 				except NameError:
 					net=caffe.Net(deployprototxt,model,caffe.TEST)
 	
-				logging.info("Loading " + volpaths[1])
-				imgvol = nib.load(volpaths[1]).get_data()
-				labelvol = nib.load(volpaths[2]).get_data()
+				logging.info("Loading " + volpath)
+				imgvol = nib.load(volpath).get_data()
+				labelvol = nib.load(maspath).get_data()
 	
 				#the raw probabilites of step 1
 				probvol = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2],2))
@@ -313,7 +313,7 @@ if __name__ == '__main__':
 				pred_to_use = np.logical_or(probvol.argmax(3)==1,probvol.argmax(3)==2)
 				label_to_use = np.logical_or(labelvol_downscaled==1, labelvol_downscaled==2)
 	
-				voxelspacing = volpaths[3]
+				voxelspacing = voxsize
 				volumescore_liver = scorer(pred_to_use, label_to_use, voxelspacing)
 	
 	
