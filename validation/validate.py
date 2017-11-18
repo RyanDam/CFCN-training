@@ -22,11 +22,8 @@ import IPython
 #this should actually be part of medpy. Apparently it isn't (anymore). So the surface.py file from http://pydoc.net/Python/MedPy/0.2.2/medpy.metric._surface/ should be manually imported
 from surface import Surface
 
-from lutils import norm_hounsfield_stat,norm_hounsfield_dyn
-
 IMG_DTYPE = np.float
 SEG_DTYPE = np.uint8
-
 
 def miccaiimshow(img,seg,preds,fname,titles=None, plot_separate_img=True):
 	"""Takes raw image img, seg in range 0-2, list of predictions in range 0-2"""
