@@ -20,14 +20,10 @@ TEST_WEIGHT_FILE = '/mnt/data/student/snapshot/_iter_%d.caffemodel'
 TEST_STATE_FOLDER = '/mnt/data/student/snapshot/'
 
 ############### INFERENCE ###############
-STEP1_DEPLOY_PROTOTXT = "inference/step1_deploy.prototxt"
-# STEP1_MODEL_WEIGHTS   = "inference/step1_weights.caffemodel"
-# STEP1_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_step1/_iter_9000.caffemodel"
-STEP1_MODEL_WEIGHTS   = "/mnt/data/student/snapshot/_iter_5500.caffemodel"
-STEP2_DEPLOY_PROTOTXT = "inference/step2_deploy.prototxt"
-# STEP2_MODEL_WEIGHTS   = "inference/step2_weights.caffemodel"
-# STEP2_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_step2/_iter_23000.caffemodel"
-STEP2_MODEL_WEIGHTS   = "/mnt/data/student/snapshot_step2/_iter_16000.caffemodel"
+STEP1_DEPLOY_PROTOTXT = "/mnt/data/student/deploy/step1_deploy.prototxt"
+STEP1_MODEL_WEIGHTS   = "/mnt/data/student/deploy/our/step1_weights.caffemodel"
+STEP2_DEPLOY_PROTOTXT = "/mnt/data/student/deploy/step2_deploy.prototxt"
+STEP2_MODEL_WEIGHTS   = "/mnt/data/student/deploy/our/step2_weights.caffemodel"
 
 PATIENT_DICOM_PATH = "/mnt/data/student/3Dircadb1/3Dircadb1.19/PATIENT_DICOM_NORM"
 PATIENT_MASH_PATH = "/mnt/data/student/3Dircadb1/3Dircadb1.19/MASKS_DICOM/"

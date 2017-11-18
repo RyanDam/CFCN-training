@@ -5,18 +5,14 @@ from matplotlib import pyplot as plt
 import setup
 
 dices = [] #dices for label=1
-dices_2 = [] #dices for label=2
 losses= []
 accuracies=[]
 iterations=[]
 test_dices=[]
-test_dices_2=[]
 test_accuracies=[]
 
 i=                pickle.load(open(setup.MONITOR_FOLDER%"i.int",'r'))
 dices=            pickle.load(open(setup.MONITOR_FOLDER%"dices.list",'r'))
-dices_2=          pickle.load(open(setup.MONITOR_FOLDER%"dices_2.list",'r'))
-test_dices_2 =    pickle.load(open(setup.MONITOR_FOLDER%"test_dices_2.list",'r'))
 losses=           pickle.load(open(setup.MONITOR_FOLDER%"losses.list",'r'))
 accuracies=       pickle.load(open(setup.MONITOR_FOLDER%"accuracies.list",'r'))
 iterations =      pickle.load(open(setup.MONITOR_FOLDER%"iterations.list",'r'))

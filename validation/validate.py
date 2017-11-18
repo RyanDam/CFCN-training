@@ -81,9 +81,6 @@ def miccaiimshow(img,seg,preds,fname,titles=None, plot_separate_img=True):
 	plt.savefig(fname)
 	plt.close()
 	
-	
-
-
 def to_scale(img, shape=None):
 	if shape is None:
 		shape = config.slice_shape
@@ -97,21 +94,17 @@ def to_scale(img, shape=None):
 		return (scipy.misc.imresize(img,(height,width),interp="nearest")/factor).astype(IMG_DTYPE)
 	else:
 		raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
-	
-def histeq_processor(img):
-	"""Histogram equalization"""
-	nbr_bins=256
-	#get image histogram
-	imhist,bins = np.histogram(img.flatten(),nbr_bins,normed=True)
-	cdf = imhist.cumsum() #cumulative distribution function
-	cdf = 255 * cdf / cdf[-1] #normalize
-	#use linear interpolation of cdf to find new pixel values
-	original_shape = img.shape
-	img = np.interp(img.flatten(),bins[:-1],cdf)
-	img=img/255.0
-	return img.reshape(original_shape)
 
-
+def norm_hounsfield_ryan(arr, c_min=800, c_max=1400):
+	arr = arr.astype(IMG_DTYPE)
+	min = np.amin(arr)
+	if min <= 0:
+		arr = arr - min # shift to zero
+	min,max = np.amin(arr), np.amax(arr)
+	arr = 2047.0*arr/(max - min) # scale to [0, 2047]
+	clipp = np.clip(arr, c_min, c_max)
+	clipp = (clipp - c_min)/(c_max - c_min) # scale to [0, 1]
+	return clipp
 
 def downscale_img_label(imgvol,label_vol):
 	"""
@@ -136,16 +129,9 @@ def downscale_img_label(imgvol,label_vol):
 		#Get the current slc, normalize and downscale
 		slc = imgvol[:,:,i]
 		
-		if config.ct_window_type=='dyn':
-			img = norm_hounsfield_dyn(img, c_min=config.ct_window_type_min,c_max=config.ct_window_type_max)
-		elif config.ct_window_type=='stat':
-			img = norm_hounsfield_stat(img, c_min=config.ct_window_type_min,c_max=config.ct_window_type_max)
-		else:
-			print "CT Windowing did not work."
+		img = norm_hounsfield_ryan(img, c_min=800, c_max=1400)
 
 		slc = to_scale(slc, config.slice_shape)
-
-		#slc = histeq_processor(slc)
 
 		imgvol_downscaled[:,:,i] = slc
 
@@ -267,7 +253,6 @@ if __name__ == '__main__':
 		#Iterate folds and corresponding models
 		for fold, model, deployprototxt, model_step_two, deployprototxt_step_two in zip(config.dataset,config.models,config.deployprototxt, config.models_step_two, config.deployprototxt_step_two):
 	
-	
 			logging.info("Starting new fold")
 	
 			#Lists to save scores for each volume of this fold
@@ -286,8 +271,6 @@ if __name__ == '__main__':
 					net=caffe.Net(deployprototxt,model,caffe.TEST)
 				except NameError:
 					net=caffe.Net(deployprototxt,model,caffe.TEST)
-	
-	
 	
 				logging.info("Loading " + volpaths[1])
 				imgvol = nib.load(volpaths[1]).get_data()
@@ -354,15 +337,6 @@ if __name__ == '__main__':
 	
 				logging.info("Here are the liver scores after CRF:")
 				volumescore_liver_crf = scorer(crf_pred_liver, label_to_use, voxelspacing)
-	
-				#calculate scores for lesions
-				#pred_to_use = probvol.argmax(3)==2
-				#label_to_use = labelvol_downscaled==2
-	
-				#volumescore_lesion = scorer(pred_to_use,label_to_use,voxelspacing)
-	
-	
-	
 	
 				#OK, we're done on the first step of the cascaded networks and have evaluated them.
 				#Now let's get to the second step.
@@ -448,18 +422,14 @@ if __name__ == '__main__':
 						
 						miccaiimshow(imgvol_downscaled[:,:,i], labelvol_downscaled[:,:,i], [labelvol_downscaled[:,:,i],pred_vol_bothsteps[:,:,i]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
 				
-			
-
 				logging.info("Now running LESION CRF on Liver")
 				crf_params = {'ignore_memory':True, 'bilateral_intensity_std': 0.16982742320252908, 'bilateral_w': 6.406401876489639, 
  						'pos_w': 2.3422381267344132, 'bilateral_x_std': 284.5377968491542, 'pos_x_std': 23.636281254341867, 
  						'max_iterations': 10}
 				pro = CRFProcessor.CRF3DProcessor(**crf_params)
 	
-	
 				crf_pred_lesion = pro.set_data_and_run(imgvol_downscaled, probvol_step_two)
 				volumescore_lesion_crf = scorer(crf_pred_lesion, label_to_use, voxelspacing)
-				
 				
 				#Append to results lists so that the average scores can be calculated later
 				foldscore_liver.append(volumescore_liver)
