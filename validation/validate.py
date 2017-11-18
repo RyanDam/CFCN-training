@@ -1,3 +1,7 @@
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt 
+
 import config
 import logging
 
@@ -6,11 +10,6 @@ import scipy.misc, scipy.ndimage.interpolation
 import caffe
 caffe.set_mode_gpu()
 
-
-import matplotlib
-matplotlib.use('Agg')
-
-from matplotlib import pyplot as plt 
 
 import os
 from denseinference import CRFProcessor
