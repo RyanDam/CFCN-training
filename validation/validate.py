@@ -259,7 +259,7 @@ if __name__ == '__main__':
 			foldscore_lesion = []
 	
 			#Iterate volumes in fold
-			volidx, volpath, maspath, voxsize = enumerate(fold):
+			volidx, volpath, maspath, voxsize = enumerate(fold)
 	
 			logging.info("Loading Network for Step 1")
 			#load new network for this fold
