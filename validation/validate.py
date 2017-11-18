@@ -530,23 +530,22 @@ if __name__ == '__main__':
 	#Creating CSV
 	
 
-		csvarray = np.zeros((len(overall_score_liver),13))
-		csvarray[:,0] = range(1,len(overall_score_liver)+1)
+		# csvarray = np.zeros((len(overall_score_liver),13))
+		# csvarray[:,0] = range(1,len(overall_score_liver)+1)
 	
-		#csvarray[:,1] = [s['dice'] for s in overall_score_liver]
+		# #csvarray[:,1] = [s['dice'] for s in overall_score_liver]
 	
-		d = overall_score_liver.iteritems()
-		for i in range(6):
-			d.next()[1]
-			csvarray[:,i+1] = d.next()[1]
+		# d = overall_score_liver.iteritems()
+		# for i in range(6):
+		# 	d.next()[1]
+		# 	csvarray[:,i+1] = d.next()[1]
 	
-		d = overall_score_lesion.iteritems()
-		for i in range(6):
-			d.next()[1]
-			csvarray[:,i+1+6] = d.next()[1]
+		# d = overall_score_lesion.iteritems()
+		# for i in range(6):
+		# 	d.next()[1]
+		# 	csvarray[:,i+1+6] = d.next()[1]
 	
-	
-		np.savetxt("Numbers.csv", csvarray, delimiter=",")
+		# np.savetxt("Numbers.csv", csvarray, delimiter=",")
 		
 		
 	except:
