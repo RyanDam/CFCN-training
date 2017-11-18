@@ -8,8 +8,10 @@ caffe.set_mode_gpu()
 
 
 import matplotlib
-from matplotlib import pyplot as plt 
 matplotlib.use('Agg')
+
+from matplotlib import pyplot as plt 
+
 import os
 from denseinference import CRFProcessor
 
