@@ -259,185 +259,185 @@ if __name__ == '__main__':
 			foldscore_lesion = []
 	
 			#Iterate volumes in fold
-			for volidx, volpath, maspath, voxsize in enumerate(fold):
+			volidx, volpath, maspath, voxsize = enumerate(fold):
 	
-				logging.info("Loading Network for Step 1")
-				#load new network for this fold
-				try:
-					del net # it is a good idea to delete the net object to free up memory before instantiating another one
-					net=caffe.Net(deployprototxt,model,caffe.TEST)
-				except NameError:
-					net=caffe.Net(deployprototxt,model,caffe.TEST)
-	
-				logging.info("Loading " + volpath)
-				imgvol = nib.load(volpath).get_data()
-				labelvol = nib.load(maspath).get_data()
-	
-				#the raw probabilites of step 1
-				probvol = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2],2))
-				#the probabilites of step 2 scaled back down into the volume
-				pred_step_two = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2]))
-				pred_step_one = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2]))
-				probvol_step_two = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2],2))
-	
-	
-				#rotate volumes so that the networks sees them in the same orientation like during training
-				imgvol = np.rot90(imgvol)
-				labelvol = np.rot90(labelvol)
-	
-				imgvol_downscaled, labelvol_downscaled = downscale_img_label(imgvol,labelvol)
-	
-				#iterate slices in volume and do prediction
-				logging.info("Predicting " + volpaths[1])
-				for i in range(imgvol_downscaled.shape[2]):
-					slc = imgvol_downscaled[:,:,i]
-					#create mirrored slc for unet
-					slc = np.pad(slc,((92,92),(92,92)),mode='reflect')
-	
+			logging.info("Loading Network for Step 1")
+			#load new network for this fold
+			try:
+				del net # it is a good idea to delete the net object to free up memory before instantiating another one
+				net=caffe.Net(deployprototxt,model,caffe.TEST)
+			except NameError:
+				net=caffe.Net(deployprototxt,model,caffe.TEST)
+
+			logging.info("Loading " + volpath)
+			imgvol = nib.load(volpath).get_data()
+			labelvol = nib.load(maspath).get_data()
+
+			#the raw probabilites of step 1
+			probvol = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2],2))
+			#the probabilites of step 2 scaled back down into the volume
+			pred_step_two = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2]))
+			pred_step_one = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2]))
+			probvol_step_two = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2],2))
+
+
+			#rotate volumes so that the networks sees them in the same orientation like during training
+			imgvol = np.rot90(imgvol)
+			labelvol = np.rot90(labelvol)
+
+			imgvol_downscaled, labelvol_downscaled = downscale_img_label(imgvol,labelvol)
+
+			#iterate slices in volume and do prediction
+			logging.info("Predicting " + volpaths[1])
+			for i in range(imgvol_downscaled.shape[2]):
+				slc = imgvol_downscaled[:,:,i]
+				#create mirrored slc for unet
+				slc = np.pad(slc,((92,92),(92,92)),mode='reflect')
+
+				#load slc into network and do forward pass
+				net.blobs['data'].data[...] = slc
+				net.forward()
+
+				#now save raw probabilities
+				probvol[:,:,i,:]  = net.blobs['prob'].data.transpose((0,2,3,1))[0]
+				pred_step_one[:,:,i] = np.argmax(probvol[:,:,i,:], axis=2)
+				#result shape is batch_img_idx , height, width, probability_of_class
+
+
+			#dump probabiliteis to .npy file for future use
+			#np.save('./probfiles/' + ))
+			##FIX THIS
+
+			logging.info("Here are the liver scores before CRF:")
+			#calculate scores for liver
+			pred_to_use = np.logical_or(probvol.argmax(3)==1,probvol.argmax(3)==2)
+			label_to_use = np.logical_or(labelvol_downscaled==1, labelvol_downscaled==2)
+
+			voxelspacing = voxsize
+			volumescore_liver = scorer(pred_to_use, label_to_use, voxelspacing)
+
+
+			#Run Liver CRF
+			logging.info("Now running CRF on Liver")
+			crfparams = {'max_iterations': 10 ,'dynamic_z': True ,'ignore_memory': True ,'pos_x_std': 1.5 ,'pos_y_std': 1.5,
+'pos_z_std': 1.5,'pos_w': 3.0 ,'bilateral_x_std': 9.0,'bilateral_y_std': 9.0,
+'bilateral_z_std': 9.0,'bilateral_intensity_std': 20.0,'bilateral_w': 10.0}
+			pro = CRFProcessor.CRF3DProcessor(**crfparams)
+
+			if config.save_probability_volumes:
+				np.save(os.path.join(config.output_dir , os.path.basename(volpaths[1]))+".liver.npy", probvol) 
+			
+			crf_pred_liver = pro.set_data_and_run(imgvol_downscaled, probvol)
+
+			#calculate scores for liver
+			label_to_use = np.logical_or(labelvol_downscaled==1, labelvol_downscaled==2)
+
+			logging.info("Here are the liver scores after CRF:")
+			volumescore_liver_crf = scorer(crf_pred_liver, label_to_use, voxelspacing)
+
+			#OK, we're done on the first step of the cascaded networks and have evaluated them.
+			#Now let's get to the second step.
+
+			del net
+			logging.info("Deleted network for cascade step 1")
+			net=caffe.Net(deployprototxt_step_two,model_step_two,caffe.TEST)
+
+			logging.info("Loaded network for cascade step 2")
+
+			#we again iterate over all slices in the volume
+			for i in range(imgvol_downscaled.shape[2]):
+				slc = imgvol_downscaled[:,:,i]
+				#create mirrored slc for unet
+				#slc = np.pad(slc,((92,92),(92,92)),mode='reflect')
+
+				#now we crop and upscale the liver
+				slc_crf_pred_liver = crf_pred_liver[:, :, i].astype(SEG_DTYPE)
+				#slc_crf_pred_liver = pred_to_use[:,:,i].astype(SEG_DTYPE)
+				#slc_crf_pred_liver = labelvol_downscaled[:,:,i]
+				if np.count_nonzero(slc_crf_pred_liver) == 0:
+					probvol_step_two[:,:,i,:] = 0
+				else:
+					slc, bbox = zoomliver_UNET_processor(slc, slc_crf_pred_liver)
 					#load slc into network and do forward pass
 					net.blobs['data'].data[...] = slc
 					net.forward()
 	
-					#now save raw probabilities
-					probvol[:,:,i,:]  = net.blobs['prob'].data.transpose((0,2,3,1))[0]
-					pred_step_one[:,:,i] = np.argmax(probvol[:,:,i,:], axis=2)
-					#result shape is batch_img_idx , height, width, probability_of_class
-	
-	
-				#dump probabiliteis to .npy file for future use
-				#np.save('./probfiles/' + ))
-				##FIX THIS
-	
-				logging.info("Here are the liver scores before CRF:")
-				#calculate scores for liver
-				pred_to_use = np.logical_or(probvol.argmax(3)==1,probvol.argmax(3)==2)
-				label_to_use = np.logical_or(labelvol_downscaled==1, labelvol_downscaled==2)
-	
-				voxelspacing = voxsize
-				volumescore_liver = scorer(pred_to_use, label_to_use, voxelspacing)
-	
-	
-				#Run Liver CRF
-				logging.info("Now running CRF on Liver")
-				crfparams = {'max_iterations': 10 ,'dynamic_z': True ,'ignore_memory': True ,'pos_x_std': 1.5 ,'pos_y_std': 1.5,
-'pos_z_std': 1.5,'pos_w': 3.0 ,'bilateral_x_std': 9.0,'bilateral_y_std': 9.0,
-'bilateral_z_std': 9.0,'bilateral_intensity_std': 20.0,'bilateral_w': 10.0}
-				pro = CRFProcessor.CRF3DProcessor(**crfparams)
-	
-				if config.save_probability_volumes:
-					np.save(os.path.join(config.output_dir , os.path.basename(volpaths[1]))+".liver.npy", probvol) 
-				
-				crf_pred_liver = pro.set_data_and_run(imgvol_downscaled, probvol)
-	
-				#calculate scores for liver
-				label_to_use = np.logical_or(labelvol_downscaled==1, labelvol_downscaled==2)
-	
-				logging.info("Here are the liver scores after CRF:")
-				volumescore_liver_crf = scorer(crf_pred_liver, label_to_use, voxelspacing)
-	
-				#OK, we're done on the first step of the cascaded networks and have evaluated them.
-				#Now let's get to the second step.
-	
-				del net
-				logging.info("Deleted network for cascade step 1")
-				net=caffe.Net(deployprototxt_step_two,model_step_two,caffe.TEST)
-	
-				logging.info("Loaded network for cascade step 2")
-	
-				#we again iterate over all slices in the volume
-				for i in range(imgvol_downscaled.shape[2]):
-					slc = imgvol_downscaled[:,:,i]
-					#create mirrored slc for unet
-					#slc = np.pad(slc,((92,92),(92,92)),mode='reflect')
-	
-					#now we crop and upscale the liver
-					slc_crf_pred_liver = crf_pred_liver[:, :, i].astype(SEG_DTYPE)
-					#slc_crf_pred_liver = pred_to_use[:,:,i].astype(SEG_DTYPE)
-					#slc_crf_pred_liver = labelvol_downscaled[:,:,i]
-					if np.count_nonzero(slc_crf_pred_liver) == 0:
-						probvol_step_two[:,:,i,:] = 0
-					else:
-						slc, bbox = zoomliver_UNET_processor(slc, slc_crf_pred_liver)
-						#load slc into network and do forward pass
-						net.blobs['data'].data[...] = slc
-						net.forward()
-		
-						#scale output back down and insert into the probability volume
-						
-						x1,x2,y1,y2 = bbox
-						leftpad, rightpad = x1, 388-x2
-						toppad, bottompad = y1, 388-y2
-						width, height = int(x2-x1), int(y2-y1)
-						#now save probabilities
-						prob = net.blobs['prob'].data.transpose((0,2,3,1))[0]
+					#scale output back down and insert into the probability volume
+					
+					x1,x2,y1,y2 = bbox
+					leftpad, rightpad = x1, 388-x2
+					toppad, bottompad = y1, 388-y2
+					width, height = int(x2-x1), int(y2-y1)
+					#now save probabilities
+					prob = net.blobs['prob'].data.transpose((0,2,3,1))[0]
 # 						probvol[:,:,i,:]  = prob
 
-						slc_pred_step_two = np.argmax(prob,axis=2).astype(SEG_DTYPE)
+					slc_pred_step_two = np.argmax(prob,axis=2).astype(SEG_DTYPE)
 
-						slc_pred_step_two = to_scale(slc_pred_step_two, (height,width))
-						slc_pred_step_two = np.pad(slc_pred_step_two, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
-						pred_step_two[:,:,i] = slc_pred_step_two
+					slc_pred_step_two = to_scale(slc_pred_step_two, (height,width))
+					slc_pred_step_two = np.pad(slc_pred_step_two, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
+					pred_step_two[:,:,i] = slc_pred_step_two
 
-						prob0 = prob[:,:,0].astype(IMG_DTYPE) #use IMG_DTYPE bcoz we've probabiblities, not hard labels
-						prob0 = to_scale(prob0, (height,width))
-						prob0 = np.pad(prob0, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
+					prob0 = prob[:,:,0].astype(IMG_DTYPE) #use IMG_DTYPE bcoz we've probabiblities, not hard labels
+					prob0 = to_scale(prob0, (height,width))
+					prob0 = np.pad(prob0, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
 # 						
 # 						
-						prob1 = prob[:,:,1].astype(IMG_DTYPE) 
-						prob1 = to_scale(prob1, (height,width))
-						prob1 = np.pad(prob1, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
-						
-						probvol_step_two[:,:,i,0] = prob0
-						probvol_step_two[:,:,i,1] = prob1
+					prob1 = prob[:,:,1].astype(IMG_DTYPE) 
+					prob1 = to_scale(prob1, (height,width))
+					prob1 = np.pad(prob1, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
 					
-					#probvol_step_two[bbox[0]:bbox[0] + bbox[1], bbox[2]:bbox[2] + bbox[3], i, :] = 
-	
-	
-				logging.info("Lesion scores after step 2 before CRF")
-				#pred_to_use = probvol_step_two.argmax(3) == 2
-				pred_to_use = pred_step_two.astype(SEG_DTYPE)
-				label_to_use = labelvol_downscaled == 2
-	
-				volumescore_lesion = scorer(pred_to_use, label_to_use, voxelspacing)
+					probvol_step_two[:,:,i,0] = prob0
+					probvol_step_two[:,:,i,1] = prob1
 				
-				# Save lesion npy probabilities
-				if config.save_probability_volumes:
-					np.save(os.path.join(config.output_dir , os.path.basename(volpaths[1]))+".lesion.npy", probvol_step_two) 
-				
-				### SAVE PLOTS
-				if config.plot_every_n_slices > 0:
-					for i in range(0,imgvol_downscaled.shape[2], config.plot_every_n_slices):
-						pred_vol_bothsteps = pred_step_one
-						pred_vol_bothsteps[pred_step_two==1] = 2
-						liverdc = metric.dc(pred_step_one[:,:,i], labelvol_downscaled[:,:,i] == 1)
-						lesiondc= metric.dc(pred_step_two[:,:,i], labelvol_downscaled[:,:,i] ==2)
-	
-						fname = os.path.join(config.output_dir , os.path.basename(volpaths[1]))
-						fname += "_slc"+ str(i)+"_"
-						fname += "liv"+str(liverdc)+"_les"+str(lesiondc)+".png"
-						#logging.info("Plotting "+fname)
-						
-						miccaiimshow(imgvol_downscaled[:,:,i], labelvol_downscaled[:,:,i], [labelvol_downscaled[:,:,i],pred_vol_bothsteps[:,:,i]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
-				
-				logging.info("Now running LESION CRF on Liver")
-				crf_params = {'ignore_memory':True, 'bilateral_intensity_std': 0.16982742320252908, 'bilateral_w': 6.406401876489639, 
- 						'pos_w': 2.3422381267344132, 'bilateral_x_std': 284.5377968491542, 'pos_x_std': 23.636281254341867, 
- 						'max_iterations': 10}
-				pro = CRFProcessor.CRF3DProcessor(**crf_params)
-	
-				crf_pred_lesion = pro.set_data_and_run(imgvol_downscaled, probvol_step_two)
-				volumescore_lesion_crf = scorer(crf_pred_lesion, label_to_use, voxelspacing)
-				
-				#Append to results lists so that the average scores can be calculated later
-				foldscore_liver.append(volumescore_liver)
-				foldscore_lesion.append(volumescore_lesion)
-				foldscore_liver_crf.append(volumescore_liver_crf)
-				foldscore_lesion_crf.append(volumescore_lesion_crf)
-				
-				overall_score_liver_crf.append(volumescore_liver_crf)
-				overall_score_lesion_crf.append(volumescore_lesion_crf)
-				overall_score_liver.append(volumescore_liver)
-				overall_score_lesion.append(volumescore_lesion)
+				#probvol_step_two[bbox[0]:bbox[0] + bbox[1], bbox[2]:bbox[2] + bbox[3], i, :] = 
+
+
+			logging.info("Lesion scores after step 2 before CRF")
+			#pred_to_use = probvol_step_two.argmax(3) == 2
+			pred_to_use = pred_step_two.astype(SEG_DTYPE)
+			label_to_use = labelvol_downscaled == 2
+
+			volumescore_lesion = scorer(pred_to_use, label_to_use, voxelspacing)
+			
+			# Save lesion npy probabilities
+			if config.save_probability_volumes:
+				np.save(os.path.join(config.output_dir , os.path.basename(volpaths[1]))+".lesion.npy", probvol_step_two) 
+			
+			### SAVE PLOTS
+			if config.plot_every_n_slices > 0:
+				for i in range(0,imgvol_downscaled.shape[2], config.plot_every_n_slices):
+					pred_vol_bothsteps = pred_step_one
+					pred_vol_bothsteps[pred_step_two==1] = 2
+					liverdc = metric.dc(pred_step_one[:,:,i], labelvol_downscaled[:,:,i] == 1)
+					lesiondc= metric.dc(pred_step_two[:,:,i], labelvol_downscaled[:,:,i] ==2)
+
+					fname = os.path.join(config.output_dir , os.path.basename(volpaths[1]))
+					fname += "_slc"+ str(i)+"_"
+					fname += "liv"+str(liverdc)+"_les"+str(lesiondc)+".png"
+					#logging.info("Plotting "+fname)
+					
+					miccaiimshow(imgvol_downscaled[:,:,i], labelvol_downscaled[:,:,i], [labelvol_downscaled[:,:,i],pred_vol_bothsteps[:,:,i]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
+			
+			logging.info("Now running LESION CRF on Liver")
+			crf_params = {'ignore_memory':True, 'bilateral_intensity_std': 0.16982742320252908, 'bilateral_w': 6.406401876489639, 
+					'pos_w': 2.3422381267344132, 'bilateral_x_std': 284.5377968491542, 'pos_x_std': 23.636281254341867, 
+					'max_iterations': 10}
+			pro = CRFProcessor.CRF3DProcessor(**crf_params)
+
+			crf_pred_lesion = pro.set_data_and_run(imgvol_downscaled, probvol_step_two)
+			volumescore_lesion_crf = scorer(crf_pred_lesion, label_to_use, voxelspacing)
+			
+			#Append to results lists so that the average scores can be calculated later
+			foldscore_liver.append(volumescore_liver)
+			foldscore_lesion.append(volumescore_lesion)
+			foldscore_liver_crf.append(volumescore_liver_crf)
+			foldscore_lesion_crf.append(volumescore_lesion_crf)
+			
+			overall_score_liver_crf.append(volumescore_liver_crf)
+			overall_score_lesion_crf.append(volumescore_lesion_crf)
+			overall_score_liver.append(volumescore_liver)
+			overall_score_lesion.append(volumescore_lesion)
 	
 			logging.info("=========================================")
 			logging.info("Average Liver Scores before CRF for this fold: ")
