@@ -3,7 +3,7 @@ __author__ = 'Marc Bickel'
 import numpy as np
 import psutil
 
-from denseinference.lib import dense_inference as di
+from lib import dense_inference as di
 
 
 class CRF3DProcessor(object):
