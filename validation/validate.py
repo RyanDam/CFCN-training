@@ -288,7 +288,7 @@ if __name__ == '__main__':
 			imgvol_downscaled, labelvol_downscaled = downscale_img_label(imgvol,labelvol)
 
 			#iterate slices in volume and do prediction
-			logging.info("Predicting " + volpaths[1])
+			logging.info("Predicting " + volpath[1])
 			for i in range(imgvol_downscaled.shape[2]):
 				slc = imgvol_downscaled[:,:,i]
 				#create mirrored slc for unet
@@ -325,7 +325,7 @@ if __name__ == '__main__':
 			pro = CRFProcessor.CRF3DProcessor(**crfparams)
 
 			if config.save_probability_volumes:
-				np.save(os.path.join(config.output_dir , os.path.basename(volpaths[1]))+".liver.npy", probvol) 
+				np.save(os.path.join(config.output_dir , os.path.basename(volpath[1]))+".liver.npy", probvol) 
 			
 			crf_pred_liver = pro.set_data_and_run(imgvol_downscaled, probvol)
 
@@ -402,7 +402,7 @@ if __name__ == '__main__':
 			
 			# Save lesion npy probabilities
 			if config.save_probability_volumes:
-				np.save(os.path.join(config.output_dir , os.path.basename(volpaths[1]))+".lesion.npy", probvol_step_two) 
+				np.save(os.path.join(config.output_dir , os.path.basename(volpath[1]))+".lesion.npy", probvol_step_two) 
 			
 			### SAVE PLOTS
 			if config.plot_every_n_slices > 0:
@@ -412,7 +412,7 @@ if __name__ == '__main__':
 					liverdc = metric.dc(pred_step_one[:,:,i], labelvol_downscaled[:,:,i] == 1)
 					lesiondc= metric.dc(pred_step_two[:,:,i], labelvol_downscaled[:,:,i] ==2)
 
-					fname = os.path.join(config.output_dir , os.path.basename(volpaths[1]))
+					fname = os.path.join(config.output_dir , os.path.basename(volpath[1]))
 					fname += "_slc"+ str(i)+"_"
 					fname += "liv"+str(liverdc)+"_les"+str(lesiondc)+".png"
 					#logging.info("Plotting "+fname)
