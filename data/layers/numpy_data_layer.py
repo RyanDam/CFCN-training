@@ -37,18 +37,30 @@ def maybe_true(probability=0.5):
 	rnd = random.random()
 	return rnd <= probability
 
-def to_scale(img, shape=None):
+def to_scale(img, shape=None, chanel_num=2):
 	if shape is None:
 		shape = config.slice_shape
 		
-	height, width = shape
-	if img.dtype == SEG_DTYPE:
-		return scipy.misc.imresize(img,(height,width),interp="nearest").astype(SEG_DTYPE)
-	elif img.dtype == IMG_DTYPE:
-		factor = 256.0/np.max(img)
-		return (scipy.misc.imresize(img,(height,width),interp="nearest")/factor).astype(IMG_DTYPE)
+	if chanel_num is 2:
+		height, width = shape
+		if img.dtype == SEG_DTYPE:
+			return scipy.misc.imresize(img,(height,width),interp="nearest").astype(SEG_DTYPE)
+		elif img.dtype == IMG_DTYPE:
+			factor = 256.0/np.max(img)
+			return (scipy.misc.imresize(img,(height,width),interp="nearest")/factor).astype(IMG_DTYPE)
+		else:
+			raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
+	elif chanel_num is 3:
+		height, width, chanel = shape
+		if img.dtype == SEG_DTYPE:
+			return scipy.misc.imresize(img,(height,width,chanel),interp="nearest").astype(SEG_DTYPE)
+		elif img.dtype == IMG_DTYPE:
+			factor = 256.0/np.max(img)
+			return (scipy.misc.imresize(img,(height,width,chanel),interp="nearest")/factor).astype(IMG_DTYPE)
+		else:
+			raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
 	else:
-		raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
+		raise TypeError('Wrong chanel_num: 2 or 3')
 
 
 def norm_hounsfield_dyn(arr, c_min=0.1, c_max=0.3):
@@ -98,11 +110,11 @@ class augmentation:
 		:return: Shifted img and seg"""
 		# slide in x direction
 		if x != 0:
-			img = np.append(img[x:,:], img[:x,:], axis=0)
+			img = np.append(img[x:,:,:], img[:x,:,:], axis=0)
 			seg = np.append(seg[x:,:], seg[:x,:], axis=0)
 		# slide in y direction
 		if y != 0:
-			img = np.append(img[:,-y:], img[:,:-y], axis=1)
+			img = np.append(img[:,-y:,:], img[:,:-y,:], axis=1)
 			seg = np.append(seg[:,-y:], seg[:,:-y], axis=1)
 		return img, seg
 
@@ -130,7 +142,7 @@ class augmentation:
 			raise ValueError("Wrong crop_type. Must be lt, rt, lb, rb or c.")
 		# Do the cropping
 		x1, y1, x2, y2 = box
-		img, seg = img[y1:y2, x1:x2], seg[y1:y2, x1:x2]
+		img, seg = img[y1:y2, x1:x2, :], seg[y1:y2, x1:x2]
 
 		return img, seg
 	
@@ -147,7 +159,7 @@ class augmentation:
 		extra = rotated.shape[0]-img.shape[0]
 		extra_left = extra/2
 		extra_right = extra - extra_left
-		rotated = rotated[extra_left: -extra_right, extra_left: - extra_right]
+		rotated = rotated[extra_left: -extra_right, extra_left: - extra_right, :]
 		return rotated
 	
 #####################################
@@ -210,7 +222,7 @@ class processors:
 	
 	@staticmethod
 	def plain_UNET_processor(img,seg):
-		img = to_scale(img, (388,388))
+		img = to_scale(img, (388,388, 3), chanel_num=3)
 		seg = to_scale(seg, (388,388))
 		# Now do padding for UNET, which takes 572x572
 		#seg=np.pad(seg,((92,92),(92,92)),mode='reflect')
@@ -226,7 +238,7 @@ class processors:
 	@staticmethod
 	def remove_non_liver(img, seg):
 		# Remove background !
-		img = np.multiply(img,np.clip(seg,0,1))
+		img = np.multiply(img,np.clip(seg,0,1).repeat(3, axis=2))
 		return img, seg
 	
 	@staticmethod
@@ -260,10 +272,10 @@ class processors:
 		y1 = max(0, y1-y_pad)
 		y2 = min(img.shape[0], y2+y_pad)  
 		
-		img = img[y1:y2+1, x1:x2+1]
+		img = img[y1:y2+1, x1:x2+1, :]
 		seg = seg[y1:y2+1, x1:x2+1]
 		
-		img = to_scale(img, (388,388))
+		img = to_scale(img, (388,388), chanel_num=3)
 		seg = to_scale(seg, (388,388))
 		# All non-lesion is background
 		seg[seg==1]=0
@@ -272,7 +284,7 @@ class processors:
 		
 		# Now do padding for UNET, which takes 572x572
 		#seg=np.pad(seg,((92,92),(92,92)),mode='reflect')
-		img=np.pad(img,92,mode='reflect')
+		img=np.pad(img,((92,92),(92,92),(0,0)),mode='reflect')
 		return img, seg
 
 import config
@@ -311,7 +323,7 @@ class NumpyDataLayer(caffe.Layer):
 			self.n_total_slices += segvol.shape[0]
 		
 		print "Dataset has ", self.n_total_slices,"(before augmentation)"
-		top[0].reshape(1,1,572,572)
+		top[0].reshape(1,3,572,572)
 		top[1].reshape(1,1,388,388)
 		
 		# Seed the random generator
@@ -387,6 +399,21 @@ class NumpyDataLayer(caffe.Layer):
 			aug_idx   = np.random.randint(0,self.n_augmentations)
 			
 			img = self.img_volumes[vol_idx][slice_idx] 
+			img = np.expand_dims(img, 0)
+			shapeimg = img.shape
+
+			imgtop = np.zeros(shapeimg)
+			if slice_idx > 0:
+				imgtop = self.img_volumes[vol_idx][slice_idx-1] 
+				imgtop = np.expand_dims(imgtop, 0)
+			img = np.concatenate((imgtop,img), axis=0)
+
+			imgbottom = np.zeros(shapeimg)
+			if slice_idx < self.img_volumes[vol_idx].shape[0] - 1:
+				imgbottom  = self.img_volumes[vol_idx][slice_idx+1] 
+				imgbottom = np.expand_dims(imgbottom, 0)
+			img = np.concatenate((img, imgbottom), axis=0)
+
 			seg = self.seg_volumes[vol_idx][slice_idx]
 			
 			#print vol_idx, slice_idx, aug_idx
