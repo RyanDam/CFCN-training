@@ -110,12 +110,12 @@ class augmentation:
 		:return: Shifted img and seg"""
 		# slide in x direction
 		if x != 0:
-			img = np.append(img[:,x:,:], img[:,:x,:], axis=0)
-			seg = np.append(seg[x:,:], seg[:x,:], axis=0)
+			img = np.append(img[:,x:,:], img[:,:x,:], axis=1)
+			seg = np.append(seg[x:,:], seg[:x,:], axis=1)
 		# slide in y direction
 		if y != 0:
-			img = np.append(img[:,:,-y:], img[:,:,:-y], axis=1)
-			seg = np.append(seg[:,-y:], seg[:,:-y], axis=1)
+			img = np.append(img[:,:,-y:], img[:,:,:-y], axis=2)
+			seg = np.append(seg[:,-y:], seg[:,:-y], axis=2)
 		return img, seg
 
 	@staticmethod
