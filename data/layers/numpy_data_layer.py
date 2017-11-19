@@ -417,9 +417,6 @@ class NumpyDataLayer(caffe.Layer):
 				imgbottom  = self.img_volumes[vol_idx][slice_idx+1] 
 				imgbottom = np.expand_dims(imgbottom, 0)
 			img = np.concatenate((img, imgbottom), axis=0)
-
-			print img.shape
-
 			seg = self.seg_volumes[vol_idx][slice_idx]
 			
 			#print vol_idx, slice_idx, aug_idx
@@ -427,11 +424,7 @@ class NumpyDataLayer(caffe.Layer):
 			if self.is_relevant_slice(seg):
 				break
 		
-		print img.shape
 		img, seg = self.prepare_slice(img, seg, aug_idx)
-
-		print img.shape
-		print 'a'
 
 		try:
 			self.queue.put((img, seg))
@@ -472,16 +465,11 @@ class NumpyDataLayer(caffe.Layer):
 		# img = norm_hounsfield_dyn(img)
 
 		img = norm_hounsfield_ryan(img)
-		print img.shape
-		print 'b'
 
 		img, seg = self.augment_slice(img, seg, aug_idx)
 		for processor in config.processors_list:
 			img, seg = processor(img, seg)
-			print img.shape
-			print 'c'
 
-		pdb.set_trace()
 		#img = to_scale(img, (400,400))
         #seg = to_scale(seg, (400,400))
 		return img, seg
