@@ -469,9 +469,13 @@ class NumpyDataLayer(caffe.Layer):
 		seg = np.clip(seg, 0, 2)
 		# img = norm_hounsfield_dyn(img)
 		img = norm_hounsfield_ryan(img)
+		print img.shape
+		print 'b'
 		img, seg = self.augment_slice(img, seg, aug_idx)
 		for processor in config.processors_list:
 			img, seg = processor(img, seg)
+			print img.shape
+			print 'c'
 		#img = to_scale(img, (400,400))
         #seg = to_scale(seg, (400,400))
 		return img, seg
