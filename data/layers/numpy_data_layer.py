@@ -471,6 +471,9 @@ class NumpyDataLayer(caffe.Layer):
 		# Make sure 0 >= label >= 2
 		seg = np.clip(seg, 0, 2)
 		# img = norm_hounsfield_dyn(img)
+
+		pdb.set_trace()
+
 		img = norm_hounsfield_ryan(img)
 		print img.shape
 		print 'b'
