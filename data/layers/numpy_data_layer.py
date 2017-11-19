@@ -404,6 +404,8 @@ class NumpyDataLayer(caffe.Layer):
 			img = np.expand_dims(img, 0)
 			shapeimg = img.shape
 
+			pdb.set_trace()
+
 			imgtop = np.zeros(shapeimg)
 			if slice_idx > 0:
 				imgtop = self.img_volumes[vol_idx][slice_idx-1] 
