@@ -146,21 +146,29 @@ class augmentation:
 		return img, seg
 	
 	@staticmethod
-	def _rotate(img, angle):
+	def _rotate(img, angle, chanel_num=2):
 		# Prevent augmentation with no rotation, otherwise the same image will be appended
 		if angle==0:
 			angle=1
-		# rotate without interpolation (order=0 makes it take nearest pixel)
-		rotated = scipy.ndimage.interpolation.rotate(img, angle, axes=(2, 1), order=0)
-		#rotation results in extra pixels on the borders
-		# We fix it assuming square shape
-		assert img.shape[1] == img.shape[2], "Given image for rotation is not of square shape :" + str(img.shape)
-		extra = rotated.shape[1]-img.shape[1]
-		extra_left = extra/2
-		extra_right = extra - extra_left
-		rotated = rotated[:, extra_left: -extra_right, extra_left: - extra_right]
-		return rotated
-	
+		
+		if chanel_num is 2:
+			# rotate without interpolation (order=0 makes it take nearest pixel)
+			rotated = scipy.ndimage.interpolation.rotate(img, angle, axes=(1, 0), order=0)
+			#rotation results in extra pixels on the borders
+			# We fix it assuming square shape
+			assert img.shape[0] == img.shape[1], "Given image for rotation is not of square shape :" + str(img.shape)
+			extra = rotated.shape[0]-img.shape[0]
+			extra_left = extra/2
+			extra_right = extra - extra_left
+			rotated = rotated[extra_left: -extra_right, extra_left: - extra_right]
+			return rotated
+		elif chanel_num is 3:
+			ret = np.zeros(img.shape)
+			for c in range(0, chanel_num):
+				ret[c,:,:] = _rotate(img[c,:,:], angle)
+		else:
+			raise TypeError('Wrong chanel_num: 2 or 3')
+			
 #####################################
 ######    PUBLIC FUNCTIONS    #######
 #####################################
@@ -201,7 +209,7 @@ class augmentation:
 	@staticmethod
 	def rotate(img, seg):
 		rand = random.randrange(-10,10)
-		return augmentation._rotate(img, rand), augmentation._rotate(seg, rand) 
+		return augmentation._rotate(img, rand, chanel_num=3), augmentation._rotate(seg, rand) 
 			
 class processors:
 
