@@ -366,8 +366,6 @@ class NumpyDataLayer(caffe.Layer):
 					self.p = Process(target = self.prepare_next_batch, args=(child_seed,))
 					self.p.start()
 		
-		pdb.set_trace()
-
 		top[0].data[0,...] = img
 		top[1].data[0,...] = seg
 		
