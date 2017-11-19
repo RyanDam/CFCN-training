@@ -165,7 +165,7 @@ class augmentation:
 		elif chanel_num is 3:
 			ret = np.zeros(img.shape)
 			for c in range(0, chanel_num):
-				ret[c,:,:] = _rotate(img[c,:,:], angle)
+				ret[c,:,:] = augmentation._rotate(img[c,:,:], angle)
 			return ret
 		else:
 			raise TypeError('Wrong chanel_num: 2 or 3')
