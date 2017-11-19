@@ -248,6 +248,8 @@ elif setup.RUN_MODE is 'resume-last':
         print 'RESTORE LAST STATE ', iterationNum
     else:
         raise NameError('Not found any state in %s'%setup.STATE_FOLDER)
+elif setup.RUN_MODE is 'scratch':
+    print 'SCRATCH train'
 else:
     raise NameError('Invalid RUN_MODE')
 

@@ -12,6 +12,7 @@ TEST_NUMBER = 300
 RUN_MODE = 'retrain'
 PRE_TRAIN_WEIGHTS = 'phseg_v5.caffemodel'
 # PRE_TRAIN_WEIGHTS = '/mnt/data/student/snapshot_step1/_iter_9000.caffemodel'
+RUN_MODE = 'scratch'
 
 MONITOR_FOLDER = 'monitor/%s'
 
