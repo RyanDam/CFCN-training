@@ -53,10 +53,10 @@ def to_scale(img, shape=None, chanel_num=2):
 	elif chanel_num is 3:
 		chanel, height, width = shape
 		if img.dtype == SEG_DTYPE:
-			return scipy.misc.imresize(img,(chanel, height,width,),interp="nearest").astype(SEG_DTYPE)
+			return scipy.misc.imresize(img,(chanel,height,width),interp="nearest").astype(SEG_DTYPE)
 		elif img.dtype == IMG_DTYPE:
 			factor = 256.0/np.max(img)
-			return (scipy.misc.imresize(img,(chanel, height,width,),interp="nearest")/factor).astype(IMG_DTYPE)
+			return (scipy.misc.imresize(img,(chanel,height,width),interp="nearest")/factor).astype(IMG_DTYPE)
 		else:
 			raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
 	else:
