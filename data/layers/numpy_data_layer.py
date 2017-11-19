@@ -404,8 +404,6 @@ class NumpyDataLayer(caffe.Layer):
 			img = np.expand_dims(img, 0)
 			shapeimg = img.shape
 
-			print shapeimg
-
 			imgtop = np.zeros(shapeimg)
 			if slice_idx > 0:
 				imgtop = self.img_volumes[vol_idx][slice_idx-1] 
@@ -418,6 +416,8 @@ class NumpyDataLayer(caffe.Layer):
 				imgbottom = np.expand_dims(imgbottom, 0)
 			img = np.concatenate((img, imgbottom), axis=0)
 
+			print img.shape
+
 			seg = self.seg_volumes[vol_idx][slice_idx]
 			
 			#print vol_idx, slice_idx, aug_idx
@@ -425,7 +425,11 @@ class NumpyDataLayer(caffe.Layer):
 			if self.is_relevant_slice(seg):
 				break
 		
+		print img.shape
 		img, seg = self.prepare_slice(img, seg, aug_idx)
+
+		print img.shape
+		print 'a'
 
 		try:
 			self.queue.put((img, seg))
