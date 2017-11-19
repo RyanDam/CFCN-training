@@ -226,7 +226,7 @@ class processors:
 		seg = to_scale(seg, (388,388))
 		# Now do padding for UNET, which takes 572x572
 		#seg=np.pad(seg,((92,92),(92,92)),mode='reflect')
-		img=np.pad(img,92,mode='reflect')
+		img=np.pad(img,((92,92),(92,92),(0,0)),mode='reflect')
 		return img, seg
 	
 	@staticmethod
