@@ -404,7 +404,7 @@ class NumpyDataLayer(caffe.Layer):
 			img = np.expand_dims(img, 0)
 			shapeimg = img.shape
 
-			pdb.set_trace()
+			print shapeimg
 
 			imgtop = np.zeros(shapeimg)
 			if slice_idx > 0:
