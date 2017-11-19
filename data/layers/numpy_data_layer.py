@@ -51,12 +51,12 @@ def to_scale(img, shape=None, chanel_num=2):
 		else:
 			raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
 	elif chanel_num is 3:
-		height, width, chanel = shape
+		chanel, height, width = shape
 		if img.dtype == SEG_DTYPE:
-			return scipy.misc.imresize(img,(height,width,chanel),interp="nearest").astype(SEG_DTYPE)
+			return scipy.misc.imresize(img,(chanel, height,width,),interp="nearest").astype(SEG_DTYPE)
 		elif img.dtype == IMG_DTYPE:
 			factor = 256.0/np.max(img)
-			return (scipy.misc.imresize(img,(height,width,chanel),interp="nearest")/factor).astype(IMG_DTYPE)
+			return (scipy.misc.imresize(img,(chanel, height,width,),interp="nearest")/factor).astype(IMG_DTYPE)
 		else:
 			raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
 	else:
@@ -110,18 +110,18 @@ class augmentation:
 		:return: Shifted img and seg"""
 		# slide in x direction
 		if x != 0:
-			img = np.append(img[x:,:,:], img[:x,:,:], axis=0)
+			img = np.append(img[:,x:,:], img[:,:x,:], axis=0)
 			seg = np.append(seg[x:,:], seg[:x,:], axis=0)
 		# slide in y direction
 		if y != 0:
-			img = np.append(img[:,-y:,:], img[:,:-y,:], axis=1)
+			img = np.append(img[:,:,-y:], img[:,:,:-y], axis=1)
 			seg = np.append(seg[:,-y:], seg[:,:-y], axis=1)
 		return img, seg
 
 	@staticmethod
 	def _crop(img, seg, crop_type, frac=0.95):
 	
-		height, width = img.shape
+		c, height, width = img.shape
 		
 		if crop_type == 'lt':
 			box = (0                       , 0,
@@ -142,7 +142,7 @@ class augmentation:
 			raise ValueError("Wrong crop_type. Must be lt, rt, lb, rb or c.")
 		# Do the cropping
 		x1, y1, x2, y2 = box
-		img, seg = img[y1:y2, x1:x2, :], seg[y1:y2, x1:x2]
+		img, seg = img[:, y1:y2, x1:x2], seg[y1:y2, x1:x2]
 
 		return img, seg
 	
@@ -152,14 +152,14 @@ class augmentation:
 		if angle==0:
 			angle=1
 		# rotate without interpolation (order=0 makes it take nearest pixel)
-		rotated = scipy.ndimage.interpolation.rotate(img, angle, order=0)
+		rotated = scipy.ndimage.interpolation.rotate(img, angle, axes=(2, 1), order=0)
 		#rotation results in extra pixels on the borders
 		# We fix it assuming square shape
-		assert img.shape[0] == img.shape[1], "Given image for rotation is not of square shape :" + str(img.shape)
-		extra = rotated.shape[0]-img.shape[0]
+		assert img.shape[1] == img.shape[2], "Given image for rotation is not of square shape :" + str(img.shape)
+		extra = rotated.shape[1]-img.shape[1]
 		extra_left = extra/2
 		extra_right = extra - extra_left
-		rotated = rotated[extra_left: -extra_right, extra_left: - extra_right, :]
+		rotated = rotated[:, extra_left: -extra_right, extra_left: - extra_right]
 		return rotated
 	
 #####################################
@@ -222,11 +222,11 @@ class processors:
 	
 	@staticmethod
 	def plain_UNET_processor(img,seg):
-		img = to_scale(img, (388,388, 3), chanel_num=3)
+		img = to_scale(img, (3, 388,388), chanel_num=3)
 		seg = to_scale(seg, (388,388))
 		# Now do padding for UNET, which takes 572x572
 		#seg=np.pad(seg,((92,92),(92,92)),mode='reflect')
-		img=np.pad(img,((92,92),(92,92),(0,0)),mode='reflect')
+		img=np.pad(img,((0,0), (92,92),(92,92)),mode='reflect')
 		return img, seg
 	
 	@staticmethod
@@ -238,7 +238,10 @@ class processors:
 	@staticmethod
 	def remove_non_liver(img, seg):
 		# Remove background !
-		img = np.multiply(img,np.clip(seg,0,1).repeat(3, axis=2))
+		mask = np.clip(seg,0,1)
+		mask = np.expand_dims(mask, axis=0)
+		mask = mask.repeat(3, axis=0)
+		img = np.multiply(img,mask)
 		return img, seg
 	
 	@staticmethod
@@ -268,14 +271,14 @@ class processors:
 		#y_pad += SAFETY_PAD
 		
 		x1 = max(0, x1-x_pad)
-		x2 = min(img.shape[1], x2+x_pad)
+		x2 = min(img.shape[2], x2+x_pad)
 		y1 = max(0, y1-y_pad)
-		y2 = min(img.shape[0], y2+y_pad)  
+		y2 = min(img.shape[1], y2+y_pad)  
 		
-		img = img[y1:y2+1, x1:x2+1, :]
+		img = img[:, y1:y2+1, x1:x2+1]
 		seg = seg[y1:y2+1, x1:x2+1]
 		
-		img = to_scale(img, (388,388), chanel_num=3)
+		img = to_scale(img, (3,388,388), chanel_num=3)
 		seg = to_scale(seg, (388,388))
 		# All non-lesion is background
 		seg[seg==1]=0
@@ -284,7 +287,7 @@ class processors:
 		
 		# Now do padding for UNET, which takes 572x572
 		#seg=np.pad(seg,((92,92),(92,92)),mode='reflect')
-		img=np.pad(img,((92,92),(92,92),(0,0)),mode='reflect')
+		img=np.pad(img,((0,0), (92,92),(92,92)),mode='reflect')
 		return img, seg
 
 import config
