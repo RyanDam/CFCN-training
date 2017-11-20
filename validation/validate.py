@@ -79,19 +79,29 @@ def miccaiimshow(img,seg,preds,fname,titles=None, plot_separate_img=True):
 	plt.savefig(fname)
 	plt.close()
 	
-def to_scale(img, shape=None):
+def to_scale(img, shape=None, chanel_num=2):
 	if shape is None:
 		shape = config.slice_shape
 		
-	height, width = shape
-	if img.dtype == SEG_DTYPE:
-		return scipy.misc.imresize(img,(height,width),interp="nearest").astype(SEG_DTYPE)
-	elif img.dtype == IMG_DTYPE:
-		max_ = np.max(img)
-		factor = 256.0/max_ if max_ != 0 else 1
-		return (scipy.misc.imresize(img,(height,width),interp="nearest")/factor).astype(IMG_DTYPE)
+	if chanel_num is 2:
+		height, width = shape
+		if img.dtype == SEG_DTYPE:
+			return scipy.misc.imresize(img,(height,width),interp="nearest").astype(SEG_DTYPE)
+		elif img.dtype == IMG_DTYPE:
+			factor = 256.0/np.max(img)
+			return (scipy.misc.imresize(img,(height,width),interp="nearest")/factor).astype(IMG_DTYPE)
+		else:
+			raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
+	elif chanel_num is 3:
+		chanel, height, width = shape
+
+		ret = np.zeros([chanel, height, width])
+		for c in range(0,chanel):
+			ret[c,:,:] = to_scale(img[c,:,:], (height, width))
+
+		return ret
 	else:
-		raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
+		raise TypeError('Wrong chanel_num: 2 or 3')
 
 def norm_hounsfield_ryan(arr, c_min=800, c_max=1400):
 	arr = arr.astype(IMG_DTYPE)
@@ -116,12 +126,6 @@ def downscale_img_label(imgvol,label_vol):
 	
 	imgvol_downscaled = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2]))
 	label_vol_downscaled = np.zeros((config.slice_shape[0],config.slice_shape[1],imgvol.shape[2]))
-
-	# Copy image volume
-	#copy_imgvol = np.copy(imgvol)
-	#Truncate metal and high absorbative objects
-	logging.info('Found'+str(np.sum(imgvol>1200))+'values > 1200 !!')
-	imgvol[imgvol>1200] = 0
 	
 	for i in range(imgvol.shape[2]):
 		#Get the current slc, normalize and downscale
@@ -202,8 +206,6 @@ def zoomliver_UNET_processor(img, seg):
 	""" Custom preprocessing of img,seg for UNET architecture:
 	Crops the background and upsamples the found patch."""
 	
-	# Remove background !
-	img = np.multiply(img,np.clip(seg,0,1))
 	# get patch size
 	col_maxes = np.max(seg, axis=0) # a row
 	row_maxes = np.max(seg, axis=1)# a column
@@ -217,18 +219,23 @@ def zoomliver_UNET_processor(img, seg):
 	height= y2-y1
 	MIN_WIDTH = 60
 	MIN_HEIGHT= 60
-	x_pad = (MIN_WIDTH - width) / 2 if width < MIN_WIDTH else 0
-	y_pad = (MIN_HEIGHT - height)/2 if height < MIN_HEIGHT else 0
+	x_pad = int((MIN_WIDTH - width) / 2.0 if width < MIN_WIDTH else 0)
+	y_pad = int((MIN_HEIGHT - height)/2.0 if height < MIN_HEIGHT else 0)
+	
+	# Additional padding to make sure boundary lesions are included
+	#SAFETY_PAD = 15
+	#x_pad += SAFETY_PAD
+	#y_pad += SAFETY_PAD
 	
 	x1 = max(0, x1-x_pad)
-	x2 = min(img.shape[1], x2+x_pad)
+	x2 = min(img.shape[2], x2+x_pad)
 	y1 = max(0, y1-y_pad)
-	y2 = min(img.shape[0], y2+y_pad)  
+	y2 = min(img.shape[1], y2+y_pad)  
 	
-	img = img[y1:y2+1, x1:x2+1]
+	img = img[:, y1:y2+1, x1:x2+1]
 	seg = seg[y1:y2+1, x1:x2+1]
 	
-	img = to_scale(img, (388,388))
+	img = to_scale(img, (3,388,388), chanel_num=3)
 	seg = to_scale(seg, (388,388))
 	# All non-lesion is background
 	seg[seg==1]=0
@@ -237,8 +244,8 @@ def zoomliver_UNET_processor(img, seg):
 	
 	# Now do padding for UNET, which takes 572x572
 	#seg=np.pad(seg,((92,92),(92,92)),mode='reflect')
-	img=np.pad(img,92,mode='reflect')
-	return img, (x1,x2,y1,y2)
+	img=np.pad(img,((0,0), (92,92),(92,92)), mode='reflect')
+	return img, seg
 
 
 if __name__ == '__main__':
@@ -294,12 +301,28 @@ if __name__ == '__main__':
 			#iterate slices in volume and do prediction
 			logging.info("Predicting " + volpath[1])
 			for i in range(imgvol_downscaled.shape[2]):
-				slc = imgvol_downscaled[:,:,i]
+				img = imgvol_downscaled[:,:,i]
+
+				img = np.expand_dims(img, 0)
+				shapeimg = img.shape
+
+				imgtop = np.zeros(shapeimg)
+				if slice_idx > 0:
+					imgtop = imgvol_downscaled[:,:,slice_idx-1] 
+					imgtop = np.expand_dims(imgtop, 0)
+				img = np.concatenate((imgtop,img), axis=0)
+
+				imgbottom = np.zeros(shapeimg)
+				if slice_idx < imgvol_downscaled.shape[2] - 1:
+					imgbottom  = imgvol_downscaled[:,:,slice_idx+1] 
+					imgbottom = np.expand_dims(imgbottom, 0)
+				img = np.concatenate((img, imgbottom), axis=0)
+
 				#create mirrored slc for unet
-				slc = np.pad(slc,((92,92),(92,92)),mode='reflect')
+				slc = np.pad(img,((0,0),(92,92),(92,92)),mode='reflect')
 
 				#load slc into network and do forward pass
-				net.blobs['data'].data[...] = slc
+				net.blobs['data'].data[0,...] = slc
 				net.forward()
 
 				#now save raw probabilities
@@ -350,9 +373,21 @@ if __name__ == '__main__':
 
 			#we again iterate over all slices in the volume
 			for i in range(imgvol_downscaled.shape[2]):
-				slc = imgvol_downscaled[:,:,i]
-				#create mirrored slc for unet
-				#slc = np.pad(slc,((92,92),(92,92)),mode='reflect')
+				img = imgvol_downscaled[:,:,i]
+				img = np.expand_dims(img, 0)
+				shapeimg = img.shape
+
+				imgtop = np.zeros(shapeimg)
+				if slice_idx > 0:
+					imgtop = imgvol_downscaled[:,:,slice_idx-1] 
+					imgtop = np.expand_dims(imgtop, 0)
+				img = np.concatenate((imgtop,img), axis=0)
+
+				imgbottom = np.zeros(shapeimg)
+				if slice_idx < imgvol_downscaled.shape[2] - 1:
+					imgbottom  = imgvol_downscaled[:,:,slice_idx+1] 
+					imgbottom = np.expand_dims(imgbottom, 0)
+				img = np.concatenate((img, imgbottom), axis=0)
 
 				#now we crop and upscale the liver
 				slc_crf_pred_liver = crf_pred_liver[:, :, i].astype(SEG_DTYPE)
@@ -361,9 +396,9 @@ if __name__ == '__main__':
 				if np.count_nonzero(slc_crf_pred_liver) == 0:
 					probvol_step_two[:,:,i,:] = 0
 				else:
-					slc, bbox = zoomliver_UNET_processor(slc, slc_crf_pred_liver)
+					slc, bbox = zoomliver_UNET_processor(img, slc_crf_pred_liver)
 					#load slc into network and do forward pass
-					net.blobs['data'].data[...] = slc
+					net.blobs['data'].data[0,...] = slc
 					net.forward()
 	
 					#scale output back down and insert into the probability volume
