@@ -88,8 +88,11 @@ def to_scale(img, shape=None, chanel_num=2):
 		if img.dtype == SEG_DTYPE:
 			return scipy.misc.imresize(img,(height,width),interp="nearest").astype(SEG_DTYPE)
 		elif img.dtype == IMG_DTYPE:
-			factor = 256.0/np.max(img)
-			return (scipy.misc.imresize(img,(height,width),interp="nearest")/factor).astype(IMG_DTYPE)
+			if np.max(img) > 0:
+				factor = 256.0/np.max(img)
+				return (scipy.misc.imresize(img,(height,width),interp="nearest")/factor).astype(IMG_DTYPE)
+			else: # this is a special case, when upper-est slice have all zeros, or bottom-est
+				return (scipy.misc.imresize(img,(height,width),interp="nearest")).astype(IMG_DTYPE)
 		else:
 			raise TypeError('Error. To scale the image array, its type must be np.uint8 or np.float64. (' + str(img.dtype) + ')')
 	elif chanel_num is 3:
