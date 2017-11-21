@@ -245,7 +245,7 @@ def zoomliver_UNET_processor(img, seg):
 	# Now do padding for UNET, which takes 572x572
 	#seg=np.pad(seg,((92,92),(92,92)),mode='reflect')
 	img=np.pad(img,((0,0), (92,92),(92,92)), mode='reflect')
-	return img, seg
+	return img, (x1,x2,y1,y2)
 
 
 if __name__ == '__main__':
