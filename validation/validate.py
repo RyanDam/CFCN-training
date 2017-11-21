@@ -307,14 +307,14 @@ if __name__ == '__main__':
 				shapeimg = img.shape
 
 				imgtop = np.zeros(shapeimg)
-				if slice_idx > 0:
-					imgtop = imgvol_downscaled[:,:,slice_idx-1] 
+				if i > 0:
+					imgtop = imgvol_downscaled[:,:,i-1] 
 					imgtop = np.expand_dims(imgtop, 0)
 				img = np.concatenate((imgtop,img), axis=0)
 
 				imgbottom = np.zeros(shapeimg)
-				if slice_idx < imgvol_downscaled.shape[2] - 1:
-					imgbottom  = imgvol_downscaled[:,:,slice_idx+1] 
+				if i < imgvol_downscaled.shape[2] - 1:
+					imgbottom  = imgvol_downscaled[:,:,i+1] 
 					imgbottom = np.expand_dims(imgbottom, 0)
 				img = np.concatenate((img, imgbottom), axis=0)
 
@@ -378,14 +378,14 @@ if __name__ == '__main__':
 				shapeimg = img.shape
 
 				imgtop = np.zeros(shapeimg)
-				if slice_idx > 0:
-					imgtop = imgvol_downscaled[:,:,slice_idx-1] 
+				if i > 0:
+					imgtop = imgvol_downscaled[:,:,i-1] 
 					imgtop = np.expand_dims(imgtop, 0)
 				img = np.concatenate((imgtop,img), axis=0)
 
 				imgbottom = np.zeros(shapeimg)
-				if slice_idx < imgvol_downscaled.shape[2] - 1:
-					imgbottom  = imgvol_downscaled[:,:,slice_idx+1] 
+				if i < imgvol_downscaled.shape[2] - 1:
+					imgbottom  = imgvol_downscaled[:,:,i+1] 
 					imgbottom = np.expand_dims(imgbottom, 0)
 				img = np.concatenate((img, imgbottom), axis=0)
 
