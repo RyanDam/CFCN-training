@@ -19,9 +19,9 @@ from numpy_data_layer import processors
 # processors_list = [processors.plain_UNET_processor]
 
 # Step 1
-# processors_list = [processors.plain_UNET_processor, processors.liveronly_label_processor]
+processors_list = [processors.plain_UNET_processor, processors.liveronly_label_processor]
 # Step 2
-processors_list = [processors.remove_non_liver, processors.zoomliver_UNET_processor] # original in paper
+# processors_list = [processors.remove_non_liver, processors.zoomliver_UNET_processor] # original in paper
 # processors_list = [processors.remove_non_liver, processors.plain_UNET_processor]
 
 # Shuffle slices and their augmentations globally across the database
@@ -41,9 +41,9 @@ augmentation_factor = 10
 # select_slices = "all" # step 1
 # step 1
 # select_slices = 'lesion-only' # For step 1.1, learn liver with lesion is one
-# select_slices = 'liver-lesion' # For step 1.2 learn all healhty liver
+select_slices = 'liver-lesion' # For step 1.2 learn all healhty liver
 # step 2
-select_slices = 'lesion-only'
+# select_slices = 'lesion-only'
 
 more_small_livers = False
 # Percentage of the image, such that any liver small than that is considered small
