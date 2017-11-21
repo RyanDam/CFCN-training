@@ -11,7 +11,7 @@ TEST_NUMBER = 300
 # STATE_FILE = '/mnt/data/student/snapshot/_iter_9000.solverstate'
 RUN_MODE = 'retrain'
 # PRE_TRAIN_WEIGHTS = 'phseg_v5.caffemodel'
-PRE_TRAIN_WEIGHTS = '/mnt/data/student/snapshot_step1_3input_enhance/_iter_17500.caffemodel'
+PRE_TRAIN_WEIGHTS = '/mnt/data/student/snapshot_step1_3input_enhance2/_iter_1000.caffemodel'
 # RUN_MODE = 'scratch'
 
 MONITOR_FOLDER = 'monitor/%s'
