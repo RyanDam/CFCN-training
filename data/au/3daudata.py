@@ -13,7 +13,7 @@ import traceback
 from time import sleep
 
 inputdir = "/mnt/data/student/3Dircadb1/niftis_segmented_all_inter"
-outputdir = "/mnt/data/student/augurment"
+outputdir = "/mnt/data/student/3Dircadb1/augurment"
 if not os.path.exists(outputdir):
     os.makedirs(outputdir)
 
