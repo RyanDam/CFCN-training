@@ -60,7 +60,7 @@ def read_dicom_series(directory, filepattern = "image_*"):
 # Path to root folder of dataset : 3Dircadb1
 DATA_PATH = '.'
 # path that will contain the output niftis
-OUTPUT_PATH = './niftis_segmented_all/'
+OUTPUT_PATH = '~/Data/niftis_segmented_all_inter/'
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
@@ -84,7 +84,7 @@ for i, volume_dirname in enumerate(natsort.natsorted(os.listdir(DATA_PATH))):
     print 'Volume',volume_dirname
     relevant_masks = 0 # number of relevant masks files found for this volume (liver or tumor)
     mask_dirname = os.path.join(volume_fulldirname,"MASKS_DICOM")
-    patient_dirname = os.path.join(volume_fulldirname,"PATIENT_DICOM_NORM")
+    patient_dirname = os.path.join(volume_fulldirname,"PATIENT_DICOM_NORM_INTER")
     volume_id = volume_dirname.replace("3Dircadb1.","") #id of volume ("1" to "20")
     # Save the volume id
     volume_ids.append(int(volume_id))
