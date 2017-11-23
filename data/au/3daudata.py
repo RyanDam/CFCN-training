@@ -2,12 +2,15 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt 
 
+import sys, os, glob
+from multiprocessing import Pool, Process, Queue
 import numpy as np
 import math
 import pdb
 from rmath import topi, rotu, rotx, roty, rotz, transu
 import IPython
 import traceback
+from time import sleep
 
 inputdir = "/mnt/data/student/3Dircadb1/niftis_segmented_all_inter"
 outputdir = "/mnt/data/student/augurment"
@@ -75,70 +78,83 @@ def buildMatrix(u, theta, W, H, S):
     rotaxis = rotu(u, theta)
     return np.dot(np.dot(toorigin, rotaxis), tozero)
 
-try:
-    for i in xrange(1, 21):
+def processTask(fr, to):
+
+    for i in xrange(fr, to):
         for an in [1, 2]:
-            for uu, ui in zip([(1, 1, 1), (1, 1, -1)], [0, 1])
+            for uu, ui in zip([(1, 1, 1), (1, 1, -1)], [0, 1]):
+                print "Begin ",i," angle: ",(an*30)," uu ", uu
 
-            imgpath = "%s/image%02d.npy"%inputdir,i
-            maspath = "%s/label%02d.npy"%inputdir,i
-            oimgpath = "%s/image%02d.npy"%outputdir,(i + 20*an + 20*ui)
-            omaspath = "%s/label%02d.npy"%outputdir,(i + 20*an + 20*ui)
+                imgpath = "%s/image%02d.npy"%(inputdir,i)
+                maspath = "%s/label%02d.npy"%(inputdir,i)
+                oimgpath = "%s/image%02d.npy"%(outputdir,(i + 20*an + 20*ui))
+                omaspath = "%s/label%02d.npy"%(outputdir,(i + 20*an + 20*ui))
 
-            vol = np.load(imgpath)
-            vol = vol - np.min(vol) # shift to [0 2047]
-            mas = np.load(maspath)
-            mas = mas.astype(np.int16)
+                vol = np.load(imgpath)
+                vol = vol - np.min(vol) # shift to [0 2047]
+                mas = np.load(maspath)
+                mas = mas.astype(np.int16)
 
-            w, h, s = vol.shape
-            assert w == h
-            WIDTH = w
-            HEIGHT = h
-            SLICE = w
+                w, h, s = vol.shape
+                assert w == h
+                WIDTH = w
+                HEIGHT = h
+                SLICE = w
 
-            padMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
-            padMas = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
+                padMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
+                padMas = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
 
-            beginCenter = (WIDTH - s)
-            minus = beginCenter%2
-            beginCenter = int(beginCenter/2)
+                beginCenter = (WIDTH - s)
+                minus = beginCenter%2
+                beginCenter = int(beginCenter/2)
 
-            padMat[:,:,(beginCenter):(SLICE-beginCenter-minus)] = vol
-            padMas[:,:,(beginCenter):(SLICE-beginCenter-minus)] = mas
-            del vol
-            del mas
+                padMat[:,:,(beginCenter):(SLICE-beginCenter-minus)] = vol
+                padMas[:,:,(beginCenter):(SLICE-beginCenter-minus)] = mas
+                del vol
+                del mas
 
-            transMat = buildMatrix(uu, an*30, WIDTH, HEIGHT, SLICE)
-            transMatt = np.linalg.inv(transMat)
+                transMat = buildMatrix(uu, an*30, WIDTH, HEIGHT, SLICE)
+                transMatt = np.linalg.inv(transMat)
 
-            tarMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
-            tarMas = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
+                tarMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
+                tarMas = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
 
-            for z in xrange(0, SLICE):
-                for y in xrange(0, HEIGHT):
-                    for x in xrange(0, WIDTH):
-                        vec = np.array([x, y, z, 1]).astype(np.float).reshape([4,1])
-                        tar = np.dot(transMatt, vec)
-                        tx, ty, tz, p = tar.astype(np.int16)
-                        if (tx >= 0 and tx < WIDTH) and (ty >= 0 and ty < HEIGHT) and (tz >= 0 and tz < SLICE):
-                            tarMat[y, x, z] = padMat[ty, tx, tz]
-                            tarMas[y, x, z] = padMas[ty, tx, tz]
-                print "Done slice ", z
-
-            oexpath = "%s/example/%02d/"%outputdir,(i + 20*an + 20*ui)
-            if not os.path.exists(oexpath):
-                os.makedirs(oexpath)
-
-            for z in xrange(0, SLICE):
+                for z in xrange(0, SLICE):
+                    for y in xrange(0, HEIGHT):
+                        for x in xrange(0, WIDTH):
+                            vec = np.array([x, y, z, 1]).astype(np.float).reshape([4,1])
+                            tar = np.dot(transMatt, vec)
+                            tx, ty, tz, p = tar.astype(np.int16)
+                            if (tx >= 0 and tx < WIDTH) and (ty >= 0 and ty < HEIGHT) and (tz >= 0 and tz < SLICE):
+                                tarMat[y, x, z] = padMat[ty, tx, tz]
+                                tarMas[y, x, z] = padMas[ty, tx, tz]
                 
-                fname = "%s/img%03d.png"%oexpath,z
-                miccaiimshow(tarMat[:,:,z], tarMas[:,:,z], [tarMas[:,:,z]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
-                print "Done save ", z
-            
-            pdb.set_trace()
-            print 1
+                print "Done Trans ", i
 
-except:
-    traceback.print_exc()
-    print '\n'
-    IPython.embed()
+                oexpath = "%s/example/%02d/"%(outputdir,(i + 20*an + 20*ui))
+                if not os.path.exists(oexpath):
+                    os.makedirs(oexpath)
+
+                for z in xrange(0, SLICE):
+                    fname = "%s/img%03d.png"%(oexpath,z)
+                    miccaiimshow(tarMat[:,:,z], tarMas[:,:,z], [tarMas[:,:,z]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
+                
+                print "Done Save ", i
+
+p1 = Process(target = processTask, args=(1, 4))
+p1.start()
+
+p2 = Process(target = processTask, args=(4, 7))
+p2.start()
+        
+p3 = Process(target = processTask, args=(7, 10))
+p3.start()
+
+p4 = Process(target = processTask, args=(10, 13))
+p4.start()
+
+p5 = Process(target = processTask, args=(13, 16))
+p5.start()
+
+p6 = Process(target = processTask, args=(16, 21))
+p6.start()
