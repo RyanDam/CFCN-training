@@ -99,8 +99,10 @@ def processTask(fr, to):
                 assert w == h
                 WIDTH = w
                 HEIGHT = h
-                
-
+                SLICE = s
+                if SLICE < w:
+                    SLICE = w
+                    
                 padMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
                 padMas = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
 
