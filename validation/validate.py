@@ -28,7 +28,7 @@ SEG_DTYPE = np.uint8
 
 def miccaiimshow(img,seg,preds,fname,titles=None, plot_separate_img=True):
 	"""Takes raw image img, seg in range 0-2, list of predictions in range 0-2"""
-	plt.figure(figsize=(25,25))
+	plt.figure(figsize=(15,5))
 	ALPHA=1
 	n_plots = len(preds)
 	subplot_offset = 0
@@ -39,7 +39,7 @@ def miccaiimshow(img,seg,preds,fname,titles=None, plot_separate_img=True):
 		n_plots += 1
 		subplot_offset = 1
 		plt.subplot(1,n_plots,1)
-		plt.subplots_adjust(wspace=0, hspace=0)
+		# plt.subplots_adjust(wspace=0, hspace=0)
 		plt.title("Image")
 		plt.axis('off')
 		plt.imshow(img,cmap="gray")
@@ -342,7 +342,7 @@ if __name__ == '__main__':
 			#calculate scores for liver
 			pred_to_use = np.logical_or(probvol.argmax(3)==1,probvol.argmax(3)==2)
 			label_to_use = np.logical_or(labelvol_downscaled==1, labelvol_downscaled==2)
-
+			
 			voxelspacing = voxsize[1]
 			volumescore_liver = scorer(pred_to_use, label_to_use, voxelspacing)
 
@@ -461,6 +461,12 @@ if __name__ == '__main__':
 					
 					miccaiimshow(imgvol_downscaled[:,:,i], labelvol_downscaled[:,:,i], [labelvol_downscaled[:,:,i],pred_vol_bothsteps[:,:,i]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
 			
+			fname = os.path.join(config.output_dir , os.path.basename(volpath[1]))
+			fname += ".npy"
+			logging.info("Saving prediction to disk")
+			logging.info(fname)
+			np.save(fname, pred_vol_bothsteps)
+
 			logging.info("Now running LESION CRF on Liver")
 			crf_params = {'ignore_memory':True, 'bilateral_intensity_std': 0.16982742320252908, 'bilateral_w': 6.406401876489639, 
 					'pos_w': 2.3422381267344132, 'bilateral_x_std': 284.5377968491542, 'pos_x_std': 23.636281254341867, 
@@ -564,27 +570,6 @@ if __name__ == '__main__':
 		logging.info("ASSD " + str(get_average_score(overall_score_lesion_crf, 'assd')))
 		logging.info("MSD " + str(get_average_score(overall_score_lesion_crf, 'msd')))
 		logging.info("=========================================")
-		
-	#Creating CSV
-	
-
-		# csvarray = np.zeros((len(overall_score_liver),13))
-		# csvarray[:,0] = range(1,len(overall_score_liver)+1)
-	
-		# #csvarray[:,1] = [s['dice'] for s in overall_score_liver]
-	
-		# d = overall_score_liver.iteritems()
-		# for i in range(6):
-		# 	d.next()[1]
-		# 	csvarray[:,i+1] = d.next()[1]
-	
-		# d = overall_score_lesion.iteritems()
-		# for i in range(6):
-		# 	d.next()[1]
-		# 	csvarray[:,i+1+6] = d.next()[1]
-	
-		# np.savetxt("Numbers.csv", csvarray, delimiter=",")
-		
 		
 	except:
 		logging.exception("Exception happend...")
