@@ -99,17 +99,22 @@ def processTask(fr, to):
                 assert w == h
                 WIDTH = w
                 HEIGHT = h
-                SLICE = w
+                
 
                 padMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
                 padMas = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
 
-                beginCenter = (WIDTH - s)
-                minus = beginCenter%2
-                beginCenter = int(beginCenter/2)
-
-                padMat[:,:,(beginCenter):(SLICE-beginCenter-minus)] = vol
-                padMas[:,:,(beginCenter):(SLICE-beginCenter-minus)] = mas
+                if s <= w:
+                    SLICE = w
+                    beginCenter = (WIDTH - s)
+                    minus = beginCenter%2
+                    beginCenter = int(beginCenter/2)
+                    padMat[:,:,(beginCenter):(SLICE-beginCenter-minus)] = vol
+                    padMas[:,:,(beginCenter):(SLICE-beginCenter-minus)] = mas
+                else:
+                    SLICE = s
+                    padMat[:,:,:] = vol
+                    padMas[:,:,:] = mas
                 del vol
                 del mas
 
@@ -141,20 +146,23 @@ def processTask(fr, to):
                 
                 print "Done Save ", i
 
-p1 = Process(target = processTask, args=(1, 4))
-p1.start()
+# p1 = Process(target = processTask, args=(1, 4))
+# p1.start()
 
-p2 = Process(target = processTask, args=(4, 7))
-p2.start()
+# p2 = Process(target = processTask, args=(4, 7))
+# p2.start()
         
-p3 = Process(target = processTask, args=(7, 10))
-p3.start()
+# p3 = Process(target = processTask, args=(7, 10))
+# p3.start()
 
-p4 = Process(target = processTask, args=(10, 13))
-p4.start()
+# p4 = Process(target = processTask, args=(10, 13))
+# p4.start()
 
-p5 = Process(target = processTask, args=(13, 16))
-p5.start()
+# p5 = Process(target = processTask, args=(13, 16))
+# p5.start()
 
-p6 = Process(target = processTask, args=(16, 21))
-p6.start()
+# p6 = Process(target = processTask, args=(16, 21))
+# p6.start()
+
+p = Process(target = processTask, args=(19, 21))
+p.start()
