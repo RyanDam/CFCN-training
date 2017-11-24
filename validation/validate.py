@@ -150,21 +150,27 @@ def scorer(pred,label,vxlspacing):
 	volscores = {}
 
 	volscores['dice'] = metric.dc(pred,label)
-	volscores['jaccard'] = metric.binary.jc(pred,label)
-	volscores['voe'] = 1. - volscores['jaccard']
-	if np.sum(label) > 0 and np.sum(pred) > 0:
-		volscores['rvd'] = metric.ravd(label,pred)
-	else:
-		volscores['rvd'] = 0
+	volscores['jaccard'] = 0
+	volscores['voe'] = 0
+	volscores['rvd'] = 0
+	volscores['assd'] = 0
+	volscores['msd'] = 0
 
-	if np.count_nonzero(pred) ==0 or np.count_nonzero(label)==0:
-		volscores['assd'] = 0
-		volscores['msd'] = 0
-	else:
-		evalsurf = Surface(pred,label,physical_voxel_spacing = vxlspacing,mask_offset = [0.,0.,0.], reference_offset = [0.,0.,0.])
-		volscores['assd'] = evalsurf.get_average_symmetric_surface_distance()
+	# volscores['jaccard'] = metric.binary.jc(pred,label)
+	# volscores['voe'] = 1. - volscores['jaccard']
+	# if np.sum(label) > 0 and np.sum(pred) > 0:
+	# 	volscores['rvd'] = metric.ravd(label,pred)
+	# else:
+	# 	volscores['rvd'] = 0
+
+	# if np.count_nonzero(pred) ==0 or np.count_nonzero(label)==0:
+	# 	volscores['assd'] = 0
+	# 	volscores['msd'] = 0
+	# else:
+	# 	evalsurf = Surface(pred,label,physical_voxel_spacing = vxlspacing,mask_offset = [0.,0.,0.], reference_offset = [0.,0.,0.])
+	# 	volscores['assd'] = evalsurf.get_average_symmetric_surface_distance()
 	
-		volscores['msd'] = metric.hd(label,pred,voxelspacing=vxlspacing)
+	# 	volscores['msd'] = metric.hd(label,pred,voxelspacing=vxlspacing)
 
 
 
