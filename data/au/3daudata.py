@@ -138,6 +138,9 @@ def processTask(fr, to):
                 
                 print "Done Trans ", i
 
+                np.save(oimgpath, tarMat)
+                np.save(omaspath, tarMas)
+
                 oexpath = "%s/example/%02d/"%(outputdir,(i + 20*an + 20*ui))
                 if not os.path.exists(oexpath):
                     os.makedirs(oexpath)
