@@ -151,23 +151,20 @@ def processTask(fr, to):
                 
                 print "Done Save ", i
 
-# p1 = Process(target = processTask, args=(1, 4))
-# p1.start()
+p1 = Process(target = processTask, args=(1, 4))
+p1.start()
 
-# p2 = Process(target = processTask, args=(4, 7))
-# p2.start()
+p2 = Process(target = processTask, args=(4, 7))
+p2.start()
         
-# p3 = Process(target = processTask, args=(7, 10))
-# p3.start()
+p3 = Process(target = processTask, args=(7, 10))
+p3.start()
 
-# p4 = Process(target = processTask, args=(10, 13))
-# p4.start()
+p4 = Process(target = processTask, args=(10, 13))
+p4.start()
 
-# p5 = Process(target = processTask, args=(13, 16))
-# p5.start()
+p5 = Process(target = processTask, args=(13, 16))
+p5.start()
 
-# p6 = Process(target = processTask, args=(16, 21))
-# p6.start()
-
-p = Process(target = processTask, args=(19, 21))
-p.start()
+p6 = Process(target = processTask, args=(16, 21))
+p6.start()
