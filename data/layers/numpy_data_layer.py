@@ -210,6 +210,7 @@ class processors:
 	
 	@staticmethod
 	def plain_UNET_processor(img,seg):
+		img = img.astype(IMG_DTYPE)
 		img = to_scale(img, (388,388))
 		seg = to_scale(seg, (388,388))
 		# Now do padding for UNET, which takes 572x572
