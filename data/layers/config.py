@@ -75,7 +75,7 @@ irca_numpy_all = [\
 (320, IRCA_NUMPY_BASE_PATH+"image20.npy",IRCA_NUMPY_BASE_PATH+"label20.npy")]
 
 
-BASE_AU_PATH = "/mnt/data/student/3Dircadb1/augurment"
+BASE_AU_PATH = "/mnt/data/student/3Dircadb1/augurment/"
 irca_augumentation_all = [\
 (121, BASE_AU_PATH+"image21.npy", BASE_AU_PATH+"label21.npy"),
 (122, BASE_AU_PATH+"image22.npy", BASE_AU_PATH+"label22.npy"),
