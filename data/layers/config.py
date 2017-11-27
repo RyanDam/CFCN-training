@@ -19,10 +19,10 @@ from numpy_data_layer import processors
 # processors_list = [processors.plain_UNET_processor]
 
 # Step 1
-# processors_list = [processors.plain_UNET_processor, processors.liveronly_label_processor]
+processors_list = [processors.plain_UNET_processor, processors.liveronly_label_processor]
 # Step 2
 # processors_list = [processors.remove_non_liver, processors.zoomliver_UNET_processor] # original in paper
-processors_list = [processors.remove_non_liver, processors.plain_UNET_processor]
+# processors_list = [processors.remove_non_liver, processors.plain_UNET_processor]
 
 # Shuffle slices and their augmentations globally across the database
 # You might want to set to False if dataset = test_set
