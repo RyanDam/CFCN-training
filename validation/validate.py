@@ -429,11 +429,11 @@ if __name__ == '__main__':
 					
 					miccaiimshow(imgvol_downscaled[:,:,i], labelvol_downscaled[:,:,i], [labelvol_downscaled[:,:,i],pred_vol_bothsteps[:,:,i]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
 			
-			fname = os.path.join(config.output_dir , os.path.basename(volpath[1]))
-			fname += ".npy"
-			logging.info("Saving prediction to disk")
-			logging.info(fname)
-			np.save(fname, pred_vol_bothsteps)
+			# fname = os.path.join(config.output_dir , os.path.basename(volpath[1]))
+			# fname += ".npy"
+			# logging.info("Saving prediction to disk")
+			# logging.info(fname)
+			# np.save(fname, pred_vol_bothsteps)
 
 			logging.info("Now running LESION CRF on Liver")
 			crf_params = {'ignore_memory':True, 'bilateral_intensity_std': 0.16982742320252908, 'bilateral_w': 6.406401876489639, 
