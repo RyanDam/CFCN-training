@@ -227,6 +227,8 @@ class processors:
 	
 	@staticmethod
 	def remove_non_liver(img, seg):
+		img = img.astype(IMG_DTYPE)
+		seg = seg.astype(SEG_DTYPE)
 		# Remove background !
 		img = np.multiply(img,np.clip(seg,0,1))
 		return img, seg
