@@ -54,11 +54,14 @@ dataset = irca_all[:]
 #Paths to models. first element corresponds to first fold, second element to second fold etc.
 # models = ['/mnt/data/student/deploy/our/step1_weights.caffemodel']*5
 # models_step_two = ['/mnt/data/student/deploy/our/step2_weights.caffemodel']*5
+models = ['/mnt/data/student/snapshot_step1_1input_enhanced/_iter_41500.caffemodel']*20
+models_step_two = ['/mnt/data/student/deploy/our/step2_weights.caffemodel']*20
+deployprototxt = ['/mnt/data/student/deploy/step1_deploy.prototxt']*20
+deployprototxt_step_two = ['/mnt/data/student/deploy/step2_deploy.prototxt']*20
 
-models = ['/mnt/data/student/snapshot_step1_3input_enhance2/_iter_1000.caffemodel']*20
-models_step_two = ['/mnt/data/student/snapshot_step2_3input/_iter_62000.caffemodel']*20
-
-deployprototxt = ['/mnt/data/student/deploy/step1_deploy_3input.prototxt']*20
-deployprototxt_step_two = ['/mnt/data/student/deploy/step2_deploy_3input.prototxt']*20
+# models = ['/mnt/data/student/snapshot_step1_3input_enhance2/_iter_1000.caffemodel']*20
+# models_step_two = ['/mnt/data/student/snapshot_step2_3input/_iter_62000.caffemodel']*20
+# deployprototxt = ['/mnt/data/student/deploy/step1_deploy_3input.prototxt']*20
+# deployprototxt_step_two = ['/mnt/data/student/deploy/step2_deploy_3input.prototxt']*20
 
 
