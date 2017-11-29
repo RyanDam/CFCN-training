@@ -78,17 +78,17 @@ def buildMatrix(u, theta, W, H, S):
     rotaxis = rotu(u, theta)
     return np.dot(np.dot(toorigin, rotaxis), tozero)
 
-def processTask(fr, to):
+def processTask(fr, to, azip, uzip):
 
     for i in xrange(fr, to):
-        for an in [1, 2]:
-            for uu, ui in zip([(1, 1, 1), (1, 1, -1)], [0, 1]):
-                print "Begin ",i," angle: ",(an*30)," uu ", uu
+        for an, ai in azip:
+            for uu, ui in uzip:
+                print "Begin ",i," angle: ",an," uu ", uu
 
                 imgpath = "%s/image%02d.npy"%(inputdir,i)
                 maspath = "%s/label%02d.npy"%(inputdir,i)
-                oimgpath = "%s/image%02d.npy"%(outputdir,(i + 20*an + 20*ui))
-                omaspath = "%s/label%02d.npy"%(outputdir,(i + 20*an + 20*ui))
+                oimgpath = "%s/image%02d_%02d_%02d.npy"%(outputdir, i, ai, ui)
+                omaspath = "%s/label%02d_%02d_%02d.npy"%(outputdir, i, ai, ui)
 
                 vol = np.load(imgpath)
                 vol = vol - np.min(vol) # shift to [0 2047]
@@ -120,7 +120,7 @@ def processTask(fr, to):
                 del vol
                 del mas
 
-                transMat = buildMatrix(uu, an*30, WIDTH, HEIGHT, SLICE)
+                transMat = buildMatrix(uu, an, WIDTH, HEIGHT, SLICE)
                 transMatt = np.linalg.inv(transMat)
 
                 tarMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
@@ -138,10 +138,19 @@ def processTask(fr, to):
                 
                 print "Done Trans ", i
 
+                # Norm
+                minn = np.min(tarMat)
+                tarMat = tarMat - minn
+                maxx = np.max(tarMat)
+                tarMat = tarMat.astype(np.float64)
+                tarMat = tarMat/maxx
+                tarMat = tarMat*2047.0
+                tarMat = tarMat.astype(np.uint16)
+
                 np.save(oimgpath, tarMat)
                 np.save(omaspath, tarMas)
 
-                oexpath = "%s/example/%02d/"%(outputdir,(i + 20*an + 20*ui))
+                oexpath = "%s/example/%02d_%02d_%02d/"%(outputdir, i, ai, ui)
                 if not os.path.exists(oexpath):
                     os.makedirs(oexpath)
 
@@ -151,32 +160,94 @@ def processTask(fr, to):
                 
                 print "Done Save ", i
 
-p1 = Process(target = processTask, args=(1, 3))
+# p1 = Process(target = processTask, args=(1, 2\
+# , zip([15, 30, 45, 60, 75, 90],[1, 2, 3, 4, 5, 6])\
+# , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
+# , (0.6, 1, 1), (0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
+# , (1, 1, 0.6), (1, 1, 0.3)]\
+# , [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])))
+# p1.start()
+
+p1 = Process(target = processTask, args=(1, 2\
+, zip([15],[1])\
+, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
+, (0.6, 1, 1)]\
+, [0, 1, 2, 3, 4])))
 p1.start()
 
-p2 = Process(target = processTask, args=(3, 5))
+p11 = Process(target = processTask, args=(1, 2\
+, zip([15],[1])\
+, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
+, (1, 1, 0.6), (1, 1, 0.3)]\
+, [5, 6, 7, 8, 9])))
+p11.start()
+
+p2 = Process(target = processTask, args=(1, 2\
+, zip([30],[2])\
+, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
+, (0.6, 1, 1)]\
+, [0, 1, 2, 3, 4])))
 p2.start()
-        
-p3 = Process(target = processTask, args=(5, 7))
+
+p22 = Process(target = processTask, args=(1, 2\
+, zip([30],[2])\
+, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
+, (1, 1, 0.6), (1, 1, 0.3)]\
+, [5, 6, 7, 8, 9])))
+p22.start()
+
+p3 = Process(target = processTask, args=(1, 2\
+, zip([45],[3])\
+, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
+, (0.6, 1, 1)]\
+, [0, 1, 2, 3, 4])))
 p3.start()
 
-p4 = Process(target = processTask, args=(7, 9))
+p33 = Process(target = processTask, args=(1, 2\
+, zip([45],[3])\
+, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
+, (1, 1, 0.6), (1, 1, 0.3)]\
+, [5, 6, 7, 8, 9])))
+p33.start()
+
+p4 = Process(target = processTask, args=(1, 2\
+, zip([60],[4])\
+, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
+, (0.6, 1, 1)]\
+, [0, 1, 2, 3, 4])))
 p4.start()
 
-p5 = Process(target = processTask, args=(9, 11))
+p44 = Process(target = processTask, args=(1, 2\
+, zip([60],[4])\
+, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
+, (1, 1, 0.6), (1, 1, 0.3)]\
+, [5, 6, 7, 8, 9])))
+p44.start()
+
+p5 = Process(target = processTask, args=(1, 2\
+, zip([75],[5])\
+, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
+, (0.6, 1, 1)]\
+, [0, 1, 2, 3, 4])))
 p5.start()
 
-p6 = Process(target = processTask, args=(11, 13))
+p55 = Process(target = processTask, args=(1, 2\
+, zip([75],[5])\
+, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
+, (1, 1, 0.6), (1, 1, 0.3)]\
+, [5, 6, 7, 8, 9])))
+p55.start()
+
+p6 = Process(target = processTask, args=(1, 2\
+, zip([90],[6])\
+, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
+, (0.6, 1, 1)]\
+, [0, 1, 2, 3, 4])))
 p6.start()
 
-p7 = Process(target = processTask, args=(13, 15))
-p7.start()
-
-p8 = Process(target = processTask, args=(15, 17))
-p8.start()
-
-p9 = Process(target = processTask, args=(17, 19))
-p9.start()
-
-p10 = Process(target = processTask, args=(19, 21))
-p10.start()
+p66 = Process(target = processTask, args=(1, 2\
+, zip([90],[6])\
+, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
+, (1, 1, 0.6), (1, 1, 0.3)]\
+, [5, 6, 7, 8, 9])))
+p66.start()

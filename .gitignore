@@ -8,4 +8,6 @@
 3Dircadb2.zip
 notebooks/Deploy/*
 notebooks/monitor/*
+notebooks/monitor_step1_3input/*
 notebooks/output/*
+data/au/output/*
