@@ -214,7 +214,7 @@ irca_augumentation_all = [\
 # (179, BASE_AU_PATH+"image79.npy", BASE_AU_PATH+"label79.npy"),
 # (180, BASE_AU_PATH+"image80.npy", BASE_AU_PATH+"label80.npy")]
 
-BASE_AU_1_PATH = "/mnt/data/student/3Dircadb1/augurment_1"
+BASE_AU_1_PATH = "/mnt/data/student/3Dircadb1/augurment_1/"
 train_dataset = [\
 (301, IRCA_NUMPY_BASE_PATH + "image01.npy", IRCA_NUMPY_BASE_PATH + "label01.npy"),
 (410, BASE_AU_1_PATH+"image01_01_00.npy", BASE_AU_PATH+"label01_01_00.npy"),
