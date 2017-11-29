@@ -40,8 +40,8 @@ augmentation_factor = 10
 # liver-lesion: Include only slices which are labeled with liver or lesion (slices with max=2 or with max=1)
 # select_slices = "all" # step 1
 # step 1
-# select_slices = 'lesion-only' # For step 1.1, learn liver with lesion is one
-select_slices = 'liver-lesion' # For step 1.2 learn all healhty liver
+select_slices = 'lesion-only' # For step 1.1, learn liver with lesion is one
+# select_slices = 'liver-lesion' # For step 1.2 learn all healhty liver
 # step 2
 # select_slices = 'lesion-only'
 
