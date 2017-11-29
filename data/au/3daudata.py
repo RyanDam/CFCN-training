@@ -168,84 +168,84 @@ def processTask(fr, to, azip, uzip):
 # , [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])))
 # p1.start()
 
-p1 = Process(target = processTask, args=(1, 2\
+p1 = Process(target = processTask, args=(2, 3\
 , zip([15],[1])\
 , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
 , (0.6, 1, 1)]\
 , [0, 1, 2, 3, 4])))
 p1.start()
 
-p11 = Process(target = processTask, args=(1, 2\
+p11 = Process(target = processTask, args=(2, 3\
 , zip([15],[1])\
 , zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
 , (1, 1, 0.6), (1, 1, 0.3)]\
 , [5, 6, 7, 8, 9])))
 p11.start()
 
-p2 = Process(target = processTask, args=(1, 2\
+p2 = Process(target = processTask, args=(2, 3\
 , zip([30],[2])\
 , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
 , (0.6, 1, 1)]\
 , [0, 1, 2, 3, 4])))
 p2.start()
 
-p22 = Process(target = processTask, args=(1, 2\
+p22 = Process(target = processTask, args=(2, 3\
 , zip([30],[2])\
 , zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
 , (1, 1, 0.6), (1, 1, 0.3)]\
 , [5, 6, 7, 8, 9])))
 p22.start()
 
-p3 = Process(target = processTask, args=(1, 2\
+p3 = Process(target = processTask, args=(2, 3\
 , zip([45],[3])\
 , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
 , (0.6, 1, 1)]\
 , [0, 1, 2, 3, 4])))
 p3.start()
 
-p33 = Process(target = processTask, args=(1, 2\
+p33 = Process(target = processTask, args=(2, 3\
 , zip([45],[3])\
 , zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
 , (1, 1, 0.6), (1, 1, 0.3)]\
 , [5, 6, 7, 8, 9])))
 p33.start()
 
-p4 = Process(target = processTask, args=(1, 2\
+p4 = Process(target = processTask, args=(2, 3\
 , zip([60],[4])\
 , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
 , (0.6, 1, 1)]\
 , [0, 1, 2, 3, 4])))
 p4.start()
 
-p44 = Process(target = processTask, args=(1, 2\
+p44 = Process(target = processTask, args=(2, 3\
 , zip([60],[4])\
 , zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
 , (1, 1, 0.6), (1, 1, 0.3)]\
 , [5, 6, 7, 8, 9])))
 p44.start()
 
-p5 = Process(target = processTask, args=(1, 2\
+p5 = Process(target = processTask, args=(2, 3\
 , zip([75],[5])\
 , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
 , (0.6, 1, 1)]\
 , [0, 1, 2, 3, 4])))
 p5.start()
 
-p55 = Process(target = processTask, args=(1, 2\
+p55 = Process(target = processTask, args=(2, 3\
 , zip([75],[5])\
 , zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
 , (1, 1, 0.6), (1, 1, 0.3)]\
 , [5, 6, 7, 8, 9])))
 p55.start()
 
-p6 = Process(target = processTask, args=(1, 2\
+p6 = Process(target = processTask, args=(2, 3\
 , zip([90],[6])\
 , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
 , (0.6, 1, 1)]\
 , [0, 1, 2, 3, 4])))
 p6.start()
 
-p66 = Process(target = processTask, args=(1, 2\
+p66 = Process(target = processTask, args=(2, 3\
 , zip([90],[6])\
 , zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
 , (1, 1, 0.6), (1, 1, 0.3)]\
