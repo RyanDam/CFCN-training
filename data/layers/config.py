@@ -40,8 +40,8 @@ augmentation_factor = 10
 # liver-lesion: Include only slices which are labeled with liver or lesion (slices with max=2 or with max=1)
 # select_slices = "all" # step 1
 # step 1
-# select_slices = 'lesion-only' # For step 1.1, learn liver with lesion is one
-select_slices = 'liver-lesion' # For step 1.2 learn all healhty liver
+select_slices = 'lesion-only' # For step 1.1, learn liver with lesion is one
+# select_slices = 'liver-lesion' # For step 1.2 learn all healhty liver
 # step 2
 # select_slices = 'lesion-only'
 
@@ -215,6 +215,7 @@ irca_augumentation_all = [\
 # (180, BASE_AU_PATH+"image80.npy", BASE_AU_PATH+"label80.npy")]
 
 BASE_AU_1_PATH = "/mnt/data/student/3Dircadb1/augurment_1/"
+BASE_AU_2_PATH = "/mnt/data/student/3Dircadb1/augurment_2/"
 train_dataset = [\
 (301, IRCA_NUMPY_BASE_PATH + "image01.npy", IRCA_NUMPY_BASE_PATH + "label01.npy"),
 (410, BASE_AU_1_PATH+"image01_01_00.npy", BASE_AU_1_PATH+"label01_01_00.npy"),
@@ -276,7 +277,68 @@ train_dataset = [\
 (466, BASE_AU_1_PATH+"image01_06_06.npy", BASE_AU_1_PATH+"label01_06_06.npy"),
 (467, BASE_AU_1_PATH+"image01_06_07.npy", BASE_AU_1_PATH+"label01_06_07.npy"),
 (468, BASE_AU_1_PATH+"image01_06_08.npy", BASE_AU_1_PATH+"label01_06_08.npy"),
-(469, BASE_AU_1_PATH+"image01_06_09.npy", BASE_AU_1_PATH+"label01_06_09.npy")]
+(469, BASE_AU_1_PATH+"image01_06_09.npy", BASE_AU_1_PATH+"label01_06_09.npy"),
+(302, IRCA_NUMPY_BASE_PATH + "image02.npy", IRCA_NUMPY_BASE_PATH + "label02.npy"),
+(510, BASE_AU_2_PATH+"image02_01_00.npy", BASE_AU_2_PATH+"label01_01_00.npy"),
+(511, BASE_AU_2_PATH+"image02_01_01.npy", BASE_AU_2_PATH+"label01_01_01.npy"),
+(512, BASE_AU_2_PATH+"image02_01_02.npy", BASE_AU_2_PATH+"label01_01_02.npy"),
+(513, BASE_AU_2_PATH+"image02_01_03.npy", BASE_AU_2_PATH+"label01_01_03.npy"),
+(514, BASE_AU_2_PATH+"image02_01_04.npy", BASE_AU_2_PATH+"label01_01_04.npy"),
+(515, BASE_AU_2_PATH+"image02_01_05.npy", BASE_AU_2_PATH+"label01_01_05.npy"),
+(516, BASE_AU_2_PATH+"image02_01_06.npy", BASE_AU_2_PATH+"label01_01_06.npy"),
+(517, BASE_AU_2_PATH+"image02_01_07.npy", BASE_AU_2_PATH+"label01_01_07.npy"),
+(518, BASE_AU_2_PATH+"image02_01_08.npy", BASE_AU_2_PATH+"label01_01_08.npy"),
+(519, BASE_AU_2_PATH+"image02_01_09.npy", BASE_AU_2_PATH+"label01_01_09.npy"),
+(520, BASE_AU_2_PATH+"image02_02_00.npy", BASE_AU_2_PATH+"label01_02_00.npy"),
+(521, BASE_AU_2_PATH+"image02_02_01.npy", BASE_AU_2_PATH+"label01_02_01.npy"),
+(522, BASE_AU_2_PATH+"image02_02_02.npy", BASE_AU_2_PATH+"label01_02_02.npy"),
+(523, BASE_AU_2_PATH+"image02_02_03.npy", BASE_AU_2_PATH+"label01_02_03.npy"),
+(524, BASE_AU_2_PATH+"image02_02_04.npy", BASE_AU_2_PATH+"label01_02_04.npy"),
+(525, BASE_AU_2_PATH+"image02_02_05.npy", BASE_AU_2_PATH+"label01_02_05.npy"),
+(526, BASE_AU_2_PATH+"image02_02_06.npy", BASE_AU_2_PATH+"label01_02_06.npy"),
+(527, BASE_AU_2_PATH+"image02_02_07.npy", BASE_AU_2_PATH+"label01_02_07.npy"),
+(528, BASE_AU_2_PATH+"image02_02_08.npy", BASE_AU_2_PATH+"label01_02_08.npy"),
+(529, BASE_AU_2_PATH+"image02_02_09.npy", BASE_AU_2_PATH+"label01_02_09.npy"),
+(530, BASE_AU_2_PATH+"image02_03_00.npy", BASE_AU_2_PATH+"label01_03_00.npy"),
+(531, BASE_AU_2_PATH+"image02_03_01.npy", BASE_AU_2_PATH+"label01_03_01.npy"),
+(532, BASE_AU_2_PATH+"image02_03_02.npy", BASE_AU_2_PATH+"label01_03_02.npy"),
+(533, BASE_AU_2_PATH+"image02_03_03.npy", BASE_AU_2_PATH+"label01_03_03.npy"),
+(534, BASE_AU_2_PATH+"image02_03_04.npy", BASE_AU_2_PATH+"label01_03_04.npy"),
+(535, BASE_AU_2_PATH+"image02_03_05.npy", BASE_AU_2_PATH+"label01_03_05.npy"),
+(536, BASE_AU_2_PATH+"image02_03_06.npy", BASE_AU_2_PATH+"label01_03_06.npy"),
+(537, BASE_AU_2_PATH+"image02_03_07.npy", BASE_AU_2_PATH+"label01_03_07.npy"),
+(538, BASE_AU_2_PATH+"image02_03_08.npy", BASE_AU_2_PATH+"label01_03_08.npy"),
+(539, BASE_AU_2_PATH+"image02_03_09.npy", BASE_AU_2_PATH+"label01_03_09.npy"),
+(540, BASE_AU_2_PATH+"image02_04_00.npy", BASE_AU_2_PATH+"label01_04_00.npy"),
+(541, BASE_AU_2_PATH+"image02_04_01.npy", BASE_AU_2_PATH+"label01_04_01.npy"),
+(542, BASE_AU_2_PATH+"image02_04_02.npy", BASE_AU_2_PATH+"label01_04_02.npy"),
+(543, BASE_AU_2_PATH+"image02_04_03.npy", BASE_AU_2_PATH+"label01_04_03.npy"),
+(544, BASE_AU_2_PATH+"image02_04_04.npy", BASE_AU_2_PATH+"label01_04_04.npy"),
+(545, BASE_AU_2_PATH+"image02_04_05.npy", BASE_AU_2_PATH+"label01_04_05.npy"),
+(546, BASE_AU_2_PATH+"image02_04_06.npy", BASE_AU_2_PATH+"label01_04_06.npy"),
+(547, BASE_AU_2_PATH+"image02_04_07.npy", BASE_AU_2_PATH+"label01_04_07.npy"),
+(548, BASE_AU_2_PATH+"image02_04_08.npy", BASE_AU_2_PATH+"label01_04_08.npy"),
+(549, BASE_AU_2_PATH+"image02_04_09.npy", BASE_AU_2_PATH+"label01_04_09.npy"),
+(550, BASE_AU_2_PATH+"image02_05_00.npy", BASE_AU_2_PATH+"label01_05_00.npy"),
+(551, BASE_AU_2_PATH+"image02_05_01.npy", BASE_AU_2_PATH+"label01_05_01.npy"),
+(552, BASE_AU_2_PATH+"image02_05_02.npy", BASE_AU_2_PATH+"label01_05_02.npy"),
+(553, BASE_AU_2_PATH+"image02_05_03.npy", BASE_AU_2_PATH+"label01_05_03.npy"),
+(554, BASE_AU_2_PATH+"image02_05_04.npy", BASE_AU_2_PATH+"label01_05_04.npy"),
+(555, BASE_AU_2_PATH+"image02_05_05.npy", BASE_AU_2_PATH+"label01_05_05.npy"),
+(556, BASE_AU_2_PATH+"image02_05_06.npy", BASE_AU_2_PATH+"label01_05_06.npy"),
+(557, BASE_AU_2_PATH+"image02_05_07.npy", BASE_AU_2_PATH+"label01_05_07.npy"),
+(558, BASE_AU_2_PATH+"image02_05_08.npy", BASE_AU_2_PATH+"label01_05_08.npy"),
+(559, BASE_AU_2_PATH+"image02_05_09.npy", BASE_AU_2_PATH+"label01_05_09.npy"),
+(560, BASE_AU_2_PATH+"image02_06_00.npy", BASE_AU_2_PATH+"label01_06_00.npy"),
+(561, BASE_AU_2_PATH+"image02_06_01.npy", BASE_AU_2_PATH+"label01_06_01.npy"),
+(562, BASE_AU_2_PATH+"image02_06_02.npy", BASE_AU_2_PATH+"label01_06_02.npy"),
+(563, BASE_AU_2_PATH+"image02_06_03.npy", BASE_AU_2_PATH+"label01_06_03.npy"),
+(564, BASE_AU_2_PATH+"image02_06_04.npy", BASE_AU_2_PATH+"label01_06_04.npy"),
+(565, BASE_AU_2_PATH+"image02_06_05.npy", BASE_AU_2_PATH+"label01_06_05.npy"),
+(566, BASE_AU_2_PATH+"image02_06_06.npy", BASE_AU_2_PATH+"label01_06_06.npy"),
+(567, BASE_AU_2_PATH+"image02_06_07.npy", BASE_AU_2_PATH+"label01_06_07.npy"),
+(568, BASE_AU_2_PATH+"image02_06_08.npy", BASE_AU_2_PATH+"label01_06_08.npy"),
+(569, BASE_AU_2_PATH+"image02_06_09.npy", BASE_AU_2_PATH+"label01_06_09.npy")]
 
 test_dataset = [\
 (315, IRCA_NUMPY_BASE_PATH+"image15.npy",IRCA_NUMPY_BASE_PATH+"label15.npy"),
