@@ -13,9 +13,53 @@ import traceback
 from time import sleep
 
 inputdir = "/mnt/data/student/3Dircadb1/niftis_segmented_all_inter"
-outputdir = "/mnt/data/student/3Dircadb1/augurment_3"
+outputdir = "/mnt/data/student/3Dircadb1/augurment_lesion"
+
 if not os.path.exists(outputdir):
     os.makedirs(outputdir)
+
+def lesionCenter(num):
+    if num is 1:
+        return zip([(100, 200, 100), (100, 100, 180), (120, 170, 180)], [1, 2, 3])
+    elif num is 2:
+        return zip([(135, 240, 100)], [1])
+    elif num is 3:
+        return zip([(120, 220, 175)], [1])
+    elif num is 4:
+        return zip([(70, 125, 120), (100, 150, 100), (115, 175, 110), (110, 200, 100), (165, 240, 130), (120, 160, 80)]\
+                    , [1, 2, 3, 4, 5, 6])
+    elif num is 5:
+        return zip([(0, 0, 0)], [0])
+    elif num is 6:
+        return zip([(110, 220, 160)], [1])
+    elif num is 7:
+        return zip([(0, 0, 0)], [0])
+    elif num is 8:
+        return zip([(120, 160, 100), (190, 160, 175), (170, 220, 100)], [1, 2, 3])
+    elif num is 9:
+        return zip([(95, 275, 60), (150, 300, 175)], [1, 2])
+    elif num is 10:
+        return zip([(100, 275, 85), (140, 220, 110), (210, 240, 170), (170, 210, 175)], [1, 2, 3, 4])
+    elif num is 11:
+        return zip([(0, 0, 0)], [0])
+    elif num is 12:
+        return zip([(150, 225, 50)], [1])
+    elif num is 13:
+        return zip([(100, 200, 140)], [1])
+    elif num is 14:
+        return zip([(0, 0, 0)], [0])
+    elif num is 15:
+        return zip([(225, 260, 170)], [1])
+    elif num is 16:
+        return zip([(100, 190, 95)], [1])
+    elif num is 17:
+        return zip([(100, 250, 150), (200, 250, 150)], [1, 2])
+    elif num is 18:
+        return zip([(100, 240, 95)], [1])
+    elif num is 19:
+        return zip([(0, 0, 0)], [0])
+    else:
+        return zip([(0, 0, 0)], [0])
 
 def miccaiimshow(img,seg,preds,fname,titles=None, plot_separate_img=True):
 	"""Takes raw image img, seg in range 0-2, list of predictions in range 0-2"""
@@ -71,10 +115,10 @@ def miccaiimshow(img,seg,preds,fname,titles=None, plot_separate_img=True):
 	plt.savefig(fname)
 	plt.close()
 
-def buildMatrix(u, theta, W, H, S):
+def buildMatrix(u, theta, sx, sy, sz):
     theta = topi(theta)
-    tozero = transu((-W/2, -H/2, -S/2))
-    toorigin = transu((W/2, H/2, S/2))
+    tozero = transu((-sx, -sy, -sz))
+    toorigin = transu((sx, sy, sz))
     rotaxis = rotu(u, theta)
     return np.dot(np.dot(toorigin, rotaxis), tozero)
 
@@ -87,8 +131,6 @@ def processTask(fr, to, azip, uzip):
 
                 imgpath = "%s/image%02d.npy"%(inputdir,i)
                 maspath = "%s/label%02d.npy"%(inputdir,i)
-                oimgpath = "%s/image%02d_%02d_%02d.npy"%(outputdir, i, ai, ui)
-                omaspath = "%s/label%02d_%02d_%02d.npy"%(outputdir, i, ai, ui)
 
                 vol = np.load(imgpath)
                 vol = vol - np.min(vol) # shift to [0 2047]
@@ -120,134 +162,63 @@ def processTask(fr, to, azip, uzip):
                 del vol
                 del mas
 
-                transMat = buildMatrix(uu, an, WIDTH, HEIGHT, SLICE)
-                transMatt = np.linalg.inv(transMat)
+                shiftIndex = lesionCenter(i)
+                for shift, index in shiftIndex:
+                    sx, sy, sz = (0, 0, 0)
+                    if index is 0:
+                        sx, sy, sz = (WIDTH/2, HEIGHT/2, SLICE/2)
+                    else:
+                        sx, sy, sz = shift
+                        sz = sz + (WIDTH - s)
 
-                tarMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
-                tarMas = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
+                    oimgpath = "%s/image%02d_%02d_%02d_%02d.npy"%(outputdir, i, index, ai, ui)
+                    omaspath = "%s/label%02d_%02d_%02d_%02d.npy"%(outputdir, i, index, ai, ui)
 
-                for z in xrange(0, SLICE):
-                    for y in xrange(0, HEIGHT):
-                        for x in xrange(0, WIDTH):
-                            vec = np.array([x, y, z, 1]).astype(np.float).reshape([4,1])
-                            tar = np.dot(transMatt, vec)
-                            tx, ty, tz, p = tar.astype(np.int16)
-                            if (tx >= 0 and tx < WIDTH) and (ty >= 0 and ty < HEIGHT) and (tz >= 0 and tz < SLICE):
-                                tarMat[y, x, z] = padMat[ty, tx, tz]
-                                tarMas[y, x, z] = padMas[ty, tx, tz]
-                
-                print "Done Trans ", i
+                    transMat = buildMatrix(uu, an, sx, sy, sz)
+                    transMatt = np.linalg.inv(transMat)
 
-                # Norm
-                minn = np.min(tarMat)
-                tarMat = tarMat - minn
-                maxx = np.max(tarMat)
-                tarMat = tarMat.astype(np.float64)
-                tarMat = tarMat/maxx
-                tarMat = tarMat*2047.0
-                tarMat = tarMat.astype(np.uint16)
+                    tarMat = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
+                    tarMas = np.zeros([WIDTH, HEIGHT, SLICE]).astype(np.int16)
 
-                np.save(oimgpath, tarMat)
-                np.save(omaspath, tarMas)
+                    for z in xrange(0, SLICE):
+                        for y in xrange(0, HEIGHT):
+                            for x in xrange(0, WIDTH):
+                                vec = np.array([x, y, z, 1]).astype(np.float).reshape([4,1])
+                                tar = np.dot(transMatt, vec)
+                                tx, ty, tz, p = tar.astype(np.int16)
+                                if (tx >= 0 and tx < WIDTH) and (ty >= 0 and ty < HEIGHT) and (tz >= 0 and tz < SLICE):
+                                    tarMat[y, x, z] = padMat[ty, tx, tz]
+                                    tarMas[y, x, z] = padMas[ty, tx, tz]
+                    
+                    print "Done Trans ", i
 
-                oexpath = "%s/example/%02d_%02d_%02d/"%(outputdir, i, ai, ui)
-                if not os.path.exists(oexpath):
-                    os.makedirs(oexpath)
+                    # Norm
+                    minn = np.min(tarMat)
+                    tarMat = tarMat - minn
+                    maxx = np.max(tarMat)
+                    tarMat = tarMat.astype(np.float64)
+                    tarMat = tarMat/maxx
+                    tarMat = tarMat*2047.0
+                    tarMat = tarMat.astype(np.uint16)
 
-                for z in xrange(0, SLICE):
-                    fname = "%s/img%03d.png"%(oexpath,z)
-                    miccaiimshow(tarMat[:,:,z], tarMas[:,:,z], [tarMas[:,:,z]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
-                
-                print "Done Save ", i
+                    np.save(oimgpath, tarMat)
+                    np.save(omaspath, tarMas)
 
-# p1 = Process(target = processTask, args=(1, 2\
-# , zip([15, 30, 45, 60, 75, 90],[1, 2, 3, 4, 5, 6])\
-# , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
-# , (0.6, 1, 1), (0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
-# , (1, 1, 0.6), (1, 1, 0.3)]\
-# , [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])))
-# p1.start()
+                    oexpath = "%s/example/%02d_%02d_%02d_%02d/"%(outputdir, index, i, ai, ui)
+                    if not os.path.exists(oexpath):
+                        os.makedirs(oexpath)
 
-p1 = Process(target = processTask, args=(3, 4\
-, zip([15],[1])\
-, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
-, (0.6, 1, 1)]\
-, [0, 1, 2, 3, 4])))
-p1.start()
+                    for z in xrange(0, SLICE):
+                        fname = "%s/img%03d.png"%(oexpath,z)
+                        miccaiimshow(tarMat[:,:,z], tarMas[:,:,z], [tarMas[:,:,z]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
+                    
+                    print "Done Save ", i
 
-p11 = Process(target = processTask, args=(3, 4\
-, zip([15],[1])\
-, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
-, (1, 1, 0.6), (1, 1, 0.3)]\
-, [5, 6, 7, 8, 9])))
-p11.start()
-
-p2 = Process(target = processTask, args=(3, 4\
-, zip([30],[2])\
-, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
-, (0.6, 1, 1)]\
-, [0, 1, 2, 3, 4])))
-p2.start()
-
-p22 = Process(target = processTask, args=(3, 4\
-, zip([30],[2])\
-, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
-, (1, 1, 0.6), (1, 1, 0.3)]\
-, [5, 6, 7, 8, 9])))
-p22.start()
-
-p3 = Process(target = processTask, args=(3, 4\
-, zip([45],[3])\
-, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
-, (0.6, 1, 1)]\
-, [0, 1, 2, 3, 4])))
-p3.start()
-
-p33 = Process(target = processTask, args=(3, 4\
-, zip([45],[3])\
-, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
-, (1, 1, 0.6), (1, 1, 0.3)]\
-, [5, 6, 7, 8, 9])))
-p33.start()
-
-p4 = Process(target = processTask, args=(3, 4\
-, zip([60],[4])\
-, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
-, (0.6, 1, 1)]\
-, [0, 1, 2, 3, 4])))
-p4.start()
-
-p44 = Process(target = processTask, args=(3, 4\
-, zip([60],[4])\
-, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
-, (1, 1, 0.6), (1, 1, 0.3)]\
-, [5, 6, 7, 8, 9])))
-p44.start()
-
-p5 = Process(target = processTask, args=(3, 4\
-, zip([75],[5])\
-, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
-, (0.6, 1, 1)]\
-, [0, 1, 2, 3, 4])))
-p5.start()
-
-p55 = Process(target = processTask, args=(3, 4\
-, zip([75],[5])\
-, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
-, (1, 1, 0.6), (1, 1, 0.3)]\
-, [5, 6, 7, 8, 9])))
-p55.start()
-
-p6 = Process(target = processTask, args=(3, 4\
-, zip([90],[6])\
-, zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
-, (0.6, 1, 1)]\
-, [0, 1, 2, 3, 4])))
-p6.start()
-
-p66 = Process(target = processTask, args=(3, 4\
-, zip([90],[6])\
-, zip([(0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
-, (1, 1, 0.6), (1, 1, 0.3)]\
-, [5, 6, 7, 8, 9])))
-p66.start()
+for i in range(1, 20, 2):
+    p = Process(target = processTask, args=(i, i+2\
+    , zip([15, 30, 45, 60, 75, 90],[1, 2, 3, 4, 5, 6])\
+    , zip([(1, 1, 1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)\
+    , (0.6, 1, 1), (0.3, 1, 1), (1, 0.6, 1), (1, 0.3, 1)\
+    , (1, 1, 0.6), (1, 1, 0.3)]\
+    , [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])))
+    p.start()
