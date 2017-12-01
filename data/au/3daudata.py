@@ -164,7 +164,7 @@ def processTask(fr, to, azip, uzip):
 
                 shiftIndex = lesionCenter(i)
                 for shift, index in shiftIndex:
-                    print "Begin ", i, " pack: ", index, " angle: ", an, " uu: ", uu
+                    print "Begin ", i, " pack: ", index, " shift: ", shift, " angle: ", an, " uu: ", uu
 
                     sx, sy, sz = (0, 0, 0)
                     if index is 0:
