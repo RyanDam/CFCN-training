@@ -128,7 +128,6 @@ def processTask(fr, to, azip, uzip):
         for an, ai in azip:
             for uu, ui in uzip:
                 
-
                 imgpath = "%s/image%02d.npy"%(inputdir,i)
                 maspath = "%s/label%02d.npy"%(inputdir,i)
 
@@ -214,7 +213,7 @@ def processTask(fr, to, azip, uzip):
                         fname = "%s/img%03d.png"%(oexpath,z)
                         miccaiimshow(tarMat[:,:,z], tarMas[:,:,z], [tarMas[:,:,z]], fname=fname,titles=["Ground Truth","Prediction"], plot_separate_img=True)
                     
-                    print "Done Save ", i
+                    print "DONE ", i, " pack: ", index, " shift: ", shift, " angle: ", an, " uu: ", uu
 
 for i in range(1, 20, 2):
     p = Process(target = processTask, args=(i, i+2\
