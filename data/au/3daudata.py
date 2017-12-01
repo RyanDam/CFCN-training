@@ -127,7 +127,7 @@ def processTask(fr, to, azip, uzip):
     for i in xrange(fr, to):
         for an, ai in azip:
             for uu, ui in uzip:
-                print "Begin ",i," angle: ",an," uu ", uu
+                
 
                 imgpath = "%s/image%02d.npy"%(inputdir,i)
                 maspath = "%s/label%02d.npy"%(inputdir,i)
@@ -164,6 +164,8 @@ def processTask(fr, to, azip, uzip):
 
                 shiftIndex = lesionCenter(i)
                 for shift, index in shiftIndex:
+                    print "Begin ", i, " pack: ", index, " angle: ", an, " uu: ", uu
+
                     sx, sy, sz = (0, 0, 0)
                     if index is 0:
                         sx, sy, sz = (WIDTH/2, HEIGHT/2, SLICE/2)
