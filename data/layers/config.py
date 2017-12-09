@@ -217,7 +217,7 @@ irca_augumentation_all = [\
 BASE_AU_1_PATH = "/mnt/data/student/3Dircadb1/augurment_1/"
 BASE_AU_2_PATH = "/mnt/data/student/3Dircadb1/augurment_2/"
 BASE_AU_3_PATH = "/mnt/data/student/3Dircadb1/augurment_3/"
-BASE_AU_LEISION_PATH = "/mnt/data/student/3Dircadb1/augurment_lesion"
+BASE_AU_LEISION_PATH = "/mnt/data/student/3Dircadb1/augurment_lesion/"
 
 # train_dataset = [\
 # (301, IRCA_NUMPY_BASE_PATH + "image01.npy", IRCA_NUMPY_BASE_PATH + "label01.npy"),
