@@ -52,7 +52,8 @@ irca_all= [\
 dataset = irca_all[:]
 
 #Paths to models. first element corresponds to first fold, second element to second fold etc.
-models = ['/mnt/data/student/deploy/our/step1_weights.caffemodel']*20
+# models = ['/mnt/data/student/deploy/our/step1_weights.caffemodel']*20
+models = ['/mnt/data/student/archived_snapshot_au_full/snapshot_step1_1input_enhanced/_iter_41500.caffemodel']*20
 # models = ['/mnt/data/student/snapshot_step1_p1_2/_iter_7000.caffemodel']*20
 # models_step_two = ['/mnt/data/student/deploy/our/step2_weights.caffemodel']*20
 models_step_two = ['/mnt/data/student/snapshot/_iter_83000.caffemodel']*20
