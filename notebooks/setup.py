@@ -7,10 +7,10 @@ TEST_NUMBER = 300
 
 # RUN_MODE = 'resume-last'
 # STATE_FOLDER = '/mnt/data/student/snapshot/'
-# RUN_MODE = 'resume'
-# STATE_FILE = '/mnt/data/student/snapshot/_iter_9000.solverstate'
-RUN_MODE = 'retrain'
-PRE_TRAIN_WEIGHTS = 'phseg_v5.caffemodel'
+RUN_MODE = 'resume'
+STATE_FILE = '/mnt/data/student/snapshot/_iter_76000.solverstate'
+# RUN_MODE = 'retrain'
+# PRE_TRAIN_WEIGHTS = 'phseg_v5.caffemodel'
 # PRE_TRAIN_WEIGHTS = '/mnt/data/student/snapshot_step1_p1_3/_iter_7000.caffemodel'
 
 MONITOR_FOLDER = 'monitor/%s'
