@@ -374,10 +374,10 @@ if __name__ == '__main__':
 	
 					#scale output back down and insert into the probability volume
 					
-					x1,x2,y1,y2 = bbox
-					leftpad, rightpad = x1, 388-x2
-					toppad, bottompad = y1, 388-y2
-					width, height = int(x2-x1), int(y2-y1)
+					# x1,x2,y1,y2 = bbox
+					# leftpad, rightpad = x1, 388-x2
+					# toppad, bottompad = y1, 388-y2
+					# width, height = int(x2-x1), int(y2-y1)
 					#now save probabilities
 					prob = net.blobs['prob'].data.transpose((0,2,3,1))[0]
 # 						probvol[:,:,i,:]  = prob
@@ -389,13 +389,13 @@ if __name__ == '__main__':
 					pred_step_two[:,:,i] = slc_pred_step_two
 
 					prob0 = prob[:,:,0].astype(IMG_DTYPE) #use IMG_DTYPE bcoz we've probabiblities, not hard labels
-					prob0 = to_scale(prob0, (height,width))
-					prob0 = np.pad(prob0, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
+					# prob0 = to_scale(prob0, (height,width))
+					# prob0 = np.pad(prob0, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
 # 						
 # 						
 					prob1 = prob[:,:,1].astype(IMG_DTYPE) 
-					prob1 = to_scale(prob1, (height,width))
-					prob1 = np.pad(prob1, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
+					# prob1 = to_scale(prob1, (height,width))
+					# prob1 = np.pad(prob1, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
 					
 					probvol_step_two[:,:,i,0] = prob0
 					probvol_step_two[:,:,i,1] = prob1
