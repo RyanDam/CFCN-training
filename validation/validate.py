@@ -384,6 +384,8 @@ if __name__ == '__main__':
 
 					slc_pred_step_two = np.argmax(prob,axis=2).astype(SEG_DTYPE)
 
+					slc_pred_step_two = np.logical_and(slc_pred_step_two==1, slc_crf_pred_liver==2).astype(SEG_DTYPE)
+
 					# slc_pred_step_two = to_scale(slc_pred_step_two, (height,width))
 					# slc_pred_step_two = np.pad(slc_pred_step_two, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
 					pred_step_two[:,:,i] = slc_pred_step_two
