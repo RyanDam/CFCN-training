@@ -358,7 +358,7 @@ if __name__ == '__main__':
 			for i in range(imgvol_downscaled.shape[2]):
 				slc = imgvol_downscaled[:,:,i]
 				#create mirrored slc for unet
-				#slc = np.pad(slc,((92,92),(92,92)),mode='reflect')
+				slc = np.pad(slc,((92,92),(92,92)),mode='reflect')
 
 				#now we crop and upscale the liver
 				slc_crf_pred_liver = crf_pred_liver[:, :, i].astype(SEG_DTYPE)
@@ -367,7 +367,7 @@ if __name__ == '__main__':
 				if np.count_nonzero(slc_crf_pred_liver) == 0:
 					probvol_step_two[:,:,i,:] = 0
 				else:
-					slc, bbox = zoomliver_UNET_processor(slc, slc_crf_pred_liver)
+					# slc, bbox = zoomliver_UNET_processor(slc, slc_crf_pred_liver)
 					#load slc into network and do forward pass
 					net.blobs['data'].data[...] = slc
 					net.forward()
@@ -384,8 +384,8 @@ if __name__ == '__main__':
 
 					slc_pred_step_two = np.argmax(prob,axis=2).astype(SEG_DTYPE)
 
-					slc_pred_step_two = to_scale(slc_pred_step_two, (height,width))
-					slc_pred_step_two = np.pad(slc_pred_step_two, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
+					# slc_pred_step_two = to_scale(slc_pred_step_two, (height,width))
+					# slc_pred_step_two = np.pad(slc_pred_step_two, ((toppad,bottompad),(leftpad,rightpad)), mode='constant')
 					pred_step_two[:,:,i] = slc_pred_step_two
 
 					prob0 = prob[:,:,0].astype(IMG_DTYPE) #use IMG_DTYPE bcoz we've probabiblities, not hard labels
