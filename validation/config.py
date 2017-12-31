@@ -56,7 +56,7 @@ dataset = irca_all[:]
 models = ['/mnt/data/student/deploy/au/step1.caffemodel']*20
 # models = ['/mnt/data/student/snapshot_step1_p1_2/_iter_7000.caffemodel']*20
 # models_step_two = ['/mnt/data/student/deploy/our/step2_weights.caffemodel']*20
-models_step_two = ['/mnt/data/student/snapshot/_iter_16000.caffemodel']*20
+models_step_two = ['/mnt/data/student/snapshot/_iter_73500.caffemodel']*20
 
 deployprototxt = ['/mnt/data/student/deploy/step1_deploy.prototxt']*20
 deployprototxt_step_two = ['/mnt/data/student/deploy/step2_deploy.prototxt']*20
