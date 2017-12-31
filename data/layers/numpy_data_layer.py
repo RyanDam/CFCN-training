@@ -224,6 +224,13 @@ class processors:
 		"""Converts lesion labels to liver label. The resulting classifier classifies liver vs. background."""
 		seg[seg==2]=1
 		return img,seg
+
+	@staticmethod
+	def lesiononly_label_processor(img, seg):
+		"""Converts lesion labels to liver label. The resulting classifier classifies liver vs. background."""
+		seg[seg==1]=0
+		seg[seg==2]=1
+		return img,seg
 	
 	@staticmethod
 	def remove_non_liver(img, seg):
